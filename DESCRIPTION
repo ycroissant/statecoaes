@@ -1,0 +1,18 @@
+Package: statecoaes
+Version: 0.1-0
+Date: 2020-09-12
+Title: Statistiques et Probabilités pour L1-L2 Economie et AES
+Author: Yves Croissant <yves.croissant@univ-reunion.fr>
+Maintainer: Yves Croissant <yves.croissant@univ-reunion.fr>
+Depends: R (>= 3.5.0)
+Imports: Rdpack
+Depends: tibble
+Suggests: knitr
+Description: Données pour accompagner le livre d'introduction aux statistiques et probabilités
+VignetteBuilder: knitr
+Encoding: UTF-8
+License: GPL (>=2)
+URL: http://www.r-project.org
+RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
+RdMacros: Rdpack
