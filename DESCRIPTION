@@ -13,3 +13,4 @@ URL: http://www.r-project.org
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 RdMacros: Rdpack
+LazyData: true
