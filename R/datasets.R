@@ -20,16 +20,18 @@ NULL
 
 #' Achat de Ketchup
 #'
-#' Comportement hebdomadaire d'achat de Ketchup par 3088 ménages au cours de l'année 1987
+#' Comportement hebdomadaire d'achat de Ketchup par 3088 ménages au cours des années 1986-88
 #'
 #' @name Ketchup
 #' @docType data
 #' @format Un tibble contenant
 #'
-#' - chid: identifiant de l'achat
 #' - id : identifiant du ménage
 #' - week : identifiant de la semaine
+#' - year : l'année de l'achat
+#' - quarter : le trimestre de l'achat
 #' - choice : 1 si du ketchup a été acheté, 0 autrement
+#' - buy : 1 si le ménage a acheté du Ketchup au moins une fois pendant l'ensemble de la période d'observation
 #'
 #' 
 #' @source

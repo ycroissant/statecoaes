@@ -7,17 +7,19 @@
 \format{
 Un tibble contenant
 \itemize{
-\item chid: identifiant de l'achat
 \item id : identifiant du ménage
 \item week : identifiant de la semaine
+\item year : l'année de l'achat
+\item quarter : le trimestre de l'achat
 \item choice : 1 si du ketchup a été acheté, 0 autrement
+\item buy : 1 si le ménage a acheté du Ketchup au moins une fois pendant l'ensemble de la période d'observation
 }
 }
 \source{
 \href{https://qed.econ.queensu.ca/jae/}{Journal of Applied Econometrics data archive}
 }
 \description{
-Comportement hebdomadaire d'achat de Ketchup par 3088 ménages au cours de l'année 1987
+Comportement hebdomadaire d'achat de Ketchup par 3088 ménages au cours des années 1986-88
 }
 \references{
 \insertRef{CHIN:ERDE:KEAN:09}{statecoaes}
