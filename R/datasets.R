@@ -157,7 +157,8 @@ NULL
 #'
 #' L'enquête DADS indique de nombreuses caractéristiques des salariés,
 #' en particulier le salaire annuel par tranche et le nombre d'heures
-#' travaillées
+#' travaillées (les données sont l'extrait de la base correspondant à
+#' la région Ile de France
 #' 
 #' @name Salaires
 #' @docType data
@@ -193,6 +194,96 @@ NULL
 #' - age : l'âge de la mère.
 #'
 #' @source Etat civil, site de l'[INSEE](www.insee.fr)
+#' 
+
+NULL
+
+
+#' Locations saisonnières à Seville
+#'
+#' Prix et différentes caractéristiques de locations saisonnières dans
+#' la ville de Séville, figurant sur le site bookings.com
+#'
+#' @name Seville
+#' @docType data
+#' @format Un tibble contenant :
+#' - price : le prix pour deux nuits
+#' - district : le disctrict dans lequel est situé la location
+#' - dindex : un index de richesse du district (1 pour le plus riche),
+#' - distance : distance aux centres d'intérêt majeurs de Seville
+#' - rating : moyenne des notes obtenues précédemment sur le site
+#' - beds : nombre de lits
+#' - surface : surface de l'appartement
+#' - parking : 1 si la location dispose d'un parking
+#' - season : `ls_wd` pour saison creuse - jour de semaine, `ls_we`
+#' pour saison creuse - week end, `hs_wd` pour haute saison - jour de
+#' semaine, `hs_we` pour haute saison - week end, `holy_week` pour la
+#' semaine sainte et `april_fair`
+#' @source
+#' [site de la revue Data in Brief](https://www.sciencedirect.com/science/article/pii/S2352340919310522#tbl5)
+#' @references
+#' \insertRef{SOLA:MARG:19}{statecoaes}
+
+NULL
+
+#' Consommation horaire de gaz
+#'
+#' Consommation par heure de gaz pour les différentes régions française
+#'
+#' @name Gaz
+#' @docType data
+#' @format Un tibble contenant :
+#' - region : le code de la région
+#' - heure : le jour et l'heure
+#' - conso : la consommation
+#'
+#' @source
+#' [site data.gouv.fr](https://www.data.gouv.fr/fr/datasets/consommation-journaliere-et-horaire-de-gaz-des-clients-grd-et-eld-par-region-reseaux-grtgaz-terega-donnees-definitives-1/)
+
+NULL
+
+#' Pêche au Merlan
+#'
+#' Pêche au Merlan (volume et valeur) par semaine pour les différents ports de pêche francais
+#'
+#' @name Merlan
+#' @docType data
+#' @format Un tibble contenant :
+#' - debut : date de début de la semaine d'observation
+#' - fin : date de la fin de la semaine d'observation
+#' - poids : quantité de merlan pêchée en kg
+#' - valeur : valeur des ventes de merlan
+#' - id : identifiant du port
+#' - nom : nom du port
+#'
+#' @source
+#' [site data.gouv.fr](https://www.data.gouv.fr/fr/datasets/serie-hebdomadaire-par-espece-produits-de-la-mer/)
+#'
+
+NULL
+
+#' Valeurs foncières à Padoue
+#'
+#' Valeurs des logements à Padoue
+#'
+#' @name Padoue
+#' @docType data
+#' @format Un tibble contenant :
+#' - zone : une des 12 zones de la ville
+#' - condition : `new` pour les logements neufs, `ordinary` ou `good` pour les logements anciens,
+#' - house : variable indicatrice des maisons,
+#' - rooms : nombre de pièces,
+#' - bathrooms : nombre de salles de bain,
+#' - parking : présence d'un parking,
+#' - energy : catégorie d'énergie du logement (de A pour les plus
+#' vertueux à G pour les plus dispensieux)
+#' - surface : surface du logement en m$^2$
+#' - price : prix du logement
+#'
+#' @source
+#' [site de la revue Data in Brief](https://www.sciencedirect.com/science/article/pii/S2352340915003224)
+#' @references
+#' \insertRef{BONI:COPI:15}{statecoaes}
 #' 
 
 NULL

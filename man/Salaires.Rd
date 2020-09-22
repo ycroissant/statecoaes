@@ -25,5 +25,6 @@ Enquête emploi, site de l'\href{www.insee.fr}{INSEE}
 \description{
 L'enquête DADS indique de nombreuses caractéristiques des salariés,
 en particulier le salaire annuel par tranche et le nombre d'heures
-travaillées
+travaillées (les données sont l'extrait de la base correspondant à
+la région Ile de France
 }
