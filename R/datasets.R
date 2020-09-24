@@ -287,3 +287,100 @@ NULL
 #' 
 
 NULL
+
+#' Transport aérien en Europe
+#'
+#' Ce jeux de données indique pour les différents pays de l'union
+#' européenne le nombre de trajets en avion réalisés par trimestre
+#'
+#' @name Vols
+#' @docType data
+#' @format Un tibble contenant :
+#' - date : la date d'observation (dernier jour du trimestre),
+#' - an : l'année d'observation,
+#' - trimestre : le trimestre d'observation
+#' - pays : code du pays (2 caractères)
+#' - passagers : nombre de passagers transportés
+#'
+#' @source
+#' [site d'Eurostat](https://ec.europa.eu/eurostat/fr/)
+
+
+NULL
+
+#' Consommation en France
+#'
+#' Données annuelles de la consommation des ménages en France,
+#' nomenclature par fonctions (alimentation, habillement, etc.)
+#'
+#' @name Consommation
+#' @docType data
+#' @format Un tibble contenant :
+#' - an : l'année d'observation
+#' 
+#' - c_FT : la consommation pour chaque fonction en prix courants,
+#' 
+#' - p_FT : l'indice de prix à la consommation pour chaque fonction (base 100 en 2014
+#'
+#' Les postes de consommation sont :
+#' - alimentation,
+#' - alcool et tabac,
+#' - habillement,
+#' - logement,
+#' - ammeublement,
+#' - santé,
+#' - transport,
+#' - communications,
+#' - loisirs,
+#' - éducation,
+#' - restauration,
+#' - services divers,
+#' - solde territorial
+#' - total
+#'
+#' @source
+#' Consomation des ménages en 2019, comptes nationaux annuels - base 2014
+#' 
+#' [site de l'INSEE](https://www.insee.fr/fr/statistiques/4494154?sommaire=4494218)
+
+NULL
+
+#' Données de long terme pour la France
+#'
+#' Données macro-économiques annuelles pour la France de 1840 à 2015
+#'
+#' @name FranceLT
+#' @docType data
+#' @format Un tibble contenant :
+#' - an : l'année d'observation,
+#' - loyer : indice des loyers parisiens, base 100 en 2000,
+#' - cpi : indice de prix à la consommation, base 100 en 2000,
+#' - pib : produit intérieur brut en valeur,
+#' - pop : population de la France,
+#' - or : prix de l'or, base 100 en 2000
+#' - tict : taux d'intérêt à court terme,
+#' - tilt : taux d'intérêt à long terme.
+#'
+#' @source
+#' Ministère de la transition écologique et solidaire
+#' [site de data.gouv.fr](https://www.data.gouv.fr/fr/datasets/valeurs-immobilieres-economiques-et-financieres-de-1800-a-2015/)
+
+NULL 
+
+#' Demandeurs d'emploi inscrits à Pôle emploi
+#'
+#' Données mensuelles, par tranche d'âge et par sexe des demandeurs
+#' d'emploi inscrits à Pôle emploi
+#'
+#' @name Chomage
+#' @docType data
+#' @format Un tibble de 2360 observations contenant :
+#' - date : le mois d'observation, de janvier 1996 à juillet 2020
+#' - sexe :  `homme`, `femme` ou `total`
+#' - age : la tranche d'âge, `< 25`, `25-49`, `>= 50` ou `total`
+#' 
+#' @source
+#' [site de Pôle emploi](https://statistiques.pole-emploi.org/stmt/static/methode_2018)
+#'
+
+NULL
