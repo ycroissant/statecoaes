@@ -4,7 +4,6 @@
 #'
 #' @name Conscrits
 #' @docType data
-#' @import tidyverse
 #' @format Un tibble contenant
 #'
 #' - taille: la taille du conscrits en centimètres
