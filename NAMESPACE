@@ -3,7 +3,7 @@
 export(cond_table)
 export(cont_table)
 export(freq_table)
-export(indice)
+export(indices)
 importFrom(Rdpack,reprompt)
 importFrom(dplyr,`%>%`)
 importFrom(dplyr,bind_cols)

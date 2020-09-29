@@ -2,10 +2,9 @@
 % Please edit documentation in R/tables.R
 \name{indices}
 \alias{indices}
-\alias{indice}
 \title{Indices synthétiques}
 \usage{
-indice(data, an, bien, quant, prix, base, chaine = FALSE)
+indices(data, an, bien, quant, prix, base, chaine = FALSE)
 }
 \arguments{
 \item{data}{un tibble}

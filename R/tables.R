@@ -193,7 +193,7 @@ cond_table <- function(data, x, x1, x2 = NULL, fun = mean, na.rm = TRUE){
 #' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows lag rename
 #' @importFrom tidyr pivot_wider pivot_longer separate
 #' @author Yves Croissant
-indice <- function(data, an, bien, quant, prix, base, chaine = FALSE){
+indices <- function(data, an, bien, quant, prix, base, chaine = FALSE){
     data <- data %>% select(an = {{ an }}, bien = {{ bien }}, quant = {{ quant }}, prix = {{ prix }})
     # data for the base year
     data_base <- data %>% filter(an == base) %>% select(- an) %>%
