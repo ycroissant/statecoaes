@@ -383,3 +383,23 @@ NULL
 #'
 
 NULL
+
+
+#' Consommation de tabac
+#'
+#' Données annuelles concernant le prix unitaire et la quantité vendue
+#' de cigarettes et de tabac à rouler
+#'
+#' @name Tabac
+#' @docType data
+#' @format Un tibble de 32 observations contenant :
+#' - an : l'année d'obsrevation, de 2004 à 2019
+#' - bien : une variable catégorielle, `cigarette` ou `tabac` (paquet de tabac à rouler),
+#' - quant : millions de paquets vendus
+#' - prix : prix du paquet en euros
+#' 
+#' @source
+#' [Observatoire français des drogues et des toxicomanies](https://www.ofdt.fr/statistiques-et-infographie/tableau-de-bord-tabac/)
+#'
+
+NULL
