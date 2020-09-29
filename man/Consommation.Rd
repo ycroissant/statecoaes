@@ -8,12 +8,10 @@
 Un tibble contenant :
 \itemize{
 \item an : l'année d'observation
-\item c_FT : la consommation pour chaque fonction en prix courants,
-\item p_FT : l'indice de prix à la consommation pour chaque fonction (base 100 en 2014
-}
-
+\item bien : un poste de consommation
+\item depense : dépense de consommation en euros courants,
+\item prix : indice de prix (base 100 en 2014),
 Les postes de consommation sont :
-\itemize{
 \item alimentation,
 \item alcool et tabac,
 \item habillement,
@@ -27,7 +25,6 @@ Les postes de consommation sont :
 \item restauration,
 \item services divers,
 \item solde territorial
-\item total
 }
 }
 \source{

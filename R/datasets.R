@@ -316,11 +316,9 @@ NULL
 #' @docType data
 #' @format Un tibble contenant :
 #' - an : l'année d'observation
-#' 
-#' - c_FT : la consommation pour chaque fonction en prix courants,
-#' 
-#' - p_FT : l'indice de prix à la consommation pour chaque fonction (base 100 en 2014
-#'
+#' - bien : un poste de consommation
+#' - depense : dépense de consommation en euros courants,
+#' - prix : indice de prix (base 100 en 2014),
 #' Les postes de consommation sont :
 #' - alimentation,
 #' - alcool et tabac,
@@ -335,7 +333,6 @@ NULL
 #' - restauration,
 #' - services divers,
 #' - solde territorial
-#' - total
 #'
 #' @source
 #' Consomation des ménages en 2019, comptes nationaux annuels - base 2014
