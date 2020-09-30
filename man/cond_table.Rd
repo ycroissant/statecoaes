@@ -4,7 +4,7 @@
 \alias{cond_table}
 \title{Statistique conditionnelle}
 \usage{
-cond_table(data, x, x1, x2 = NULL, fun = mean, na.rm = TRUE)
+cond_table(data, x, x1, x2 = NULL, fun = mean, na.rm = TRUE, total = TRUE)
 }
 \arguments{
 \item{data}{un tibble}
@@ -17,9 +17,12 @@ cond_table(data, x, x1, x2 = NULL, fun = mean, na.rm = TRUE)
 
 \item{fun}{la fonction à appliquer (par défaut la moyenne)}
 
-\item{na.rm}{la valeur par défaut est \code{TRUE}, les observations
-pour lesquelles la valeur de \code{x} est manquante sont retirées de
+\item{na.rm}{la valeur par défaut est \code{TRUE}, les observations pour
+lesquelles la valeur de \code{x} est manquante sont retirées de
 l'échantillon}
+
+\item{total}{si \code{TRUE} (valeur par défaut), un total est ajouté au
+tableau}
 }
 \value{
 un tibble

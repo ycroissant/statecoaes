@@ -21,6 +21,8 @@
 #' @param na.rm la valeur par défaut est `TRUE`, les observations
 #'     pour lesquelles la valeur de `x` est manquante sont retirées de
 #'     l'échantillon
+#' @param total si `TRUE` (valeur par défaut), un total est ajouté au
+#'     tableau
 #' @return un tibble
 #' @export
 #' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows `%>%` n
@@ -34,15 +36,17 @@
 #' freq_table(Emploi, activité, abs = TRUE, cumul = FALSE, pond = pondérations)
 #' freq_table(Emploi, activité, cumul = TRUE)
 #' freq_table(Emploi, activité, cumul = TRUE, pond = pondérations)
-freq_table <- function(data, x, abs = FALSE, pct = FALSE, cumul = FALSE, pond = NULL, na.rm = TRUE){
+freq_table <- function(data, x, abs = FALSE, pct = FALSE, cumul = FALSE, pond = NULL, na.rm = TRUE, total = TRUE){
     pond_lgc <- deparse(substitute(pond)) != "NULL"
     if (! pond_lgc) ct <- data %>% group_by({{ x }}) %>% summarise(eff = n())
     else  ct <- data %>% group_by({{ x }}) %>% summarise(eff = sum({{ pond }}))
     if (na.rm) ct <- na.omit(ct)
     ct <- ct %>% mutate_if(is.factor, as.character)
     if (! abs) ct <- ct %>% mutate(eff = eff / sum(eff))
-    mg <- ct %>% summarise(eff = sum(eff)) %>% bind_cols("{{ x }}" := "Total")
-    ct <- bind_rows(ct, mg)
+    if (total){
+        mg <- ct %>% summarise(eff = sum(eff)) %>% bind_cols("{{ x }}" := "Total")
+        ct <- bind_rows(ct, mg)
+    }
     if (! abs & pct) ct <- ct %>%
                            mutate_if(is.numeric, function(x) x * 100)
     if (cumul) ct <- ct %>% mutate(cumeff = cumsum(eff),
@@ -79,6 +83,8 @@ freq_table <- function(data, x, abs = FALSE, pct = FALSE, cumul = FALSE, pond = 
 #' @param na.rm la valeur par défaut est `TRUE`, les observations
 #'     pour lesquelles la valeur de `x` est manquante sont retirées de
 #'     l'échantillon
+#' @param total si `TRUE` (valeur par défaut), un total est ajouté au
+#'     tableau
 #' @return un tibble
 #' @export
 #' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows mutate filter ungroup select
@@ -92,7 +98,7 @@ freq_table <- function(data, x, abs = FALSE, pct = FALSE, cumul = FALSE, pond = 
 #' cont_table(Emploi, diplome, sexe, pond = pondérations, pct = TRUE, marge = 1)
 #' cont_table(Emploi, diplome, sexe, pond = pondérations, pct = TRUE, marge = 2)
 #' 
-cont_table <- function(data, x1, x2, abs = FALSE, pct = FALSE, marge = 0, pond = NULL, na.rm = TRUE){
+cont_table <- function(data, x1, x2, abs = FALSE, pct = FALSE, marge = 0, pond = NULL, na.rm = TRUE, total = TRUE){
     pond_lgc <- deparse(substitute(pond)) != "NULL"
     if (! pond_lgc) ct <- data %>% group_by({{ x1 }}, {{ x2 }}) %>% summarise(eff = n()) %>% ungroup
     else  ct <- data %>% group_by({{ x1 }}, {{ x2 }}) %>% summarise(eff = sum({{ pond }})) %>% ungroup
@@ -101,19 +107,23 @@ cont_table <- function(data, x1, x2, abs = FALSE, pct = FALSE, marge = 0, pond =
     if (marge == 0 & ! abs) ct <- ct %>% mutate(eff = eff / sum(eff))
     if (marge == 1) ct <- ct %>% group_by({{ x1 }}) %>% mutate(eff = eff / sum(eff))
     if (marge == 2) ct <- ct %>% group_by({{ x2 }}) %>% mutate(eff = eff / sum(eff))
-    mg_1 <- ct %>% group_by({{ x1 }}) %>%
-        summarise(eff = sum(eff)) %>%
-        bind_cols("{{ x2 }}" := "Total")
-    mg_2 <- ct %>% group_by({{ x2 }}) %>%
-        summarise(eff = sum(eff)) %>%
-        bind_cols("{{ x1 }}" := "Total")
-    mg_tot <- summarise(mg_1, eff = sum(eff)) %>%
-        bind_cols("{{ x2 }}" := "Total",
-                  "{{ x1 }}" := "Total")
-    ct <- bind_rows(ct, mg_1, mg_2, mg_tot)
+    if (total){
+        mg_1 <- ct %>% group_by({{ x1 }}) %>%
+            summarise(eff = sum(eff)) %>%
+            bind_cols("{{ x2 }}" := "Total")
+        mg_2 <- ct %>% group_by({{ x2 }}) %>%
+            summarise(eff = sum(eff)) %>%
+            bind_cols("{{ x1 }}" := "Total")
+        mg_tot <- summarise(mg_1, eff = sum(eff)) %>%
+            bind_cols("{{ x2 }}" := "Total",
+                      "{{ x1 }}" := "Total")
+        ct <- bind_rows(ct, mg_1, mg_2, mg_tot)
+    }
     ct <- ct %>% pivot_wider(names_from = {{ x2 }}, values_from = eff)
-    if (marge == 2) ct <- select(ct, - Total)
-    if (marge == 1) ct <- filter(ct, {{ x1 }} != "Total" | is.na({{ x1 }}))
+    if (total){
+        if (marge == 2) ct <- select(ct, - Total)
+        if (marge == 1) ct <- filter(ct, {{ x1 }} != "Total" | is.na({{ x1 }}))
+    }
     if (! abs & pct) ct <- ct %>% mutate_if(is.numeric, function(x) x * 100)
     ct
 }
@@ -132,9 +142,11 @@ cont_table <- function(data, x1, x2, abs = FALSE, pct = FALSE, marge = 0, pond =
 #' @param x1 une première variable catégorielle
 #' @param x2 une éventuelle seconde variable catégorielle
 #' @param fun la fonction à appliquer (par défaut la moyenne)
-#' @param na.rm la valeur par défaut est `TRUE`, les observations
-#'     pour lesquelles la valeur de `x` est manquante sont retirées de
+#' @param na.rm la valeur par défaut est `TRUE`, les observations pour
+#'     lesquelles la valeur de `x` est manquante sont retirées de
 #'     l'échantillon
+#' @param total si `TRUE` (valeur par défaut), un total est ajouté au
+#'     tableau
 #' @return un tibble
 #' @export
 #' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows
@@ -145,29 +157,35 @@ cont_table <- function(data, x1, x2, abs = FALSE, pct = FALSE, marge = 0, pond =
 #' cond_table(Salaires, heures, secteur, sexe)
 #' cond_table(Salaires, heures, secteur, fun = var)
 #' 
-cond_table <- function(data, x, x1, x2 = NULL, fun = mean, na.rm = TRUE){
+cond_table <- function(data, x, x1, x2 = NULL, fun = mean, na.rm = TRUE, total = TRUE){
     x2_lgc <- deparse(substitute(x2)) != "NULL"
-    mgtot <- data %>% summarise(stat = fun({{ x }}, na.rm = na.rm)) %>%
-        bind_cols("{{ x1 }}" := "Total")
+    if (total){
+        mgtot <- data %>% summarise(stat = fun({{ x }}, na.rm = na.rm)) %>%
+            bind_cols("{{ x1 }}" := "Total")
+    }
     if (x2_lgc){
-        mgtot <- mgtot %>% bind_cols("{{ x2 }}" := "Total")
+        if (total) mgtot <- mgtot %>% bind_cols("{{ x2 }}" := "Total")
         ct <- data %>% group_by({{ x1 }}, {{ x2 }}) %>%
             summarise(stat = fun({{ x }}, na.rm = na.rm))
-        mg2 <- data %>% group_by({{ x1 }}) %>%
-            summarise(stat = fun({{ x }}, na.rm = na.rm)) %>%
-            bind_cols("{{ x2 }}" := "Total")
-        mg3 <- data %>% group_by({{ x2 }}) %>%
-            summarise(stat = fun({{ x }}, na.rm = na.rm)) %>%
-            bind_cols("{{ x1 }}" := "Total")
-        ct <- bind_rows(ct, mg2, mg3, mgtot)
+        if (total){
+            mg2 <- data %>% group_by({{ x1 }}) %>%
+                summarise(stat = fun({{ x }}, na.rm = na.rm)) %>%
+                bind_cols("{{ x2 }}" := "Total")
+            mg3 <- data %>% group_by({{ x2 }}) %>%
+                summarise(stat = fun({{ x }}, na.rm = na.rm)) %>%
+                bind_cols("{{ x1 }}" := "Total")
+            ct <- bind_rows(ct, mg2, mg3, mgtot)
+        }
         ct <- ct %>% pivot_wider(names_from = {{ x2 }}, values_from = stat)
     }
     else{
         ct <- data %>% group_by({{ x1 }}) %>%
             summarise(stat = fun({{ x }}, na.rm = na.rm))
-        mg <- data %>% summarise(stat = fun({{ x }}, na.rm = na.rm)) %>%
-            bind_cols("{{ x1 }}" := "Total")
-        ct <- bind_rows(ct, mg)
+        if (total){
+            mg <- data %>% summarise(stat = fun({{ x }}, na.rm = na.rm)) %>%
+                bind_cols("{{ x1 }}" := "Total")
+            ct <- bind_rows(ct, mg)
+        }
     }
     ct
 }

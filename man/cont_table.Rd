@@ -12,7 +12,8 @@ cont_table(
   pct = FALSE,
   marge = 0,
   pond = NULL,
-  na.rm = TRUE
+  na.rm = TRUE,
+  total = TRUE
 )
 }
 \arguments{
@@ -40,6 +41,9 @@ utiliser pour passer de l'échantillon à la population}
 \item{na.rm}{la valeur par défaut est \code{TRUE}, les observations
 pour lesquelles la valeur de \code{x} est manquante sont retirées de
 l'échantillon}
+
+\item{total}{si \code{TRUE} (valeur par défaut), un total est ajouté au
+tableau}
 }
 \value{
 un tibble
