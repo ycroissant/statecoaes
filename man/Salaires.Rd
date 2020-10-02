@@ -7,11 +7,10 @@
 \format{
 Un tibble contenant :
 \itemize{
-\item secteur : secteur d'activité, \code{agriculture}, \code{industrie},
+\item secteur : secteur d'activité, \code{industrie},
 \code{construction}, \code{commerce}, \code{services} et \code{administration},
 \item age :  l'âge du salarié en année,
 \item dept : code du département d'emploi,
-\item reg : code de la région d'emploi,
 \item heures : nombre d'heures annuelles travaillées,
 \item sexe : sexe du salarié, \code{homme} ou \code{femme},
 \item salaire : tranches de salaire, en euros par an,
@@ -20,7 +19,7 @@ Un tibble contenant :
 }
 }
 \source{
-Enquête emploi, site de l'\href{www.insee.fr}{INSEE}
+Enquête DADS 2015, site de l'\href{https://www.insee.fr/fr/statistiques/3536754}{INSEE}
 }
 \description{
 L'enquête DADS indique de nombreuses caractéristiques des salariés,

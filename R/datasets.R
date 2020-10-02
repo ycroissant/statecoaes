@@ -146,7 +146,7 @@ NULL
 #' passer de l'enquête à la population
 #' - statut : variable catégorielle intégrant les deux variables `activité` et `temps`, soit `inactif`, `chômeur`, `partiel`, `complet` et `inconnu`
 #'
-#' @source Enquête emploi, site de l'[INSEE](www.insee.fr)
+#' @source Enquête emploi 2018, site de l'[INSEE](https://www.insee.fr/fr/statistiques/4191029)
 #'
 
 NULL
@@ -163,18 +163,17 @@ NULL
 #' @docType data
 #' @format Un tibble contenant :
 #' 
-#' - secteur : secteur d'activité, `agriculture`, `industrie`,
+#' - secteur : secteur d'activité, `industrie`,
 #' `construction`, `commerce`, `services` et `administration`,
 #' - age :  l'âge du salarié en année,
 #' - dept : code du département d'emploi,
-#' - reg : code de la région d'emploi,
 #' - heures : nombre d'heures annuelles travaillées,
 #' - sexe : sexe du salarié, `homme` ou `femme`,
 #' - salaire : tranches de salaire, en euros par an,
 #' - sal_inf : limite inférieure de la tranche de salaire,
 #' - sal_sup : limite supérieure de la tranche de salaire
 #'
-#' @source Enquête emploi, site de l'[INSEE](www.insee.fr)
+#' @source Enquête DADS 2015, site de l'[INSEE](https://www.insee.fr/fr/statistiques/3536754)
 #'
 
 NULL
@@ -418,5 +417,24 @@ NULL
 #' @source
 #' [site de l'INSEE](https://www.insee.fr/fr/statistiques/2540004?sommaire=4767262)
 #'
+NULL
 
+#' Données du recensement pour le département de la Seine et Marne (78)
+#'
+#' Différentes informations concernant les familles en Seine et Marne,
+#' issues du recensement de la population de 2017
+#' 
+#' @name RGP78
+#' @docType data
+#' @format Un tibble de 101,987 observations contenant :
+#' - voitures : le nombre de voitures
+#' - pieces : le nombre de pièces du logement
+#' - enfants : le nombre d'enfants,
+#' - typemen : le type de famille : couple (`couple`) ou famille
+#' mono-parentale (`monop`),
+#' - ER : le sexe du Rième enfant (de 1 à 11).
+#' 
+#' @source
+#' [site de l'INSEE](https://www.insee.fr/fr/statistiques/4507685?sommaire=4508161)
+#'
 NULL

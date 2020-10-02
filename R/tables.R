@@ -41,7 +41,7 @@ freq_table <- function(data, x, abs = FALSE, pct = FALSE, cumul = FALSE, pond = 
     if (! pond_lgc) ct <- data %>% group_by({{ x }}) %>% summarise(eff = n())
     else  ct <- data %>% group_by({{ x }}) %>% summarise(eff = sum({{ pond }}))
     if (na.rm) ct <- na.omit(ct)
-    ct <- ct %>% mutate_if(is.factor, as.character)
+#    ct <- ct %>% mutate_if(is.factor, as.character)
     if (! abs) ct <- ct %>% mutate(eff = eff / sum(eff))
     if (total){
         mg <- ct %>% summarise(eff = sum(eff)) %>% bind_cols("{{ x }}" := "Total")
