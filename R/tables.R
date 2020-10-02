@@ -23,6 +23,9 @@
 #'     l'échantillon
 #' @param total si `TRUE` (valeur par défaut), un total est ajouté au
 #'     tableau
+#' @param max dans le cas où la variable est numérique entière, cet
+#'     argument indique que les valeurs supérieures ou égales à `max`
+#'     seront regroupées
 #' @return un tibble
 #' @export
 #' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows `%>%` n
@@ -36,16 +39,27 @@
 #' freq_table(Emploi, activité, abs = TRUE, cumul = FALSE, pond = pondérations)
 #' freq_table(Emploi, activité, cumul = TRUE)
 #' freq_table(Emploi, activité, cumul = TRUE, pond = pondérations)
-freq_table <- function(data, x, abs = FALSE, pct = FALSE, cumul = FALSE, pond = NULL, na.rm = TRUE, total = TRUE){
+freq_table <- function(data, x, abs = FALSE, pct = FALSE, cumul = FALSE,
+                       pond = NULL, na.rm = TRUE, total = TRUE, max = NA){
     pond_lgc <- deparse(substitute(pond)) != "NULL"
     if (! pond_lgc) ct <- data %>% group_by({{ x }}) %>% summarise(eff = n())
-    else  ct <- data %>% group_by({{ x }}) %>% summarise(eff = sum({{ pond }}))
+    else  ct <- data %>% group_by({{ x }}) %>%
+              summarise(eff = sum({{ pond }}))
+    if (! is.na(max)){
+        if (! is.numeric(ct %>% pull({{ x }})))
+            stop("l'argument max n'a de sens que si la variable est numérique")
+        ct1 <- filter(ct, {{ x }} < max) %>%
+            mutate({{ x }} := as.character({{ x }}))
+        ct2 <- filter(ct, {{ x }} >= max) %>%
+            summarise({{ x }} := paste(">=", max),
+                      eff = sum(eff))
+        ct <- ct1 %>% bind_rows(ct2)
+    }
     if (na.rm) ct <- na.omit(ct)
-#    ct <- ct %>% mutate_if(is.factor, as.character)
     if (! abs) ct <- ct %>% mutate(eff = eff / sum(eff))
     if (total){
         mg <- ct %>% summarise(eff = sum(eff)) %>% bind_cols("{{ x }}" := "Total")
-        ct <- bind_rows(ct, mg)
+        ct <- ct %>% mutate({{ x }} := as.character({{ x }})) %>% bind_rows(mg)
     }
     if (! abs & pct) ct <- ct %>%
                            mutate_if(is.numeric, function(x) x * 100)

@@ -12,7 +12,8 @@ freq_table(
   cumul = FALSE,
   pond = NULL,
   na.rm = TRUE,
-  total = TRUE
+  total = TRUE,
+  max = NA
 )
 }
 \arguments{
@@ -40,6 +41,10 @@ l'échantillon}
 
 \item{total}{si \code{TRUE} (valeur par défaut), un total est ajouté au
 tableau}
+
+\item{max}{dans le cas où la variable est numérique entière, cet
+argument indique que les valeurs supérieures ou égales à \code{max}
+seront regroupées}
 }
 \value{
 un tibble
