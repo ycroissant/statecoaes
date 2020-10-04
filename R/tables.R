@@ -67,6 +67,7 @@ freq_table <- function(data, x, abs = FALSE, pct = FALSE, cumul = FALSE,
                                    cumeff = ifelse({{ x }} == "Total",
                                                    cumeff[length(cumeff) - 1],
                                                    cumeff))
+    ct <- ct %>% mutate("{{ x }}" := factor({{ x }}, levels = {{ x }}))
     ct
 }
 
