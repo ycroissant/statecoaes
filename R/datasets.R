@@ -178,6 +178,37 @@ NULL
 
 NULL
 
+#' Les décès en 2017
+#'
+#' Les fichiers de l'Etat-Civil recense de manière exhaustive les
+#' naissances, les décès et les mariages. 
+#'
+#' @name Deces
+#' @docType data
+#' @format Un tibble contenant :
+#' - anais : année de naissance
+#' - depnais : département de naissance
+#' - depdom : département de domicile
+#' - sexe : `H` pour un homme, `F` pour une femme
+#' - activ : indicateur d'activité, `retr` pour retraités, `inact`
+#' pour autres inactifs et `actif` pour les actifs (y compris les
+#' demandeurs d'emploi)
+#' - nat : indicateur de la nationalité, soit `fr` pour les français
+#' et `etr` pour les étrangers
+#' - mat : indicateur de l'état matrimonial, `celib` pour un
+#' célibataire, `marie` pour une personne mariée, `veuf` pour un veuf
+#' et `divorc` pour une personne divorcée
+#' - mdec : mois de naissance
+#' - lieu : lieu de naissance, `hop` pour établissement hospitalier,
+#' `mretr` pour maison de retraite, `log` pour dominicile et `autre`
+#' pour autre
+#'
+#' @source Etat civil, site de l'[INSEE](www.insee.fr)
+#' 
+
+NULL
+
+
 #' Les naissances en 2017
 #'
 #' Les fichiers de l'Etat-Civil recense de manière exhaustive les
