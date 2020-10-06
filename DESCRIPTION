@@ -4,8 +4,8 @@ Date: 2020-09-12
 Title: Statistiques et Probabilités pour L1-L2 Economie et AES
 Author: Yves Croissant <yves.croissant@univ-reunion.fr>
 Maintainer: Yves Croissant <yves.croissant@univ-reunion.fr>
-Depends: R (>= 3.5.0), dplyr, tidyr, rlang
-Imports: Rdpack
+Depends: R (>= 3.5.0), dplyr, tidyr
+Imports: Rdpack, rlang
 Description: Données pour accompagner le livre d'introduction aux statistiques et probabilités
 Encoding: UTF-8
 License: GPL (>=2)
