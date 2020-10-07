@@ -2,37 +2,32 @@
 % Please edit documentation in R/tables.R
 \name{freq_table}
 \alias{freq_table}
+\alias{format.freq_table}
 \title{Tables de Fréquence}
 \usage{
 freq_table(
   data,
   x,
-  abs = FALSE,
-  pct = FALSE,
-  cumul = FALSE,
-  pond = NULL,
+  cols = "n",
+  weights = NULL,
   na.rm = TRUE,
   total = TRUE,
   max = NA
 )
+
+\method{format}{freq_table}(x, ..., n = NULL, width = NULL, n_extra = NULL)
 }
 \arguments{
 \item{data}{un tibble}
 
 \item{x}{une variable catégorielle}
 
-\item{abs}{une valeur logique : \code{TRUE} pour renvoyer des
-fréquences absolues, \code{FALSE} (la valeur par défaut) pour des
-fréquences absolues,}
+\item{cols}{une chaîne de caractère contenant les lettres \code{n} pour
+nombre, \code{f} pour fréquence et \code{p} pour pourcentage ; les séries
+cumulées sont obtenues en indiquant les mêmes lettres en
+majuscule}
 
-\item{pct}{une valeur logique : \code{TRUE} pour renvoyer des
-pourcentages (20.2 au lieu de 0.202)}
-
-\item{cumul}{une valeur logique (\code{FALSE} est la valeur par
-défaut). Si \code{TRUE}, les fréquences cummulées sont renvoyées en
-plus des fréquences}
-
-\item{pond}{une éventuelle variable contenant les pondérations à
+\item{weights}{une éventuelle variable contenant les pondérations à
 utiliser pour passer de l'échantillon à la population}
 
 \item{na.rm}{la valeur par défaut est \code{TRUE}, les observations
@@ -45,9 +40,17 @@ tableau}
 \item{max}{dans le cas où la variable est numérique entière, cet
 argument indique que les valeurs supérieures ou égales à \code{max}
 seront regroupées}
+
+\item{...}{d'autres arguments (pour \code{format})}
+
+\item{n}{le nombre de ligne à imprimer (pour \code{format})}
+
+\item{width}{la largeur du tableau à imprimer (pour \code{format})}
+
+\item{n_extra}{le nombre de colonnes suplémentaires décrites (pour \code{format})}
 }
 \value{
-un tibble
+un objet de class \code{freq_table} qui hérite de \code{tbl_df}
 }
 \description{
 Une table de fréquence est adaptée pour les variables
@@ -56,11 +59,11 @@ fréquences associées
 }
 \examples{
 
-freq_table(Emploi, activité, abs = TRUE, cumul = FALSE)
-freq_table(Emploi, activité, abs = TRUE, cumul = TRUE)
-freq_table(Emploi, activité, abs = TRUE, cumul = FALSE, pond = pondérations)
-freq_table(Emploi, activité, cumul = TRUE)
-freq_table(Emploi, activité, cumul = TRUE, pond = pondérations)
+freq_table(Emploi, activité, "n")
+freq_table(Emploi, activité, "nN")
+freq_table(Emploi, activité, "fF", weights = pondérations)
+freq_table(RGP78, enfants, "npNP")
+freq_table(RGP78, enfants, "npNP", max = 5)
 }
 \author{
 Yves Croissant

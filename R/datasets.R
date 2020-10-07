@@ -437,7 +437,7 @@ NULL
 #' Données annuelles indiquant, de 1900 à 2019, le nombre d'enfant
 #' ayant reçu un prénom
 #'
-#' @name Prenom
+#' @name Prenoms
 #' @docType data
 #' @format Un tibble de 601461 observations contenant :
 #' - sexe : une variable catégorielle avec pour modalités `homme` et `femme`,
