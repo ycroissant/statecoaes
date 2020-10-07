@@ -329,16 +329,16 @@ central <- function(data, x, breaks){
     mu <- data %>% pull({{ x }}) %>% mean
     Me <- data %>% pull({{ x }}) %>% median
     ra <- data %>% mutate(xcl = cut({{ x }}, breaks)) %>%
-        freq_table(xcl, total = FALSE) %>%
+        freq_table(xcl, "f", total = FALSE) %>%
         bind_cols(a = diff(breaks)) %>%
-        mutate(y = eff / a) %>%
+        mutate(y = f / a) %>%
         separate(xcl, into = c("deb", "fin"), sep = ",", remove = FALSE) %>%
         mutate(deb = substr(deb, 2, nchar(deb)),
                fin = substr(fin, 1, nchar(fin) - 1),
                deb = as.numeric(deb),
                fin = as.numeric(fin),
                x = (deb + fin) / 2) %>%
-        select(- a, - eff)
+        select(- a, - f)
     mode <- ra %>% filter(y == max(y)) %>% mutate(name = "mode") %>% select(name, x, y)
     mu2 <- ra %>% filter(mu > deb, mu <= fin) %>% mutate(x = mu, name = "moyenne") %>% select(name, x, y)
     Me2 <- ra %>% filter(Me > deb, Me <= fin) %>% mutate(x = Me, name = "médiane") %>% select(name, x, y)
