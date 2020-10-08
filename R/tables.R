@@ -344,3 +344,187 @@ central <- function(data, x, breaks){
     Me2 <- ra %>% filter(Me > deb, Me <= fin) %>% mutate(x = Me, name = "médiane") %>% select(name, x, y)
     mu2 %>% add_row(Me2) %>% add_row(mode)
 }
+
+
+
+#' Histogrammes
+#'
+#' Calcule les effectifs par classe pour une variable numérique
+#' 
+#' @name hist_table
+#' @aliases hist_table
+#' @param data un tibble
+#' @param x la variable considérée (nécessairement numérique)
+#' @param cols une chaîne de caractère contenant les lettres `n` pour
+#'     nombre, `f` pour fréquence et `p` pour pourcentage ; les séries
+#'     cumulées sont obtenues en indiquant les mêmes lettres en
+#'     majuscule. Par rapport à `freq_table`, la lettre `d` peut
+#'     également être indiquée pour calculer des densités
+#' @param vals les valeurs de la variable renvoyées ; `x` pour le
+#'     centre de la classe, `l` et `u` pour les limites inférieure et
+#'     supérieure, `a` pour l'amplitude
+#' @param breaks un vecteur de limites de classes
+#' @param first une valeur numérique indiquant le centre de la
+#'     première classe
+#' @param last une valeur numérique indiquant le centre de la dernière
+#'     classe
+#' @param right un booléen indiquant si les classes doivent être
+#'     fermées (`right = TRUE`) ou fermée (`right = FALSE`) à droite
+#' @param total un total doit il être renvoyé ?
+#' @param inflate dans le cas où la valeur centrale de la dernière
+#'     classe n'est pas renseignée, elle est fixée à la borne
+#'     inférieure plus ce coefficient multiplié par la moitié de
+#'     l'amplitude de la classe précédente
+#' @return un tibble contenant les valeurs de `vals` et de `cols`
+#'     spécifiées
+#' @export
+#' @author Yves Croissant
+#' @examples
+#'
+#' price is a numeric variable, a vector of breaks should be provided
+#' Padoue %>% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400), right = TRUE)
+#' Padoue %>% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400), right = TRUE, cols = "fd", vals = "xa")
+#' salaire is a factor that represents the classes
+#' Salaires %>% hist_table(salaire, "d")
+#' a breaks argument is provided to reduce the number of classes
+#' Salaires %>% hist_table(salaire, breaks = c(10, 20, 30, 40, 50))
+#' 
+hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
+                       first = NULL, last = NULL, right = NULL,
+                       total = FALSE, inflate = 1){
+    # function to extract a value of a variable from a class
+    value <- function(x, pos = 0, first = NULL, last = NULL, inflate = 1){
+        if (! pos %in% c(0, 0.5, 1)) stop("pos should be one of 0, 0.5 or 1")
+        x <- x %>% as.character %>% strsplit(",")
+        if (pos <= 0.5){
+            xl <- sapply(x, function(x) x[1])
+            xl <- as.numeric(substr(xl, 2, nchar(xl)))
+        }
+        if (pos >= 0.5){
+            xu <- sapply(x, function(x) x[2])
+            xu <- as.numeric(substr(xu, 1, nchar(xu) - 1))
+        }
+        if (pos == 0.5){
+            x <- (xl + xu) / 2
+            if (! is.null(first)){
+                if (! (first >= xl[1] & first <= xu[1])) stop("irrelevant value for first")
+                x[1] <- first
+            }
+            if (! is.null(last)){
+                if (! (last >= xl[length(x)] & last <= xu[length(x)])) stop("irrelevant value for last")
+                x[length(x)] <- last
+            }
+            else{
+                if (is.infinite(xu[length(x)])){
+                    x[length(x)] <- xl[length(x)] + 0.5 * inflate * (xl[length(x)]- xl[length(x) - 1])
+                }
+            }
+        }
+        else if (pos == 0) x <- xl else x <- xu
+        x
+    }
+    # check wether the computation of densities is required and if so
+    # create a boolean and remove d from cols
+    cols_vec <- strsplit(cols, "")[[1]]
+    remove_counts <- FALSE
+    if ("d" %in% cols_vec){
+        compute_densities <- TRUE
+        cols_vec <- setdiff(cols_vec, "d")
+        if (! "n" %in% cols_vec){
+            cols_vec <- c("n", cols_vec)
+            remove_counts <- TRUE
+        }
+        cols <- paste(cols_vec, collapse = "")
+        if (compute_densities) cols_vec <- c(cols_vec, "d")
+        if (remove_counts) cols_vec <- setdiff(cols_vec, "n")
+    }
+    else compute_densities <- FALSE
+    vals_vec <- strsplit(vals, "")[[1]]
+    vals_na <- setdiff(vals_vec, c("a", "x", "l", "u"))
+    if (length(vals_na) > 0)
+        stop(paste(paste(sort(vals_na), collapse = ", "),
+                   paste(" are provided in the vals argument but are not regular values", sep = ""),
+                   sep = ""))
+    is_numeric_x <- is.numeric(data %>% pull({{ x }}))
+    if (is_numeric_x){
+        # x is numeric, cut it according to the break and the left argument and then count
+        if (is.null(breaks)) stop("the argument breaks should be provided")
+        # right = TRUE is the default value of cut, so keep it at is
+        if (is.null(right)) right <- TRUE
+        # if the max value of break is lower than the maximum value of
+        # x, add Inf to the vectors of breaks
+        if (max(breaks) < max(data %>% pull({{ x }}))) breaks <- c(breaks, Inf)
+        # if the min value of break is greater than the minimum value
+        # of x, add either 0 (if min(x) >= 0) or -Inf to the vector of breaks
+        if (min(breaks) > min(data %>% pull({{ x }})))
+            breaks <- c(ifelse(min(data %>% pull({{ x }})) < 0, - Inf, 0), breaks)
+        res <- data %>% mutate("{{ x }}" := cut({{ x }}, breaks, right = right)) %>%
+            freq_table({{ x }}, cols = cols, total = total)
+    }
+    else{
+        # x is a class, return an error if the right argument is provided
+        if (! is.null(right))
+            stop("the right argument is irrelevant in this context as classes are provided")
+        if (! is.null(breaks)){
+            # x breaks are provided in order to reduce the number of classes
+            # first guess the value of right
+            left_op <- data %>% slice(2) %>% pull({{ x }}) %>% substr(1, 1)
+            if (left_op == "[") right <- FALSE else right <- TRUE
+            # get the initial classes and computs the breaks
+            init_cls <- data %>% pull({{ x }}) %>% unique %>% as.character
+            lbond <- value(init_cls, 0)
+            ubond <- value(init_cls, 1)
+            cls_table <- tibble("{{ x }}" := init_cls, lbond, ubond) %>% arrange(lbond)
+            init_bks <- sort(union(lbond, ubond))
+            cls_table <- cls_table %>% mutate(center = value({{ x }}, 0.5))
+            # min/max values of the new breaks lower/larger than the
+            # min/max values of the initial breaks are not allowed
+            if (min(breaks) < min(init_bks)) stop("the minimal value provided is lower than the initial lower bond")
+            if (max(breaks) > max(init_bks)) stop("the minimal value provided is lower than the initial lower bond")
+            # min/max values of the initial breaks are included in the
+            # new breaks if necessary
+            if (! min(init_bks) %in% breaks) breaks <- c(breaks, min(init_bks))
+            if (! max(init_bks) %in% breaks) breaks <- c(breaks, max(init_bks))
+            # put in form the vector of new breaks and check whether
+            # some values are not part of the initial breaks
+            breaks <- sort(unique(breaks))
+            dbrks <- setdiff(breaks, init_bks)
+            if (length(dbrks) > 0) stop(paste(paste(sort(dbrks), collapse = ", ")),
+                                        paste(" are provided in the breaks argument but are ",
+                                              "not part of the  initial set of breaks", sep = ""),
+                                        sep = "")
+            cls_table <- cls_table %>% mutate(new_cls = cut(center, breaks, right = right)) %>%
+                select({{ x }}, new_cls)
+            data <- data %>% left_join(cls_table) %>% select(- {{ x }}) %>%
+                rename("{{ x }}" := new_cls)
+        }
+        res <- freq_table(data, {{ x }}, cols = cols, total = FALSE)
+    }
+    if ((any(c("x", "a") %in% vals_vec)) | compute_densities)
+        res <- res %>% mutate(x = value({{ x }}, 0.5, first = first,
+                                        last = last, inflate = inflate))
+    if ((any(c("l", "a") %in% vals_vec)) | compute_densities)
+        res <- res %>% mutate(l = value({{ x }}, 0))
+    if ((any(c("u", "a") %in% vals_vec)) | compute_densities)
+        res <- res %>% mutate(u = value({{ x }}, 1))
+    if (("a" %in% vals_vec) | compute_densities){
+        N <- nrow(res)
+        last_inf <- res %>% slice(N) %>% pull(u) %>% is.infinite
+        if (last_inf){
+            u2 <- res %>% slice(N) %>% mutate(u2 = l + 2 * (x - l)) %>% pull(u2)
+            res <- res %>% mutate(u2 = ifelse(is.infinite(u), u2, u))
+        }
+        res <- res %>% mutate(a = u2 - l) %>% select(- u2)
+        if (! "l" %in% vals_vec) res <- res %>% select(- l)
+        if (! "u" %in% vals_vec) res <- res %>% select(- u)
+        if (compute_densities) res <- res %>% mutate(d = n / sum(n) / a)
+        if (remove_counts) res <- res %>% select(- n)
+        if (! "a" %in% vals_vec) res <- res %>% select(- a)
+    }
+    if (! "x" %in% vals_vec) res <- res %>% select(- x)
+    cols_pos <- match(c("n", "f", "p", "N", "F", "P", "d"), names(res)) %>% na.omit %>% sort
+    vals_pos <- match(c("x", "l", "a", "u"), names(res)) %>% na.omit %>% sort
+    res %>% select({{ x }}, all_of(c(vals_pos, cols_pos)))
+}
+
+

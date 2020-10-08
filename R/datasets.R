@@ -169,9 +169,7 @@ NULL
 #' - dept : code du département d'emploi,
 #' - heures : nombre d'heures annuelles travaillées,
 #' - sexe : sexe du salarié, `homme` ou `femme`,
-#' - salaire : tranches de salaire, en euros par an,
-#' - sal_inf : limite inférieure de la tranche de salaire,
-#' - sal_sup : limite supérieure de la tranche de salaire
+#' - salaire : tranches de salaire, en milliers d'euros par an,
 #'
 #' @source Enquête DADS 2015, site de l'[INSEE](https://www.insee.fr/fr/statistiques/3536754)
 #'
@@ -307,7 +305,7 @@ NULL
 #' - energy : catégorie d'énergie du logement (de A pour les plus
 #' vertueux à G pour les plus dispensieux)
 #' - surface : surface du logement en m$^2$
-#' - price : prix du logement
+#' - price : prix du logement en milliers d'euros
 #'
 #' @source
 #' [site de la revue Data in Brief](https://www.sciencedirect.com/science/article/pii/S2352340915003224)
