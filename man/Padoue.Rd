@@ -16,7 +16,7 @@ Un tibble contenant :
 \item energy : catégorie d'énergie du logement (de A pour les plus
 vertueux à G pour les plus dispensieux)
 \item surface : surface du logement en m$^2$
-\item price : prix du logement
+\item price : prix du logement en milliers d'euros
 }
 }
 \source{

@@ -13,9 +13,7 @@ Un tibble contenant :
 \item dept : code du département d'emploi,
 \item heures : nombre d'heures annuelles travaillées,
 \item sexe : sexe du salarié, \code{homme} ou \code{femme},
-\item salaire : tranches de salaire, en euros par an,
-\item sal_inf : limite inférieure de la tranche de salaire,
-\item sal_sup : limite supérieure de la tranche de salaire
+\item salaire : tranches de salaire, en milliers d'euros par an,
 }
 }
 \source{
