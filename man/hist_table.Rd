@@ -66,6 +66,7 @@ salaire is a factor that represents the classes
 Salaires \%>\% hist_table(salaire, "d")
 a breaks argument is provided to reduce the number of classes
 Salaires \%>\% hist_table(salaire, breaks = c(10, 20, 30, 40, 50))
+
 }
 \author{
 Yves Croissant
