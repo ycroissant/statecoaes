@@ -480,10 +480,11 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
         N <- nrow(res)
         last_inf <- res %>% slice(N) %>% pull(u) %>% is.infinite
         if (last_inf){
-            u2 <- res %>% slice(N) %>% mutate(u2 = l + 2 * (x - l)) %>% pull(u2)
+            res <- res %>% slice(N) %>% mutate(u2 = l + 2 * (x - l)) %>% pull(u2)
             res <- res %>% mutate(u2 = ifelse(is.infinite(u), u2, u))
+            res <- res %>% mutate(a = u2 - l) %>% select(- u2)
         }
-        res <- res %>% mutate(a = u2 - l) %>% select(- u2)
+        else res <- res %>% mutate(a = u - l)
         if (! "l" %in% vals_vec) res <- res %>% select(- l)
         if (! "u" %in% vals_vec) res <- res %>% select(- u)
         if (compute_densities) res <- res %>% mutate(d = n / sum(n) / a)
