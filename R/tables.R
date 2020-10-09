@@ -507,10 +507,10 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
 #'     last characters should be any of `[`, `(`, `]`, `)` and the
 #'     other characters should be interpreted as two numerical values
 #'     separated by a `,`
-#' @param `pos`, a numeric between 0 and 1, 0 for the lower bond, 1
+#' @param pos a numeric between 0 and 1, 0 for the lower bond, 1
 #'     for the upper bond, 0.5 for the center of the class (and any
 #'     other value between 0 and 1)
-#' @param the center of the first class, if one wants to specifie
+#' @param first center of the first class, if one wants to specifie
 #'     something different from the average of the lower and the upper
 #'     bonds
 #' @param last the center of the last class, if one wants to specifie

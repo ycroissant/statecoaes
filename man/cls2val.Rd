@@ -12,6 +12,14 @@ last characters should be any of \code{[}, \code{(}, \verb{]}, \verb{)} and the
 other characters should be interpreted as two numerical values
 separated by a \verb{,}}
 
+\item{pos}{a numeric between 0 and 1, 0 for the lower bond, 1
+for the upper bond, 0.5 for the center of the class (and any
+other value between 0 and 1)}
+
+\item{first}{center of the first class, if one wants to specifie
+something different from the average of the lower and the upper
+bonds}
+
 \item{last}{the center of the last class, if one wants to specifie
 something different from the average of the lower and the upper
 bonds}
@@ -21,14 +29,6 @@ bonds}
 to the lower bond of the last class and the range of the
 previous class times this coefficient (which default value is
 one)}
-
-\item{`pos`, }{a numeric between 0 and 1, 0 for the lower bond, 1
-for the upper bond, 0.5 for the center of the class (and any
-other value between 0 and 1)}
-
-\item{the}{center of the first class, if one wants to specifie
-something different from the average of the lower and the upper
-bonds}
 }
 \value{
 a numerical vector
