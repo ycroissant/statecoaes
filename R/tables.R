@@ -475,12 +475,12 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
     if ((any(c("l", "a") %in% vals_vec)) | compute_densities)
         res <- res %>% mutate(l = cls2val({{ x }}, 0))
     if ((any(c("u", "a") %in% vals_vec)) | compute_densities)
-        res <- res %>% mutate(u = cls2val({{ x }}, 1))
+        res <- res %>% mutate(u = cls2val({{ x }}, 1, inflate = inflate, last = last))
     if (("a" %in% vals_vec) | compute_densities){
-        N <- nrow(res)
-        last_inf <- res %>% slice(N) %>% pull(u) %>% is.infinite
+        NR <- nrow(res)
+        last_inf <- res %>% slice(NR) %>% pull(u) %>% is.infinite
         if (last_inf){
-            res <- res %>% slice(N) %>% mutate(u2 = l + 2 * (x - l)) %>% pull(u2)
+            res <- res %>% slice(NR) %>% mutate(u2 = l + 2 * (x - l)) %>% pull(u2)
             res <- res %>% mutate(u2 = ifelse(is.infinite(u), u2, u))
             res <- res %>% mutate(a = u2 - l) %>% select(- u2)
         }
@@ -494,7 +494,8 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
     if (! "x" %in% vals_vec) res <- res %>% select(- x)
     cols_pos <- match(c("n", "f", "p", "N", "F", "P", "d"), names(res)) %>% na.omit %>% sort
     vals_pos <- match(c("x", "l", "a", "u"), names(res)) %>% na.omit %>% sort
-    res %>% select({{ x }}, all_of(c(vals_pos, cols_pos)))
+    res <- res %>% select({{ x }}, all_of(c(vals_pos, cols_pos)))
+    res
 }
 
 #' Convert class to values
@@ -577,3 +578,77 @@ cls2val <- function(x, pos = 0, first = NULL, last = NULL, inflate = NULL){
     x
 }
 
+#' Put a tibble in form to plot
+#'
+#' Convert a tibble built using hist_table in a shape that make it
+#' easy to plot
+#'
+#' #'
+#' @name hist2plot
+#' @aliases hist2plot
+#' @param data a tibble returned by the `hist_table` function, it
+#'     should contains the center of the classes (`x`) and at least
+#'     one measure of the frequencies or densities (one of `f`, `n`,
+#'     `p`, `d`)
+#' @param y mandatory argument if the tibble contains more than one
+#'     frequency or density
+#' @param plot one of `histogram` (the default) and `freqpoly` ; in
+#'     the first case a tibble is returned with columns `x`, `y`,
+#'     `xend`, `yend` and in the seconde case `x` and `y`.
+#' @return a tibble
+#' @export
+#' @author Yves Croissant
+#' @examples
+#' pad <- Padoue %>% hist_table(price, breaks = c(100, 200, 300, 400, 500, 1000), right = TRUE, cols = "Npd")
+#' pad %>% hist2plot(y = "d") %>% ggplot() + geom_segment(aes(x, y, xend = xend, yend = yend))
+#' pad %>% hist2plot(y = "d", plot = "freqpoly") %>% ggplot() + geom_line(aes(x, y))
+hist2plot <- function(data, y = NULL, plot = "histogram"){
+    if (! "x" %in% names(data))
+        stop("the table should contains the center of the classes")
+    if (is.null(y)){
+        ys <- c("d", "f", "p", "n")
+        cols <- match(names(data), ys) %>% na.omit %>% as.numeric
+        if (length(cols) == 0L)
+            stop("nothing to plot, the tibble should contain either d, f or n")
+        if (length(cols) > 1L)
+            stop("the variable to plot should be specified")
+        data <- rename(data, y = ys[cols]) %>%
+            select(1, x, y)
+    }
+    else{
+        data <- data %>% select(1, x, y = matches(paste("^[", y, "]{1}$", sep = ""), ignore.case = FALSE))
+    }        
+    K <- nrow(data)
+    xu <- data %>% pull(1) %>% cls2val(1)
+    xl <- data %>% pull(1) %>% cls2val(0)
+    x <- data %>% pull(x)
+    xu[K] <- xl[K] + 2 * (x[K] - xl[K])
+    xl[1] <- xu[1] - 2 * (xu[1] - x[1])
+    if (plot == "histogram"){
+        data <- data %>%
+            rename(cls = 1) %>%
+            select(cls, y_h = y) %>%
+            mutate(y_v = 0,
+                   yend_h = y_h,
+                   x_h = xl,
+                   x_v = x_h,
+                   xend_v = x_v,
+                   xend_h = xu,
+                   yend_v = ifelse(is.na(lag(y_h)), y_h, pmax(y_h, lag(y_h)))) %>%
+            pivot_longer(- cls) %>%
+            separate(name, into = c("variable", "dim")) %>%
+            pivot_wider(values_from = value, names_from = variable) %>%
+            select(- cls) %>% 
+            add_row(dim = "v", y = 0, x = .$xend[2 * K - 1], xend = .$xend[2 * K - 1], yend = .$yend[2 * K - 1])
+    }
+    if (plot == "freqpoly"){
+        xo <- xl[1] - (x[1] - xl[1])
+        xs <- xu[K] + (xu[K] - x[K])
+        data <- data %>%
+            select(- 1) %>%
+            add_row(x = xo, y = 0, .before = 0) %>%
+            add_row(x = xs, y = 0, .after = Inf)
+    }
+    data
+}
+    
