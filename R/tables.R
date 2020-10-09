@@ -381,48 +381,17 @@ central <- function(data, x, breaks){
 #' @author Yves Croissant
 #' @examples
 #'
-#' price is a numeric variable, a vector of breaks should be provided
+#' # price is a numeric variable, a vector of breaks should be provided
 #' Padoue %>% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400), right = TRUE)
 #' Padoue %>% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400), right = TRUE, cols = "fd", vals = "xa")
-#' salaire is a factor that represents the classes
+#' # salaire is a factor that represents the classes
 #' Salaires %>% hist_table(salaire, "d")
-#' a breaks argument is provided to reduce the number of classes
+#' # a breaks argument is provided to reduce the number of classes
 #' Salaires %>% hist_table(salaire, breaks = c(10, 20, 30, 40, 50))
 #' 
 hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
                        first = NULL, last = NULL, right = NULL,
                        total = FALSE, inflate = 1){
-    # function to extract a value of a variable from a class
-    value <- function(x, pos = 0, first = NULL, last = NULL, inflate = 1){
-        if (! pos %in% c(0, 0.5, 1)) stop("pos should be one of 0, 0.5 or 1")
-        x <- x %>% as.character %>% strsplit(",")
-        if (pos <= 0.5){
-            xl <- sapply(x, function(x) x[1])
-            xl <- as.numeric(substr(xl, 2, nchar(xl)))
-        }
-        if (pos >= 0.5){
-            xu <- sapply(x, function(x) x[2])
-            xu <- as.numeric(substr(xu, 1, nchar(xu) - 1))
-        }
-        if (pos == 0.5){
-            x <- (xl + xu) / 2
-            if (! is.null(first)){
-                if (! (first >= xl[1] & first <= xu[1])) stop("irrelevant value for first")
-                x[1] <- first
-            }
-            if (! is.null(last)){
-                if (! (last >= xl[length(x)] & last <= xu[length(x)])) stop("irrelevant value for last")
-                x[length(x)] <- last
-            }
-            else{
-                if (is.infinite(xu[length(x)])){
-                    x[length(x)] <- xl[length(x)] + 0.5 * inflate * (xl[length(x)]- xl[length(x) - 1])
-                }
-            }
-        }
-        else if (pos == 0) x <- xl else x <- xu
-        x
-    }
     # check wether the computation of densities is required and if so
     # create a boolean and remove d from cols
     cols_vec <- strsplit(cols, "")[[1]]
@@ -472,11 +441,11 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
             if (left_op == "[") right <- FALSE else right <- TRUE
             # get the initial classes and computs the breaks
             init_cls <- data %>% pull({{ x }}) %>% unique %>% as.character
-            lbond <- value(init_cls, 0)
-            ubond <- value(init_cls, 1)
+            lbond <- cls2val(init_cls, 0)
+            ubond <- cls2val(init_cls, 1)
             cls_table <- tibble("{{ x }}" := init_cls, lbond, ubond) %>% arrange(lbond)
             init_bks <- sort(union(lbond, ubond))
-            cls_table <- cls_table %>% mutate(center = value({{ x }}, 0.5))
+            cls_table <- cls_table %>% mutate(center = cls2val({{ x }}, 0.5))
             # min/max values of the new breaks lower/larger than the
             # min/max values of the initial breaks are not allowed
             if (min(breaks) < min(init_bks)) stop("the minimal value provided is lower than the initial lower bond")
@@ -501,12 +470,12 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
         res <- freq_table(data, {{ x }}, cols = cols, total = FALSE)
     }
     if ((any(c("x", "a") %in% vals_vec)) | compute_densities)
-        res <- res %>% mutate(x = value({{ x }}, 0.5, first = first,
+        res <- res %>% mutate(x = cls2val({{ x }}, 0.5, first = first,
                                         last = last, inflate = inflate))
     if ((any(c("l", "a") %in% vals_vec)) | compute_densities)
-        res <- res %>% mutate(l = value({{ x }}, 0))
+        res <- res %>% mutate(l = cls2val({{ x }}, 0))
     if ((any(c("u", "a") %in% vals_vec)) | compute_densities)
-        res <- res %>% mutate(u = value({{ x }}, 1))
+        res <- res %>% mutate(u = cls2val({{ x }}, 1))
     if (("a" %in% vals_vec) | compute_densities){
         N <- nrow(res)
         last_inf <- res %>% slice(N) %>% pull(u) %>% is.infinite
@@ -527,4 +496,83 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
     res %>% select({{ x }}, all_of(c(vals_pos, cols_pos)))
 }
 
+#' Convert class to values
+#'
+#' Convert a string (or factor) which represents a class to a value of
+#' the underlying variable
+#' 
+#' @name cls2val
+#' @aliases cls2val
+#' @param x a series that contains a class of values, the first and
+#'     last characters should be any of `[`, `(`, `]`, `)` and the
+#'     other characters should be interpreted as two numerical values
+#'     separated by a `,`
+#' @param `pos`, a numeric between 0 and 1, 0 for the lower bond, 1
+#'     for the upper bond, 0.5 for the center of the class (and any
+#'     other value between 0 and 1)
+#' @param the center of the first class, if one wants to specifie
+#'     something different from the average of the lower and the upper
+#'     bonds
+#' @param last the center of the last class, if one wants to specifie
+#'     something different from the average of the lower and the upper
+#'     bonds
+#' @param inflate in the case where the upper bond is infinite and
+#'     `last` is not provided, the upper bond of the last class is set
+#'     to the lower bond of the last class and the range of the
+#'     previous class times this coefficient (which default value is
+#'     one)
+#' @return a numerical vector
+#' @export
+#' @author Yves Croissant
+#' @examples
+#'
+#' # salaire is a class of wage in the Salaires data set ; first
+#' # extract unique values
+#' sals <- Salaires %>% pull(salaire) %>% levels
+#' # compute the lower bonds
+#' sals %>% cls2val(0)
+#' # lower bonds with a user specified center value for the first class
+#' sals %>% cls2val(0, first = 0.18) %>% head
+#' # compute the upper bonds
+#' sals %>% cls2val(1)
+#' # note that the Inf upper bond is replaced by 50 + (50 - 40), ie
+#' # the lower bond plus the range of the previous class
+#' sals %>% cls2val(1, last = 100) %>% tail
+#' # last is provided (the center of the last class) and the upper
+#' # bond is adapted accordingly, which means 50 + (100 - 50) * 2 =
+#' # 150
+#' sals %>% cls2val(1, inflate = 3) %>% tail
+#' # inflate is provided, so that the range of the last class is three
+#' # times the range of the previous one
+cls2val <- function(x, pos = 0, first = NULL, last = NULL, inflate = NULL){
+    K <- length(x)
+    if (! is.null(last) & ! is.null(inflate)) stop("only one of last or inflate should be set")
+    if (! is.numeric(pos)) stop("pos should be numeric")
+    if (is.numeric(pos) & ! (pos >= 0 & pos <= 1)) stop("pos should be between 0 and 1")
+    if (! is.integer(pos)){
+        if (near(pos, 1L)) pos <- 1L
+        if (near(pos, 0L)) pos <- 0L
+    }
+    x <- x %>% as.character %>% strsplit(",")
+    xl <- sapply(x, function(x) x[1])
+    xl <- as.numeric(substr(xl, 2, nchar(xl)))
+    xu <- sapply(x, function(x) x[2])
+    xu <- as.numeric(substr(xu, 1, nchar(xu) - 1))
+    if (! is.null(first)){
+        if (! (first >= xl[1] & first <= xu[1])) stop("irrelevant value for first")
+        xl[1] <- first - (xu[1] - first)
+    }
+    if (! is.null(last)){
+        if (! (last >= xl[K] & last <= xu[K])) stop("irrelevant value for last")
+        xu[K] <- xl[K] + 2 * (last - xl[K])
+    }
+    else{
+        if (is.infinite(xu[K])){
+            if (is.null(inflate)) inflate <- 1
+            xu[K] <- xl[K] + inflate * (xl[K]- xl[K - 1])
+        }
+    }
+    x <- (1 - pos) * xl + pos * xu
+    x
+}
 
