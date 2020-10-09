@@ -2,6 +2,7 @@
 
 S3method(format,freq_table)
 export(central)
+export(cls2val)
 export(cond_table)
 export(cont_table)
 export(freq_table)

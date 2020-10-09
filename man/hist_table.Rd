@@ -59,12 +59,12 @@ Calcule les effectifs par classe pour une variable numérique
 }
 \examples{
 
-price is a numeric variable, a vector of breaks should be provided
+# price is a numeric variable, a vector of breaks should be provided
 Padoue \%>\% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400), right = TRUE)
 Padoue \%>\% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400), right = TRUE, cols = "fd", vals = "xa")
-salaire is a factor that represents the classes
+# salaire is a factor that represents the classes
 Salaires \%>\% hist_table(salaire, "d")
-a breaks argument is provided to reduce the number of classes
+# a breaks argument is provided to reduce the number of classes
 Salaires \%>\% hist_table(salaire, breaks = c(10, 20, 30, 40, 50))
 
 }
