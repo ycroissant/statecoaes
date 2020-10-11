@@ -396,18 +396,24 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
     # create a boolean and remove d from cols
     cols_vec <- strsplit(cols, "")[[1]]
     remove_counts <- FALSE
-    if ("d" %in% cols_vec){
-        compute_densities <- TRUE
-        cols_vec <- setdiff(cols_vec, "d")
+    if (any(c("d", "m", "M") %in% cols_vec)){
+        compute_densities <- ifelse("d" %in% cols_vec, TRUE, FALSE)
+        compute_masses <- ifelse("m" %in% cols_vec, TRUE, FALSE)
+        compute_cummasses <- ifelse("M" %in% cols_vec, TRUE, FALSE)
+        cols_vec <- setdiff(cols_vec, c("m","d", "M"))
         if (! "n" %in% cols_vec){
             cols_vec <- c("n", cols_vec)
             remove_counts <- TRUE
         }
         cols <- paste(cols_vec, collapse = "")
-        if (compute_densities) cols_vec <- c(cols_vec, "d")
-        if (remove_counts) cols_vec <- setdiff(cols_vec, "n")
+        ## if (compute_densities) cols_vec <- c(cols_vec, "d")
+        ## if (remove_counts) cols_vec <- setdiff(cols_vec, "n")
     }
-    else compute_densities <- FALSE
+    else{
+        compute_densities <- FALSE
+        compute_masses <- FALSE
+        compute_cummasses <- FALSE
+    }
     vals_vec <- strsplit(vals, "")[[1]]
     vals_na <- setdiff(vals_vec, c("a", "x", "l", "u"))
     if (length(vals_na) > 0)
@@ -488,14 +494,25 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
         if (! "l" %in% vals_vec) res <- res %>% select(- l)
         if (! "u" %in% vals_vec) res <- res %>% select(- u)
         if (compute_densities) res <- res %>% mutate(d = n / sum(n) / a)
-        if (remove_counts) res <- res %>% select(- n)
         if (! "a" %in% vals_vec) res <- res %>% select(- a)
     }
+    if (compute_masses | compute_cummasses){
+        res <- res %>% mutate(m = n * x,
+                              m = m / sum(m))
+        if (compute_cummasses) res <- res %>% mutate(M = cumsum(m))
+        if (! compute_masses) res <- res %>% select(- m)
+    }
+    if (remove_counts) res <- res %>% select(- n)
     if (! "x" %in% vals_vec) res <- res %>% select(- x)
-    cols_pos <- match(c("n", "f", "p", "N", "F", "P", "d"), names(res)) %>% na.omit %>% sort
+    cols_pos <- match(c("n", "f", "p", "N", "F", "P", "d", "m", "M"),
+                      names(res)) %>% na.omit %>% sort
     vals_pos <- match(c("x", "l", "a", "u"), names(res)) %>% na.omit %>% sort
     res <- res %>% select({{ x }}, all_of(c(vals_pos, cols_pos)))
-    res
+    if (compute_cummasses){
+        if ("F" %in% names(res)) res <- res %>% add_row(x = 0, M = 0, F = 0, .before = 0)
+        else res <- res %>% add_row(x = 0, M = 0, .before = 0)
+    }
+    structure(res, class = c("hist_table", class(res)))
 }
 
 #' Convert class to values
@@ -599,6 +616,7 @@ cls2val <- function(x, pos = 0, first = NULL, last = NULL, inflate = NULL){
 #' @export
 #' @author Yves Croissant
 #' @examples
+#' library("ggplot2")
 #' pad <- Padoue %>% hist_table(price, breaks = c(100, 200, 300, 400, 500, 1000), right = TRUE, cols = "Npd")
 #' pad %>% hist2plot(y = "d") %>% ggplot() + geom_segment(aes(x, y, xend = xend, yend = yend))
 #' pad %>% hist2plot(y = "d", plot = "freqpoly") %>% ggplot() + geom_line(aes(x, y))
@@ -627,19 +645,20 @@ hist2plot <- function(data, y = NULL, plot = "histogram"){
     if (plot == "histogram"){
         data <- data %>%
             rename(cls = 1) %>%
-            select(cls, y_h = y) %>%
-            mutate(y_v = 0,
-                   yend_h = y_h,
-                   x_h = xl,
-                   x_v = x_h,
-                   xend_v = x_v,
-                   xend_h = xu,
-                   yend_v = ifelse(is.na(lag(y_h)), y_h, pmax(y_h, lag(y_h)))) %>%
-            pivot_longer(- cls) %>%
-            separate(name, into = c("variable", "dim")) %>%
-            pivot_wider(values_from = value, names_from = variable) %>%
-            select(- cls) %>% 
-            add_row(dim = "v", y = 0, x = .$xend[2 * K - 1], xend = .$xend[2 * K - 1], yend = .$yend[2 * K - 1])
+            select(cls, y_ne = y) %>%
+            mutate(x_sw = xl,
+                   y_sw = 0,
+                   x_nw = xl,
+                   y_nw = y_ne,
+                   x_ne = xu,
+                   y_ne = y_ne,
+                   x_se = xu,
+                   y_se = 0) %>%
+            pivot_longer( - cls) %>%
+            separate(name, into = c("axe", "pos")) %>%
+            pivot_wider(names_from = axe, values_from = value) %>%
+            mutate(pos = factor(pos, levels = c("sw", "nw", "ne", "se"))) %>%
+            arrange(desc(cls), pos)
     }
     if (plot == "freqpoly"){
         xo <- xl[1] - (x[1] - xl[1])
@@ -652,3 +671,5 @@ hist2plot <- function(data, y = NULL, plot = "histogram"){
     data
 }
     
+
+

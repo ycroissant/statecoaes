@@ -30,6 +30,7 @@ easy to plot
 #'
 }
 \examples{
+library("ggplot2")
 pad <- Padoue \%>\% hist_table(price, breaks = c(100, 200, 300, 400, 500, 1000), right = TRUE, cols = "Npd")
 pad \%>\% hist2plot(y = "d") \%>\% ggplot() + geom_segment(aes(x, y, xend = xend, yend = yend))
 pad \%>\% hist2plot(y = "d", plot = "freqpoly") \%>\% ggplot() + geom_line(aes(x, y))
