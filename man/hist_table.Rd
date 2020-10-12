@@ -14,7 +14,7 @@ hist_table(
   last = NULL,
   right = NULL,
   total = FALSE,
-  inflate = 1
+  inflate = NULL
 )
 }
 \arguments{

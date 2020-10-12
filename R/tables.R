@@ -28,7 +28,7 @@
 #' @param ... d'autres arguments (pour `format`)
 #' @return un objet de class `freq_table` qui hérite de `tbl_df`
 #' @export
-#' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows `%>%` n
+#' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows `%>%` n matches pull summarise_all
 #' @importFrom stats na.omit
 #' @importFrom rlang `:=`
 #' @author Yves Croissant
@@ -247,7 +247,7 @@ cond_table <- function(data, x, x1, x2 = NULL, fun = mean, na.rm = TRUE, total =
 #' @param chaine si vrai, la formule de l'indice chaînée est utilisée
 #' @return un tibble
 #' @export
-#' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows lag rename
+#' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows lag rename left_join
 #' @importFrom tidyr pivot_wider pivot_longer separate
 #' @author Yves Croissant
 indices <- function(data, an, bien, quant, prix, base, chaine = FALSE){
@@ -323,6 +323,7 @@ indices <- function(data, an, bien, quant, prix, base, chaine = FALSE){
 #' @param breaks un vecteur de limites de classes
 #' @return un tibble contenant trois variables, `name`, `x` et `y`
 #' @importFrom stats median
+#' @importFrom dplyr add_row
 #' @export
 #' @author Yves Croissant
 central <- function(data, x, breaks){
@@ -378,6 +379,7 @@ central <- function(data, x, breaks){
 #' @return un tibble contenant les valeurs de `vals` et de `cols`
 #'     spécifiées
 #' @export
+#' @importFrom dplyr all_of slice arrange tibble
 #' @author Yves Croissant
 #' @examples
 #'
@@ -391,7 +393,8 @@ central <- function(data, x, breaks){
 #' 
 hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
                        first = NULL, last = NULL, right = NULL,
-                       total = FALSE, inflate = 1){
+                       total = FALSE, inflate = NULL){
+    if (is.null(last)) inflate <- 1
     # check wether the computation of densities is required and if so
     # create a boolean and remove d from cols
     cols_vec <- strsplit(cols, "")[[1]]
@@ -448,7 +451,7 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
             # get the initial classes and computs the breaks
             init_cls <- data %>% pull({{ x }}) %>% unique %>% as.character
             lbond <- cls2val(init_cls, 0)
-            ubond <- cls2val(init_cls, 1)
+            ubond <- cls2val(init_cls, 1, inflate = inflate, last = last)
             cls_table <- tibble("{{ x }}" := init_cls, lbond, ubond) %>% arrange(lbond)
             init_bks <- sort(union(lbond, ubond))
             cls_table <- cls_table %>% mutate(center = cls2val({{ x }}, 0.5))
@@ -475,9 +478,10 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
         }
         res <- freq_table(data, {{ x }}, cols = cols, total = FALSE)
     }
-    if ((any(c("x", "a") %in% vals_vec)) | compute_densities)
+    if ((any(c("x", "a") %in% vals_vec)) | compute_densities){
         res <- res %>% mutate(x = cls2val({{ x }}, 0.5, first = first,
-                                        last = last, inflate = inflate))
+                                          last = last, inflate = inflate))
+    }
     if ((any(c("l", "a") %in% vals_vec)) | compute_densities)
         res <- res %>% mutate(l = cls2val({{ x }}, 0))
     if ((any(c("u", "a") %in% vals_vec)) | compute_densities)
@@ -568,10 +572,6 @@ cls2val <- function(x, pos = 0, first = NULL, last = NULL, inflate = NULL){
     if (! is.null(last) & ! is.null(inflate)) stop("only one of last or inflate should be set")
     if (! is.numeric(pos)) stop("pos should be numeric")
     if (is.numeric(pos) & ! (pos >= 0 & pos <= 1)) stop("pos should be between 0 and 1")
-    if (! is.integer(pos)){
-        if (near(pos, 1L)) pos <- 1L
-        if (near(pos, 0L)) pos <- 0L
-    }
     x <- x %>% as.character %>% strsplit(",")
     xl <- sapply(x, function(x) x[1])
     xl <- as.numeric(substr(xl, 2, nchar(xl)))
@@ -613,12 +613,13 @@ cls2val <- function(x, pos = 0, first = NULL, last = NULL, inflate = NULL){
 #'     the first case a tibble is returned with columns `x`, `y`,
 #'     `xend`, `yend` and in the seconde case `x` and `y`.
 #' @return a tibble
+#' @importFrom dplyr desc
 #' @export
 #' @author Yves Croissant
 #' @examples
 #' library("ggplot2")
 #' pad <- Padoue %>% hist_table(price, breaks = c(100, 200, 300, 400, 500, 1000), right = TRUE, cols = "Npd")
-#' pad %>% hist2plot(y = "d") %>% ggplot() + geom_segment(aes(x, y, xend = xend, yend = yend))
+#' pad %>% hist2plot(y = "d") %>% ggplot() + geom_polygon(aes(x, y))
 #' pad %>% hist2plot(y = "d", plot = "freqpoly") %>% ggplot() + geom_line(aes(x, y))
 hist2plot <- function(data, y = NULL, plot = "histogram"){
     if (! "x" %in% names(data))
@@ -668,8 +669,128 @@ hist2plot <- function(data, y = NULL, plot = "histogram"){
             add_row(x = xo, y = 0, .before = 0) %>%
             add_row(x = xs, y = 0, .after = Inf)
     }
-    data
+    structure(data, class = c("hist_table", class(data)))
 }
     
+#' Methods for hist_table objects
+#'
+#' Functions and methods to compute the median, the mean, the mode,
+#' the medial and quantiles for hist_table objects
+#' 
+#' @name hist_table.methods
+#' @aliases hist_table.methods
+#' @param x a hist_table object,
+#' @param y the variable for which the quantiles have to be computed
+#' @param ... further arguments
+#' @param na.rm a boolean, if `TRUE` missing values are removed
+#' @param dens if `TRUE` a tibble containing the class and the
+#'     densities is returned
+#' @param prob the probabilities for which the quantiles have to be
+#'     computed
+#' @return a tibble if `dens` is `TRUE`, a numeric otherwise
+#' @export
+#' @importFrom stats quantile median
+#' @importFrom purrr map_dbl map_dfr
+#' @author Yves Croissant
+#' @examples
+#'
+#' z <- Salaires %>% hist_table(salaire, "dFM")
+#' z %>% median
+#' z %>% medial
+#' z %>% modval
+#' z %>% modval(dens = TRUE)
+#' z %>% quantile(y = "F", prob = c(0.25, 0.5, 0.75))
+#' z %>% quantile(y = "F", prob = c(0.25, 0.5, 0.75), dens = TRUE)
+#' z %>% quantile(y = "M", prob = c(0.25, 0.5, 0.75), dens = TRUE)
+mean.hist_table <- function(x, ..., na.rm = TRUE, dens = FALSE){
+    x <- x %>% rename(cls = 1)
+    if (! any(c("n", "f", "p") %in% names(x))){
+        stop("any of n, f, or p should be present")
+    }
+    else{
+        if (! "f" %in% names(x)){
+            if ("n" %in% names(x)) x <- x %>% mutate(f = n / sum(n))
+            if ("p" %in% names(x)) x <- x %>% mutate(f = p / 100)
+        }
+    }
+    if (! "x" %in% names(x)) stop("x should be present")
+    xb <- x %>% summarise(xb = sum(x * f)) %>% pull(xb)
+    if (dens){
+        if (! "d" %in% names(x)) stop("d should be present")
+        d <- x %>% mutate(xu = cls2val(cls, 1)) %>% filter(xb < xu) %>% slice(1) %>% pull(d)
+        tibble(x = xb, d = d)
+    }
+    else xb
+}
+        
 
+#' @name hist_table.methods
+#' @export
+modval <- function(x, ...)
+    UseMethod("modval")
+
+
+#' @name hist_table.methods
+#' @export
+modval.hist_table <- function(x, ..., dens = FALSE){
+    x <- x %>% rename(cls = 1)
+    if (! "d" %in% names(x)) stop("the table should contain d")
+    pos <- summarise(z, pos = which.max(d)) %>% pull(pos)
+    if (! dens) x %>% slice(pos) %>% pull(cls) %>% as.character
+    else slice(x, pos) %>% select(cls, d)
+}
+
+#' @name hist_table.methods
+#' @export
+quantile.hist_table <- function(x, ..., y = NULL, prob = 0.5, dens = FALSE){
+    if (dens & (! "d" %in% names(x))) stop("the table should include d")
+    data <- x
+    last <- data %>% pull(x) %>% rev %>% .[1]
+    if (is.null(y)){
+        ys <- c("P", "F", "M", "N")
+        cols <- match(names(data), ys) %>% na.omit %>% as.numeric
+        if (length(cols) == 0L)
+            stop("nothing to compute, the tibble should contain either P, F, N or M")
+        if (length(cols) > 1L)
+            stop("the variable to compute should be specified")
+        data <- rename(data, y = ys[cols])
+        if (dens) data <- data %>% select(1, x, y, d)
+        else data <- data %>% select(1, x, y)
+    }
+    else{
+        if (dens) data <- data %>% select(1, x, y = matches(paste("^[", y, "]{1}$", sep = ""), ignore.case = FALSE), d)
+        else data <- data %>% select(1, x, y = matches(paste("^[", y, "]{1}$", sep = ""), ignore.case = FALSE))
+    }
+    get_quant <- function(aprob){
+        pos <- data %>% mutate(zz = y > aprob) %>% pull(zz) %>% which
+        id <- pos[1]
+        Fm1 <- data %>% pull(y) %>% .[id - 1]
+        F <- data %>% pull(y) %>% .[id]
+        x_cls <- data %>% pull(1)
+        a_x_cls <- x_cls[id]
+        if (dens) a_d <- data %>% pull(d) %>% .[id]
+        a_quant <- cls2val(x_cls, (aprob - Fm1) / (F - Fm1), last = last) %>% .[id]
+        if (dens) list(cls = a_x_cls, p = aprob, d = a_d, q = a_quant) else a_quant
+    }
+    if (dens) map_dfr(prob, get_quant) else map_dbl(prob, get_quant)
+}
+
+#' @name hist_table.methods
+#' @export
+median.hist_table <- function(x, ...){
+    if (! "F" %in% names(x)) stop("the table should contain F")
+    quantile(x, y = "F", 0.5)
+}
+
+#' @name hist_table.methods
+#' @export
+medial <- function(x, ...)
+    UseMethod("medial")
+
+#' @name hist_table.methods
+#' @export
+medial.hist_table <- function(x, ...){
+    if (! "M" %in% names(x)) stop("the table should contain M")
+    quantile(x, y = "M", 0.5)
+}
 
