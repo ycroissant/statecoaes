@@ -14,6 +14,7 @@ Un tibble contenant :
 \item heures : nombre d'heures annuelles travaillées,
 \item sexe : sexe du salarié, \code{homme} ou \code{femme},
 \item salaire : tranches de salaire, en milliers d'euros par an,
+\item taille : tranche d'effectif de l'entreprise
 }
 }
 \source{
