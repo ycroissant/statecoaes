@@ -11,7 +11,7 @@ hist_table(
   vals = "x",
   breaks = NULL,
   first = NULL,
-  last = NULL,
+  xlast = NULL,
   right = NULL,
   total = FALSE,
   inflate = NULL
@@ -37,7 +37,7 @@ supérieure, \code{a} pour l'amplitude}
 \item{first}{une valeur numérique indiquant le centre de la
 première classe}
 
-\item{last}{une valeur numérique indiquant le centre de la dernière
+\item{xlast}{une valeur numérique indiquant le centre de la dernière
 classe}
 
 \item{right}{un booléen indiquant si les classes doivent être

@@ -346,7 +346,51 @@ central <- function(data, x, breaks){
     mu2 %>% add_row(Me2) %>% add_row(mode)
 }
 
+compute_bonds <- function(x, xlast = NULL, first = NULL, inflate = NULL){
+    xu <- cls2val(x, 1L, xlast = xlast, first = first, inflate = inflate)
+    xl <- cls2val(x, 0L, xlast = xlast, first = first, inflate = inflate)
+    tibble(x, xl, xu)
+}
 
+compute_widths <- function(x, xlast = NULL, first = NULL, inflate = NULL){
+    xu <- cls2val(x, 1L, xlast = xlast, first = first, inflate = inflate)
+    xl <- cls2val(x, 0L, xlast = xlast, first = first, inflate = inflate)
+    xu - xl
+}
+
+compute_freq <- function(x){
+    if (! inherits(x, "hist_table")) stop("x should be an hist_table object")
+    if (! "f" %in% names(x)){
+        if (any(c("f", "p", "n") %in% names(x))){
+            col <- na.omit(match(c("f", "p", "n"), names(x)))[1]
+            f <- x[[col]]
+            f <- f / sum(f)
+        }
+        else{
+            if (any(c("F", "P", "N") %in% names(x))){
+                col <- na.omit(match(c("F", "P", "N"), names(x)))[1]
+                f <- x[[col]]
+                f <- c(f[1], f[-1] - f[- length(f)])
+                f <- f / sum(f)
+            }
+            else stop("the table should contain any of f, p, n, F, P, N")
+        }
+        f
+    }
+    else pull(x, f)
+}
+    
+
+compute_dens <- function(x, xlast = NULL, first = NULL, inflate = NULL){
+    if (! inherits(x, "hist_table")) stop("x should be an hist_table object")
+    if (! "d" %in% names(x)){
+        f <- compute_freq(x)
+        a <- compute_widths(x[[1]], xlast = xlast, first = first, inflate = NULL)
+        d <- f /a
+        d
+    }
+    else pull(x, d)
+}
 
 #' Histogrammes
 #'
@@ -367,7 +411,7 @@ central <- function(data, x, breaks){
 #' @param breaks un vecteur de limites de classes
 #' @param first une valeur numérique indiquant le centre de la
 #'     première classe
-#' @param last une valeur numérique indiquant le centre de la dernière
+#' @param xlast une valeur numérique indiquant le centre de la dernière
 #'     classe
 #' @param right un booléen indiquant si les classes doivent être
 #'     fermées (`right = TRUE`) ou fermée (`right = FALSE`) à droite
@@ -392,9 +436,9 @@ central <- function(data, x, breaks){
 #' Salaires %>% hist_table(salaire, breaks = c(10, 20, 30, 40, 50))
 #' 
 hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
-                       first = NULL, last = NULL, right = NULL,
+                       first = NULL, xlast = NULL, right = NULL,
                        total = FALSE, inflate = NULL){
-    if (is.null(last)) inflate <- 1
+    if (is.null(xlast)) inflate <- 1
     # check wether the computation of densities is required and if so
     # create a boolean and remove d from cols
     cols_vec <- strsplit(cols, "")[[1]]
@@ -450,8 +494,8 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
             if (left_op == "[") right <- FALSE else right <- TRUE
             # get the initial classes and computs the breaks
             init_cls <- data %>% pull({{ x }}) %>% unique %>% as.character
-            lbond <- cls2val(init_cls, 0)
-            ubond <- cls2val(init_cls, 1, inflate = inflate, last = last)
+            lbond <- cls2val(init_cls, 0L)
+            ubond <- cls2val(init_cls, 1L, inflate = inflate, xlast = xlast)
             cls_table <- tibble("{{ x }}" := init_cls, lbond, ubond) %>% arrange(lbond)
             init_bks <- sort(union(lbond, ubond))
             cls_table <- cls_table %>% mutate(center = cls2val({{ x }}, 0.5))
@@ -480,16 +524,16 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
     }
     if ((any(c("x", "a") %in% vals_vec)) | compute_densities){
         res <- res %>% mutate(x = cls2val({{ x }}, 0.5, first = first,
-                                          last = last, inflate = inflate))
+                                          xlast = xlast, inflate = inflate))
     }
     if ((any(c("l", "a") %in% vals_vec)) | compute_densities)
         res <- res %>% mutate(l = cls2val({{ x }}, 0))
     if ((any(c("u", "a") %in% vals_vec)) | compute_densities)
-        res <- res %>% mutate(u = cls2val({{ x }}, 1, inflate = inflate, last = last))
+        res <- res %>% mutate(u = cls2val({{ x }}, 1, inflate = inflate, xlast = xlast))
     if (("a" %in% vals_vec) | compute_densities){
         NR <- nrow(res)
-        last_inf <- res %>% slice(NR) %>% pull(u) %>% is.infinite
-        if (last_inf){
+        xlast_inf <- res %>% slice(NR) %>% pull(u) %>% is.infinite
+        if (xlast_inf){
             res <- res %>% slice(NR) %>% mutate(u2 = l + 2 * (x - l)) %>% pull(u2)
             res <- res %>% mutate(u2 = ifelse(is.infinite(u), u2, u))
             res <- res %>% mutate(a = u2 - l) %>% select(- u2)
@@ -507,15 +551,14 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
         if (! compute_masses) res <- res %>% select(- m)
     }
     if (remove_counts) res <- res %>% select(- n)
-    if (! "x" %in% vals_vec) res <- res %>% select(- x)
     cols_pos <- match(c("n", "f", "p", "N", "F", "P", "d", "m", "M"),
                       names(res)) %>% na.omit %>% sort
     vals_pos <- match(c("x", "l", "a", "u"), names(res)) %>% na.omit %>% sort
     res <- res %>% select({{ x }}, all_of(c(vals_pos, cols_pos)))
-    if (compute_cummasses){
-        if ("F" %in% names(res)) res <- res %>% add_row(x = 0, M = 0, F = 0, .before = 0)
-        else res <- res %>% add_row(x = 0, M = 0, .before = 0)
-    }
+    ## if (compute_cummasses){
+    ##     if ("F" %in% names(res)) res <- res %>% add_row(x = 0, M = 0, F = 0, .before = 0)
+    ##     else res <- res %>% add_row(x = 0, M = 0, .before = 0)
+    ## }
     structure(res, class = c("hist_table", class(res)))
 }
 
@@ -536,11 +579,11 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
 #' @param first center of the first class, if one wants to specifie
 #'     something different from the average of the lower and the upper
 #'     bonds
-#' @param last the center of the last class, if one wants to specifie
+#' @param xlast the center of the last class, if one wants to specifie
 #'     something different from the average of the lower and the upper
 #'     bonds
 #' @param inflate in the case where the upper bond is infinite and
-#'     `last` is not provided, the upper bond of the last class is set
+#'     `xlast` is not provided, the upper bond of the last class is set
 #'     to the lower bond of the last class and the range of the
 #'     previous class times this coefficient (which default value is
 #'     one)
@@ -560,16 +603,16 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
 #' sals %>% cls2val(1)
 #' # note that the Inf upper bond is replaced by 50 + (50 - 40), ie
 #' # the lower bond plus the range of the previous class
-#' sals %>% cls2val(1, last = 100) %>% tail
-#' # last is provided (the center of the last class) and the upper
+#' sals %>% cls2val(1, xlast = 100) %>% tail
+#' # xlast is provided (the center of the last class) and the upper
 #' # bond is adapted accordingly, which means 50 + (100 - 50) * 2 =
 #' # 150
 #' sals %>% cls2val(1, inflate = 3) %>% tail
 #' # inflate is provided, so that the range of the last class is three
 #' # times the range of the previous one
-cls2val <- function(x, pos = 0, first = NULL, last = NULL, inflate = NULL){
+cls2val <- function(x, pos = 0, first = NULL, xlast = NULL, inflate = NULL){
     K <- length(x)
-    if (! is.null(last) & ! is.null(inflate)) stop("only one of last or inflate should be set")
+    if (! is.null(xlast) & ! is.null(inflate)) stop("only one of last or inflate should be set")
     if (! is.numeric(pos)) stop("pos should be numeric")
     if (is.numeric(pos) & ! (pos >= 0 & pos <= 1)) stop("pos should be between 0 and 1")
     x <- x %>% as.character %>% strsplit(",")
@@ -581,9 +624,9 @@ cls2val <- function(x, pos = 0, first = NULL, last = NULL, inflate = NULL){
         if (! (first >= xl[1] & first <= xu[1])) stop("irrelevant value for first")
         xl[1] <- first - (xu[1] - first)
     }
-    if (! is.null(last)){
-        if (! (last >= xl[K] & last <= xu[K])) stop("irrelevant value for last")
-        xu[K] <- xl[K] + 2 * (last - xl[K])
+    if (! is.null(xlast)){
+        if (! (xlast >= xl[K] & xlast <= xu[K])) stop("irrelevant value for last")
+        xu[K] <- xl[K] + 2 * (xlast - xl[K])
     }
     else{
         if (is.infinite(xu[K])){
@@ -594,6 +637,27 @@ cls2val <- function(x, pos = 0, first = NULL, last = NULL, inflate = NULL){
     x <- (1 - pos) * xl + pos * xu
     x
 }
+
+acls2val <- function(x, pos = 0, first = NULL, xlast = NULL){
+    if (! is.numeric(pos)) stop("pos should be numeric")
+    if (is.numeric(pos) & ! (pos >= 0 & pos <= 1)) stop("pos should be between 0 and 1")
+    x <- x %>% as.character %>% strsplit(",")
+    xl <- sapply(x, function(x) x[1])
+    xl <- as.numeric(substr(xl, 2, nchar(xl)))
+    xu <- sapply(x, function(x) x[2])
+    xu <- as.numeric(substr(xu, 1, nchar(xu) - 1))
+    if (! is.null(first))
+        if ((first >= xl & first <= xu))  xl <- first - (xu - first)
+    if (! is.null(xlast)){
+        if ((xlast >= xl & xlast <= xu))  xu <- xl + 2 * (xlast - xl)
+    }
+    else{
+        if (is.infinite(xu))
+            stop("last should be set as the upper bond is infinite")
+    }
+    (1 - pos) * xl + pos * xu
+}
+
 
 #' Put a tibble in form to plot
 #'
@@ -702,21 +766,13 @@ hist2plot <- function(data, y = NULL, plot = "histogram"){
 #' z %>% quantile(y = "F", prob = c(0.25, 0.5, 0.75))
 #' z %>% quantile(y = "F", prob = c(0.25, 0.5, 0.75), dens = TRUE)
 #' z %>% quantile(y = "M", prob = c(0.25, 0.5, 0.75), dens = TRUE)
-mean.hist_table <- function(x, ..., na.rm = TRUE, dens = FALSE){
+mean.hist_table <- function(x, ..., na.rm = TRUE, tbl = FALSE){
     x <- x %>% rename(cls = 1)
-    if (! any(c("n", "f", "p") %in% names(x))){
-        stop("any of n, f, or p should be present")
-    }
-    else{
-        if (! "f" %in% names(x)){
-            if ("n" %in% names(x)) x <- x %>% mutate(f = n / sum(n))
-            if ("p" %in% names(x)) x <- x %>% mutate(f = p / 100)
-        }
-    }
-    if (! "x" %in% names(x)) stop("x should be present")
-    xb <- x %>% summarise(xb = sum(x * f)) %>% pull(xb)
-    if (dens){
-        if (! "d" %in% names(x)) stop("d should be present")
+    print(compute_freq(x))
+    if (! "f" %in% names(x)) x <- x %>% mutate(f = compute_freq(.))
+    xb <- x %>% summarise(xb = sum(x * f, na.rm = na.rm)) %>% pull(xb)
+    if (tbl){
+        if (! "d" %in% names(x)) x <- x %>% mutate(d = compute_dens(.))
         d <- x %>% mutate(xu = cls2val(cls, 1)) %>% filter(xb < xu) %>% slice(1) %>% pull(d)
         tibble(x = xb, d = d)
     }
@@ -732,54 +788,63 @@ modval <- function(x, ...)
 
 #' @name hist_table.methods
 #' @export
-modval.hist_table <- function(x, ..., dens = FALSE){
+modval.hist_table <- function(x, ..., tbl = FALSE){
     x <- x %>% rename(cls = 1)
-    if (! "d" %in% names(x)) stop("the table should contain d")
-    pos <- summarise(z, pos = which.max(d)) %>% pull(pos)
-    if (! dens) x %>% slice(pos) %>% pull(cls) %>% as.character
+    if (! "d" %in% names(x)) x <- x %>% mutate(d = compute_dens(.))
+    pos <- x %>% summarise(pos = which.max(d)) %>% pull(pos)
+    if (! tbl) x %>% slice(pos) %>% pull(cls) %>% as.character
     else slice(x, pos) %>% select(cls, d)
 }
 
-#' @name hist_table.methods
-#' @export
-quantile.hist_table <- function(x, ..., y = NULL, prob = 0.5, dens = FALSE){
-    if (dens & (! "d" %in% names(x))) stop("the table should include d")
-    data <- x
-    last <- data %>% pull(x) %>% rev %>% .[1]
-    if (is.null(y)){
-        ys <- c("P", "F", "M", "N")
-        cols <- match(names(data), ys) %>% na.omit %>% as.numeric
-        if (length(cols) == 0L)
-            stop("nothing to compute, the tibble should contain either P, F, N or M")
-        if (length(cols) > 1L)
-            stop("the variable to compute should be specified")
-        data <- rename(data, y = ys[cols])
-        if (dens) data <- data %>% select(1, x, y, d)
-        else data <- data %>% select(1, x, y)
+tile <- function(x, y = NULL, probs = NULL, tbl = FALSE){
+    xlast <- x %>% pull(x) %>% rev %>% .[1]
+    if (! inherits(x, "hist_table")) stop("x should be a hist_table object")
+    if (is.null(y)) stop("don't know what kind of tiles to compute")
+    if (! y %in% c("M", "F")) stop("y should be either F or M")
+    if (is.null(probs)) stop("don't know what values of tiles to compute")
+    if (! y %in% names(x)){
+        if (! "f" %in% names(x)) x <- x %>% mutate(f = compute_freq(.))
+        if (y == "F") x <- x %>% mutate(F = cumsum(f))
+        if (y == "M"){
+            if (! "m" %in% names(x)){
+                x <- x %>% mutate(m = f * x,
+                                  m = m / sum(m))
+            }
+            x <- x %>% mutate(M = cumsum(f * x))
+        }
     }
-    else{
-        if (dens) data <- data %>% select(1, x, y = matches(paste("^[", y, "]{1}$", sep = ""), ignore.case = FALSE), d)
-        else data <- data %>% select(1, x, y = matches(paste("^[", y, "]{1}$", sep = ""), ignore.case = FALSE))
-    }
+    if (tbl){
+        if (! "d" %in% names(x)) x <- x %>% mutate(d = compute_dens(.))
+        x <- x %>% rename(y = y) %>% select(1, x, y, d)
+    } 
+    else x <- x %>% rename(y = y) %>% select(1, x, y)
     get_quant <- function(aprob){
-        pos <- data %>% mutate(zz = y > aprob) %>% pull(zz) %>% which
+        pos <- x %>% mutate(zz = y > aprob) %>% pull(zz) %>% which
         id <- pos[1]
-        Fm1 <- data %>% pull(y) %>% .[id - 1]
-        F <- data %>% pull(y) %>% .[id]
-        x_cls <- data %>% pull(1)
-        a_x_cls <- x_cls[id]
-        if (dens) a_d <- data %>% pull(d) %>% .[id]
-        a_quant <- cls2val(x_cls, (aprob - Fm1) / (F - Fm1), last = last) %>% .[id]
-        if (dens) list(cls = a_x_cls, p = aprob, d = a_d, q = a_quant) else a_quant
+        if (id == 1L) Fm1 <- 0
+        else Fm1 <- x %>% pull(y) %>% .[id - 1]
+        F <- x %>% pull(y) %>% .[id]
+        x_cls <- x %>% pull(1)
+        a_x_cls <- as.character(x_cls[id])
+        if (tbl) a_d <- x %>% pull(d) %>% .[id]
+        a_quant <- acls2val(a_x_cls, (aprob - Fm1) / (F - Fm1), xlast = xlast)
+        if (tbl) list(cls = a_x_cls, p = aprob, d = a_d, q = a_quant) else a_quant
     }
-    if (dens) map_dfr(prob, get_quant) else map_dbl(prob, get_quant)
+    if (tbl) map_dfr(probs, get_quant) else map_dbl(probs, get_quant)
 }
+        
 
 #' @name hist_table.methods
 #' @export
-median.hist_table <- function(x, ...){
-    if (! "F" %in% names(x)) stop("the table should contain F")
-    quantile(x, y = "F", 0.5)
+quantile.hist_table <- function(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...){
+    tile(x, y = "F", probs = probs, tbl = tbl)
+}
+
+
+#' @name hist_table.methods
+#' @export
+median.hist_table <- function(x, tbl = FALSE){
+    quantile(x, 0.5, tbl = tbl)
 }
 
 #' @name hist_table.methods
@@ -789,8 +854,13 @@ medial <- function(x, ...)
 
 #' @name hist_table.methods
 #' @export
-medial.hist_table <- function(x, ...){
-    if (! "M" %in% names(x)) stop("the table should contain M")
-    quantile(x, y = "M", 0.5)
+medial.hist_table <- function(x, tbl = FALSE){
+    tantile(x, 0.5, tbl = tbl)
 }
+
+
+#' @name hist_table.methods
+#' @export
+tantile <- function(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...)
+    tile(x, y = "M", probs = probs, tbl = tbl)
 

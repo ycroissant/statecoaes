@@ -4,7 +4,7 @@
 \alias{cls2val}
 \title{Convert class to values}
 \usage{
-cls2val(x, pos = 0, first = NULL, last = NULL, inflate = NULL)
+cls2val(x, pos = 0, first = NULL, xlast = NULL, inflate = NULL)
 }
 \arguments{
 \item{x}{a series that contains a class of values, the first and
@@ -20,12 +20,12 @@ other value between 0 and 1)}
 something different from the average of the lower and the upper
 bonds}
 
-\item{last}{the center of the last class, if one wants to specifie
+\item{xlast}{the center of the last class, if one wants to specifie
 something different from the average of the lower and the upper
 bonds}
 
 \item{inflate}{in the case where the upper bond is infinite and
-\code{last} is not provided, the upper bond of the last class is set
+\code{xlast} is not provided, the upper bond of the last class is set
 to the lower bond of the last class and the range of the
 previous class times this coefficient (which default value is
 one)}
@@ -50,8 +50,8 @@ sals \%>\% cls2val(0, first = 0.18) \%>\% head
 sals \%>\% cls2val(1)
 # note that the Inf upper bond is replaced by 50 + (50 - 40), ie
 # the lower bond plus the range of the previous class
-sals \%>\% cls2val(1, last = 100) \%>\% tail
-# last is provided (the center of the last class) and the upper
+sals \%>\% cls2val(1, xlast = 100) \%>\% tail
+# xlast is provided (the center of the last class) and the upper
 # bond is adapted accordingly, which means 50 + (100 - 50) * 2 =
 # 150
 sals \%>\% cls2val(1, inflate = 3) \%>\% tail

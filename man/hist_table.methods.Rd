@@ -9,21 +9,24 @@
 \alias{median.hist_table}
 \alias{medial}
 \alias{medial.hist_table}
+\alias{tantile}
 \title{Methods for hist_table objects}
 \usage{
-\method{mean}{hist_table}(x, ..., na.rm = TRUE, dens = FALSE)
+\method{mean}{hist_table}(x, ..., na.rm = TRUE, tbl = FALSE)
 
 modval(x, ...)
 
-\method{modval}{hist_table}(x, ..., dens = FALSE)
+\method{modval}{hist_table}(x, ..., tbl = FALSE)
 
-\method{quantile}{hist_table}(x, ..., y = NULL, prob = 0.5, dens = FALSE)
+\method{quantile}{hist_table}(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...)
 
-\method{median}{hist_table}(x, ...)
+\method{median}{hist_table}(x, tbl = FALSE)
 
 medial(x, ...)
 
-\method{medial}{hist_table}(x, ...)
+\method{medial}{hist_table}(x, tbl = FALSE)
+
+tantile(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...)
 }
 \arguments{
 \item{x}{a hist_table object,}
@@ -32,10 +35,10 @@ medial(x, ...)
 
 \item{na.rm}{a boolean, if \code{TRUE} missing values are removed}
 
+\item{y}{the variable for which the quantiles have to be computed}
+
 \item{dens}{if \code{TRUE} a tibble containing the class and the
 densities is returned}
-
-\item{y}{the variable for which the quantiles have to be computed}
 
 \item{prob}{the probabilities for which the quantiles have to be
 computed}
