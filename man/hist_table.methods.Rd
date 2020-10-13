@@ -20,9 +20,9 @@ modval(x, ...)
 
 \method{quantile}{hist_table}(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...)
 
-\method{median}{hist_table}(x, tbl = FALSE)
+\method{median}{hist_table}(x, na.rm, ..., tbl = FALSE)
 
-medial(x, ...)
+medial(x, tbl = FALSE)
 
 \method{medial}{hist_table}(x, tbl = FALSE)
 
@@ -35,16 +35,14 @@ tantile(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...)
 
 \item{na.rm}{a boolean, if \code{TRUE} missing values are removed}
 
-\item{y}{the variable for which the quantiles have to be computed}
-
-\item{dens}{if \code{TRUE} a tibble containing the class and the
+\item{tbl}{if \code{TRUE} a tibble containing the class and the
 densities is returned}
 
-\item{prob}{the probabilities for which the quantiles have to be
+\item{probs}{the probabilities for which the quantiles have to be
 computed}
 }
 \value{
-a tibble if \code{dens} is \code{TRUE}, a numeric otherwise
+a tibble if \code{tbl} is \code{TRUE}, a numeric otherwise
 }
 \description{
 Functions and methods to compute the median, the mean, the mode,
@@ -52,14 +50,14 @@ the medial and quantiles for hist_table objects
 }
 \examples{
 
-z <- Salaires \%>\% hist_table(salaire, "dFM")
+z <- Salaires \%>\% hist_table(salaire)
 z \%>\% median
 z \%>\% medial
 z \%>\% modval
-z \%>\% modval(dens = TRUE)
-z \%>\% quantile(y = "F", prob = c(0.25, 0.5, 0.75))
-z \%>\% quantile(y = "F", prob = c(0.25, 0.5, 0.75), dens = TRUE)
-z \%>\% quantile(y = "M", prob = c(0.25, 0.5, 0.75), dens = TRUE)
+z \%>\% modval(tbl = TRUE)
+z \%>\% quantile(probs = c(0.25, 0.5, 0.75))
+z \%>\% quantile(probs = c(0.25, 0.5, 0.75), tbl = TRUE)
+z \%>\% tantile(probs = c(0.25, 0.5, 0.75), tbl = TRUE)
 }
 \author{
 Yves Croissant
