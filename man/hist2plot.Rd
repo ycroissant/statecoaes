@@ -17,7 +17,7 @@ frequency or density}
 
 \item{plot}{one of \code{histogram} (the default) and \code{freqpoly} ; in
 the first case a tibble is returned with columns \code{x}, \code{y},
-\code{xend}, \code{yend} and in the seconde case \code{x} and \code{y}.}
+\code{xend}, \code{yend} and in the second case \code{x} and \code{y}.}
 }
 \value{
 a tibble

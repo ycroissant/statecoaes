@@ -170,6 +170,7 @@ NULL
 #' - heures : nombre d'heures annuelles travaillées,
 #' - sexe : sexe du salarié, `homme` ou `femme`,
 #' - salaire : tranches de salaire, en milliers d'euros par an,
+#' - taille : tranche d'effectif de l'entreprise
 #'
 #' @source Enquête DADS 2015, site de l'[INSEE](https://www.insee.fr/fr/statistiques/3536754)
 #'

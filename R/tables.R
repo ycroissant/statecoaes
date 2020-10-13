@@ -437,7 +437,7 @@ compute_dens <- function(x, xlast = NULL, first = NULL, inflate = NULL){
 hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
                        first = NULL, xlast = NULL, right = NULL,
                        total = FALSE, inflate = NULL){
-    if (is.null(xlast)) inflate <- 1
+    if (is.null(xlast) & is.null(inflate)) inflate <- 1
     # check wether the computation of densities is required and if so
     # create a boolean and remove d from cols
     cols_vec <- strsplit(cols, "")[[1]]
@@ -479,49 +479,14 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
         # of x, add either 0 (if min(x) >= 0) or -Inf to the vector of breaks
         if (min(breaks) > min(data %>% pull({{ x }})))
             breaks <- c(ifelse(min(data %>% pull({{ x }})) < 0, - Inf, 0), breaks)
-        res <- data %>% mutate("{{ x }}" := cut({{ x }}, breaks, right = right)) %>%
-            freq_table({{ x }}, cols = cols, total = total)
+        data <- data %>% mutate("{{ x }}" := cut({{ x }}, breaks, right = right))
     }
-    else{
-        # x is a class, return an error if the right argument is provided
-        if (! is.null(right))
-            stop("the right argument is irrelevant in this context as classes are provided")
-        if (! is.null(breaks)){
-            # x breaks are provided in order to reduce the number of classes
-            # first guess the value of right
-            left_op <- data %>% slice(2) %>% pull({{ x }}) %>% substr(1, 1)
-            if (left_op == "[") right <- FALSE else right <- TRUE
-            # get the initial classes and computs the breaks
-            init_cls <- data %>% pull({{ x }}) %>% unique %>% as.character
-            lbond <- cls2val(init_cls, 0L)
-            ubond <- cls2val(init_cls, 1L, inflate = inflate, xlast = xlast)
-            cls_table <- tibble("{{ x }}" := init_cls, lbond, ubond) %>% arrange(lbond)
-            init_bks <- sort(union(lbond, ubond))
-            cls_table <- cls_table %>% mutate(center = cls2val({{ x }}, 0.5))
-            # min/max values of the new breaks lower/larger than the
-            # min/max values of the initial breaks are not allowed
-            if (min(breaks) < min(init_bks)) stop("the minimal value provided is lower than the initial lower bond")
-            if (max(breaks) > max(init_bks)) stop("the minimal value provided is lower than the initial lower bond")
-            # min/max values of the initial breaks are included in the
-            # new breaks if necessary
-            if (! min(init_bks) %in% breaks) breaks <- c(breaks, min(init_bks))
-            if (! max(init_bks) %in% breaks) breaks <- c(breaks, max(init_bks))
-            # put in form the vector of new breaks and check whether
-            # some values are not part of the initial breaks
-            breaks <- sort(unique(breaks))
-            dbrks <- setdiff(breaks, init_bks)
-            if (length(dbrks) > 0) stop(paste(paste(sort(dbrks), collapse = ", ")),
-                                        paste(" are provided in the breaks argument but are ",
-                                              "not part of the  initial set of breaks", sep = ""),
-                                        sep = "")
-            cls_table <- cls_table %>% mutate(new_cls = cut(center, breaks, right = right)) %>%
-                select({{ x }}, new_cls)
-            data <- data %>% left_join(cls_table) %>% select(- {{ x }}) %>%
-                rename("{{ x }}" := new_cls)
-        }
-        res <- freq_table(data, {{ x }}, cols = cols, total = FALSE)
-    }
+    else data <- recut(data, {{ x }}, breaks = breaks)
+    res <- freq_table(data, {{ x }}, cols = cols, total = FALSE)
+
     if ((any(c("x", "a") %in% vals_vec)) | compute_densities){
+        print(xlast)
+        print(inflate)
         res <- res %>% mutate(x = cls2val({{ x }}, 0.5, first = first,
                                           xlast = xlast, inflate = inflate))
     }
@@ -554,10 +519,6 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
                       names(res)) %>% na.omit %>% sort
     vals_pos <- match(c("x", "l", "a", "u"), names(res)) %>% na.omit %>% sort
     res <- res %>% select({{ x }}, all_of(c(vals_pos, cols_pos)))
-    ## if (compute_cummasses){
-    ##     if ("F" %in% names(res)) res <- res %>% add_row(x = 0, M = 0, F = 0, .before = 0)
-    ##     else res <- res %>% add_row(x = 0, M = 0, .before = 0)
-    ## }
     structure(res, class = c("hist_table", class(res)))
 }
 
@@ -674,7 +635,7 @@ acls2val <- function(x, pos = 0, first = NULL, xlast = NULL){
 #'     frequency or density
 #' @param plot one of `histogram` (the default) and `freqpoly` ; in
 #'     the first case a tibble is returned with columns `x`, `y`,
-#'     `xend`, `yend` and in the seconde case `x` and `y`.
+#'     `xend`, `yend` and in the second case `x` and `y`.
 #' @return a tibble
 #' @importFrom dplyr desc
 #' @export
@@ -880,3 +841,55 @@ gini <- function(x){
         pull(g)    
 }
 
+#' Recode a classified variable in a tibble and return the tibble
+#'
+#' `cut` take a numerical series as argument and return a class
+#' according to a `break` vector ; this function recode a classified
+#' series according to a vector of breaks which is a subset of the
+#' original one
+#'
+#' @name recut
+#' @aliases recut
+#' @param data a tibble 
+#' @param x the variable to recode
+#' @param breaks a numerical vector of breaks
+#' @author Yves Croissant
+#' @export
+recut <- function(data, x, breaks = NULL){
+    if (is.null(breaks)) stop("new breaks should be specified")
+    if (is.numeric(pull(data, {{ x }}))) stop("recode is not relevant for a numeric series")
+    # x breaks are provided in order to reduce the number of classes
+    # first guess the value of right
+    left_op <- data %>% slice(2) %>% pull({{ x }}) %>% substr(1, 1)
+    if (left_op == "[") right <- FALSE else right <- TRUE
+    # get the initial classes and computs the breaks
+    init_cls <- data %>% pull({{ x }}) %>% unique %>% as.character
+    lbond <- cls2val(init_cls, 0L)
+    ubond <- cls2val(init_cls, 1L, inflate = 1)
+    cls_table <- tibble("{{ x }}" := init_cls, lbond, ubond) %>% arrange(lbond)
+    init_bks <- sort(union(lbond, ubond))
+    cls_table <- cls_table %>% mutate(center = cls2val({{ x }}, 0.5))
+    # min/max values of the new breaks lower/larger than the
+    # min/max values of the initial breaks are not allowed
+    if (min(breaks) < min(init_bks)) stop("the minimal value provided is lower than the initial lower bond")
+    if (max(breaks) > max(init_bks)) stop("the minimal value provided is lower than the initial lower bond")
+    # min/max values of the initial breaks are included in the
+    # new breaks if necessary
+    if (! min(init_bks) %in% breaks) breaks <- c(breaks, min(init_bks))
+    if (! max(init_bks) %in% breaks) breaks <- c(breaks, max(init_bks))
+    # put in form the vector of new breaks and check whether
+    # some values are not part of the initial breaks
+    breaks <- sort(unique(breaks))
+    dbrks <- setdiff(breaks, init_bks)
+    if (length(dbrks) > 0) stop(paste(paste(sort(dbrks), collapse = ", "),
+                                ifelse(length(dbrks) == 1, "is", "are"),
+                                paste("provided in the breaks argument but ",
+                                      ifelse(length(dbrks) == 1, "is", "are"),
+                                      " not part of the  initial set of breaks", sep = "")),
+                                sep = "")
+    cls_table <- cls_table %>% mutate(new_cls = cut(center, breaks, right = right)) %>%
+        select({{ x }}, new_cls)
+    data <- data %>% left_join(cls_table) %>% select(- {{ x }}) %>%
+        rename("{{ x }}" := new_cls)
+    data
+}
