@@ -744,28 +744,27 @@ hist2plot <- function(data, y = NULL, plot = "histogram"){
 #' @name hist_table.methods
 #' @aliases hist_table.methods
 #' @param x a hist_table object,
-#' @param y the variable for which the quantiles have to be computed
 #' @param ... further arguments
 #' @param na.rm a boolean, if `TRUE` missing values are removed
-#' @param dens if `TRUE` a tibble containing the class and the
+#' @param tbl if `TRUE` a tibble containing the class and the
 #'     densities is returned
-#' @param prob the probabilities for which the quantiles have to be
+#' @param probs the probabilities for which the quantiles have to be
 #'     computed
-#' @return a tibble if `dens` is `TRUE`, a numeric otherwise
+#' @return a tibble if `tbl` is `TRUE`, a numeric otherwise
 #' @export
 #' @importFrom stats quantile median
 #' @importFrom purrr map_dbl map_dfr
 #' @author Yves Croissant
 #' @examples
 #'
-#' z <- Salaires %>% hist_table(salaire, "dFM")
+#' z <- Salaires %>% hist_table(salaire)
 #' z %>% median
 #' z %>% medial
 #' z %>% modval
-#' z %>% modval(dens = TRUE)
-#' z %>% quantile(y = "F", prob = c(0.25, 0.5, 0.75))
-#' z %>% quantile(y = "F", prob = c(0.25, 0.5, 0.75), dens = TRUE)
-#' z %>% quantile(y = "M", prob = c(0.25, 0.5, 0.75), dens = TRUE)
+#' z %>% modval(tbl = TRUE)
+#' z %>% quantile(probs = c(0.25, 0.5, 0.75))
+#' z %>% quantile(probs = c(0.25, 0.5, 0.75), tbl = TRUE)
+#' z %>% tantile(probs = c(0.25, 0.5, 0.75), tbl = TRUE)
 mean.hist_table <- function(x, ..., na.rm = TRUE, tbl = FALSE){
     x <- x %>% rename(cls = 1)
     print(compute_freq(x))
@@ -843,13 +842,13 @@ quantile.hist_table <- function(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...)
 
 #' @name hist_table.methods
 #' @export
-median.hist_table <- function(x, tbl = FALSE){
+median.hist_table <- function(x, na.rm, ..., tbl = FALSE){
     quantile(x, 0.5, tbl = tbl)
 }
 
 #' @name hist_table.methods
 #' @export
-medial <- function(x, ...)
+medial <- function(x, tbl = FALSE)
     UseMethod("medial")
 
 #' @name hist_table.methods
