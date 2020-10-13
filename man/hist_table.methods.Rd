@@ -10,6 +10,7 @@
 \alias{medial}
 \alias{medial.hist_table}
 \alias{tantile}
+\alias{gini}
 \title{Methods for hist_table objects}
 \usage{
 \method{mean}{hist_table}(x, ..., na.rm = TRUE, tbl = FALSE)
@@ -27,6 +28,8 @@ medial(x, tbl = FALSE)
 \method{medial}{hist_table}(x, tbl = FALSE)
 
 tantile(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...)
+
+gini(x)
 }
 \arguments{
 \item{x}{a hist_table object,}

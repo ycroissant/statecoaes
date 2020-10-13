@@ -862,3 +862,21 @@ medial.hist_table <- function(x, tbl = FALSE){
 tantile <- function(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...)
     tile(x, y = "M", probs = probs, tbl = tbl)
 
+
+#' @name hist_table.methods
+#' @export
+gini <- function(x){
+    if (! inherits(x, "hist_table")) stop("x should be a hist_table object")
+    if (any(! c("F", "M") %in% names(x))){
+        x <- x %>% mutate(f = compute_freq(.))
+        if (! "F" %in% names(x)) x <- x %>% mutate(F = cumsum(f))
+        if (! "M" %in% names(x)) x <- x %>% mutate(m = f * x,
+                                                   m = m / sum(m),
+                                                   M = cumsum(m))
+    }
+    x %>% add_row(F = 0, M = 0, .before = 0) %>%
+        mutate(tz = (F - lag(F)) * (lag(M) + M) / 2) %>%
+        summarise(g = 2 * (0.5 - sum(tz, na.rm = TRUE))) %>%
+        pull(g)    
+}
+
