@@ -380,7 +380,6 @@ compute_freq <- function(x){
     else pull(x, f)
 }
     
-
 compute_dens <- function(x, xlast = NULL, first = NULL, inflate = NULL){
     if (! inherits(x, "hist_table")) stop("x should be an hist_table object")
     if (! "d" %in% names(x)){
