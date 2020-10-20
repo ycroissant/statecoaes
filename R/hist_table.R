@@ -240,7 +240,6 @@ hist2plot <- function(data, y = NULL, plot = "histogram"){
 #' z %>% tantile(probs = c(0.25, 0.5, 0.75), tbl = TRUE)
 mean.hist_table <- function(x, ..., na.rm = TRUE, tbl = FALSE){
     x <- x %>% rename(cls = 1)
-    print(compute_freq(x))
     if (! "f" %in% names(x)) x <- x %>% mutate(f = compute_freq(.))
     xb <- x %>% summarise(xb = sum(x * f, na.rm = na.rm)) %>% pull(xb)
     if (tbl){

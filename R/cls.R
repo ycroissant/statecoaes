@@ -163,7 +163,6 @@ recut <- function(x, breaks = NULL){
     cls_table <- tibble(x = init_cls, lbond, ubond) %>% arrange(lbond)
     init_bks <- sort(union(lbond, ubond))
     cls_table <- cls_table %>% mutate(center = cls2val(x, 0.5))
-    print(cls_table)
     # min/max values of the new breaks lower/larger than the
     # min/max values of the initial breaks are not allowed
     if (min(breaks) < min(init_bks)) stop("the minimal value provided is lower than the initial lower bond")
