@@ -89,7 +89,7 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
             breaks <- c(ifelse(min(data %>% pull({{ x }})) < 0, - Inf, 0), breaks)
         data <- data %>% mutate("{{ x }}" := cut({{ x }}, breaks, right = right))
     }
-    else data <- recut(data, {{ x }}, breaks = breaks)
+    else data <- data %>% mutate("{{ x }}" := recut({{ x }}, breaks = breaks))
     res <- freq_table(data, {{ x }}, cols = cols, total = FALSE)
 
     if ((any(c("x", "a") %in% vals_vec)) | compute_densities){
