@@ -138,9 +138,9 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
 #' easy to plot
 #'
 #' #'
-#' @name hist2plot
-#' @aliases hist2plot
-#' @param data a tibble returned by the `hist_table` function, it
+#' @name pre_plot
+#' @aliases pre_plot
+#' @param x a tibble returned by the `hist_table` function, it
 #'     should contains the center of the classes (`x`) and at least
 #'     one measure of the frequencies or densities (one of `f`, `n`,
 #'     `p`, `d`)
@@ -156,9 +156,10 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
 #' @examples
 #' library("ggplot2")
 #' pad <- Padoue %>% hist_table(price, breaks = c(100, 200, 300, 400, 500, 1000), right = TRUE, cols = "Npd")
-#' pad %>% hist2plot(y = "d") %>% ggplot() + geom_polygon(aes(x, y))
-#' pad %>% hist2plot(y = "d", plot = "freqpoly") %>% ggplot() + geom_line(aes(x, y))
-hist2plot <- function(data, y = NULL, plot = "histogram"){
+#' pad %>% pre_plot(y = "d") %>% ggplot() + geom_polygon(aes(x, y))
+#' pad %>% pre_plot(y = "d", plot = "freqpoly") %>% ggplot() + geom_line(aes(x, y))
+pre_plot.hist_table <- function(x, y = NULL, plot = "histogram"){
+    data <- x
     if (! "x" %in% names(data))
         stop("the table should contains the center of the classes")
     if (is.null(y)){

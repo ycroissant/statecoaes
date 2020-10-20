@@ -102,18 +102,6 @@ cls2val.factor <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NU
     left_join(tibble(x = as.character(x)), cls_val) %>% pull(x_center)
 }
 
-#' @rdname cls2val
-#' @export
-cls2val.cont_table <- function(x, y, xfirst = NULL, xlast = NULL, inflate  = NULL, ...){
-    y_name <- y
-    y <- x %>% .[[y]] %>% unique %>% setdiff("Total")
-    y_ctr <- cls2val(y, 0.5, xfirst = xfirst, xlast = xlast, inflate = inflate)
-    names(y_ctr) <- y
-    x[[y_name]] <- y_ctr[x[[y_name]]]
-    x
-}
-
-
 acls2val <- function(x, pos = 0, xfirst = NULL, xlast = NULL){
     if (! is.numeric(pos)) stop("pos should be numeric")
     if (is.numeric(pos) & ! (pos >= 0 & pos <= 1)) stop("pos should be between 0 and 1")
