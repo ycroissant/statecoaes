@@ -7,7 +7,7 @@ Maintainer: Yves Croissant <yves.croissant@univ-reunion.fr>
 Depends: R (>= 3.5.0), dplyr, tidyr
 Imports: Rdpack, rlang, purrr
 Suggests: ggplot2
-Description: Données pour accompagner le livre d'introduction aux statistiques et probabilités
+Description: Ce package contient des données et des fonction  pour accompagner le livre d'introduction aux statistiques et probabilités.
 Encoding: UTF-8
 License: GPL (>=2)
 URL: http://www.r-project.org

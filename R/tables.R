@@ -21,11 +21,21 @@
 #'     utiliser pour passer de l'échantillon à la population
 #' @param total si `TRUE` (valeur par défaut), un total est ajouté au
 #'     tableau
-#' @ param ... d'autres arguments
+#' @param first1 the center of the first class for the first variable
+#' @param last1 the center of the last class for the first variable
+#' @param inflate1 the width of the last class for the first variable
+#' @param first2 the center of the first class for the second variable
+#' @param last2 the center of the last class for the second variable
+#' @param inflate2 the width of the last class for the second variable
+#' @param ... d'autres arguments
+#' @param n the number of lines to print
+#' @param width the width of the table to print
+#' @param n_extra extra n lines
 #' @return un tibble
 #' @export
 #' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows mutate filter ungroup select
 #' @importFrom tidyr pivot_wider
+#' @importFrom rlang set_names
 #' @author Yves Croissant
 #' @examples
 #'
@@ -39,7 +49,7 @@
 #' cont_table(Salaires, salaire, taille) %>% conditional(taille) %>% mean
 #' 
 cont_table <- function(data, y1, y2, pond = NULL,
-                       na.rm = TRUE, total = TRUE,
+                       total = TRUE,
                        first1 = NULL, last1 = NULL, inflate1 = NULL,
                        first2 = NULL, last2 = NULL, inflate2 = NULL){
     pond_lgc <- deparse(substitute(pond)) != "NULL"
@@ -49,7 +59,7 @@ cont_table <- function(data, y1, y2, pond = NULL,
                         summarise(eff = n()) %>% ungroup
     else  ct <- data %>% group_by({{ y1 }}, {{ y2 }}) %>%
               summarise(eff = sum({{ pond }})) %>% ungroup
-    if (na.rm) ct <- na.omit(ct)
+#    if (na.rm) ct <- na.omit(ct)
     ct <- ct %>% mutate_if(is.factor, as.character)
     if (total){
         mg_1 <- ct %>% group_by({{ y1 }}) %>%

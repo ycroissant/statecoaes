@@ -9,6 +9,7 @@
 #'     last characters should be any of `[`, `(`, `]`, `)` and the
 #'     other characters should be interpreted as two numerical values
 #'     separated by a `,`
+#' @param y a series
 #' @param pos a numeric between 0 and 1, 0 for the lower bond, 1
 #'     for the upper bond, 0.5 for the center of the class (and any
 #'     other value between 0 and 1)
@@ -23,6 +24,7 @@
 #'     to the lower bond of the last class and the range of the
 #'     previous class times this coefficient (which default value is
 #'     one)
+#' @param ... further arguments
 #' @return a numerical vector
 #' @export
 #' @author Yves Croissant
@@ -52,7 +54,7 @@ cls2val <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL, ...
 
 #' @rdname cls2val
 #' @export
-cls2val.character <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL){
+cls2val.character <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL, ...){
     K <- length(x)
     if (length(unique(x)) != K)
         stop("no duplicated values allowed for the character method of cls2val")
@@ -92,7 +94,7 @@ cls2val.character <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate =
 
 #' @rdname cls2val
 #' @export
-cls2val.factor <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL){
+cls2val.factor <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL, ...){
     lev_x <- levels(x)
     cls_val <- tibble(x = lev_x,
                       x_center = cls2val(x = x, pos = pos, xfirst = xfirst,
@@ -102,7 +104,7 @@ cls2val.factor <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NU
 
 #' @rdname cls2val
 #' @export
-cls2val.cont_table <- function(x, y, xfirst = NULL, xlast = NULL, inflate  = NULL){
+cls2val.cont_table <- function(x, y, xfirst = NULL, xlast = NULL, inflate  = NULL, ...){
     y_name <- y
     y <- x %>% .[[y]] %>% unique %>% setdiff("Total")
     y_ctr <- cls2val(y, 0.5, xfirst = xfirst, xlast = xlast, inflate = inflate)
@@ -143,7 +145,6 @@ acls2val <- function(x, pos = 0, xfirst = NULL, xlast = NULL){
 #'
 #' @name recut
 #' @aliases recut
-#' @param data a tibble 
 #' @param x the variable to recode
 #' @param breaks a numerical vector of breaks
 #' @author Yves Croissant

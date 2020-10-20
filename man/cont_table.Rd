@@ -16,7 +16,6 @@ cont_table(
   y1,
   y2,
   pond = NULL,
-  na.rm = TRUE,
   total = TRUE,
   first1 = NULL,
   last1 = NULL,
@@ -53,11 +52,29 @@ utiliser pour passer de l'échantillon à la population}
 \item{total}{si \code{TRUE} (valeur par défaut), un total est ajouté au
 tableau}
 
+\item{first1}{the center of the first class for the first variable}
+
+\item{last1}{the center of the last class for the first variable}
+
+\item{inflate1}{the width of the last class for the first variable}
+
+\item{first2}{the center of the first class for the second variable}
+
+\item{last2}{the center of the last class for the second variable}
+
+\item{inflate2}{the width of the last class for the second variable}
+
 \item{x}{un tibble contenant la table de contingence}
 
 \item{...}{d'autres arguments}
 
 \item{y}{la variable sur laquelle on veut réaliser l'opération}
+
+\item{n}{the number of lines to print}
+
+\item{width}{the width of the table to print}
+
+\item{n_extra}{extra n lines}
 }
 \value{
 un tibble

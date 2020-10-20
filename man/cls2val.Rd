@@ -9,11 +9,11 @@
 \usage{
 cls2val(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL, ...)
 
-\method{cls2val}{character}(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL)
+\method{cls2val}{character}(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL, ...)
 
-\method{cls2val}{factor}(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL)
+\method{cls2val}{factor}(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL, ...)
 
-\method{cls2val}{cont_table}(x, y, xfirst = NULL, xlast = NULL, inflate = NULL)
+\method{cls2val}{cont_table}(x, y, xfirst = NULL, xlast = NULL, inflate = NULL, ...)
 }
 \arguments{
 \item{x}{a series that contains a class of values, the first and
@@ -38,6 +38,10 @@ bonds}
 to the lower bond of the last class and the range of the
 previous class times this coefficient (which default value is
 one)}
+
+\item{...}{further arguments}
+
+\item{y}{a series}
 }
 \value{
 a numerical vector

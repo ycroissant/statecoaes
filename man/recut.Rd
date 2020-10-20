@@ -10,8 +10,6 @@ recut(x, breaks = NULL)
 \item{x}{the variable to recode}
 
 \item{breaks}{a numerical vector of breaks}
-
-\item{data}{a tibble}
 }
 \description{
 \code{cut} take a numerical series as argument and return a class
