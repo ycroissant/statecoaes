@@ -2,48 +2,62 @@
 % Please edit documentation in R/tables.R
 \name{cont_table}
 \alias{cont_table}
+\alias{mean.cont_table}
+\alias{joint}
+\alias{marginal}
+\alias{conditional}
+\alias{pre_print}
+\alias{pre_print.cont_table}
+\alias{format.cont_table}
 \title{Table de contingence}
 \usage{
 cont_table(
   data,
-  x1,
-  x2,
-  abs = FALSE,
-  pct = FALSE,
-  marge = 0,
+  y1,
+  y2,
   pond = NULL,
   na.rm = TRUE,
-  total = TRUE
+  total = TRUE,
+  first1 = NULL,
+  last1 = NULL,
+  inflate1 = NULL,
+  first2 = NULL,
+  last2 = NULL,
+  inflate2 = NULL
 )
+
+\method{mean}{cont_table}(x, ...)
+
+joint(x)
+
+marginal(x, y = NULL)
+
+conditional(x, y = NULL)
+
+pre_print(x)
+
+\method{pre_print}{cont_table}(x)
+
+\method{format}{cont_table}(x, ..., n = NULL, width = NULL, n_extra = NULL)
 }
 \arguments{
 \item{data}{un tibble}
 
-\item{x1}{une première variable catégorielle}
+\item{y1}{une première variable catégorielle}
 
-\item{x2}{une seconde variable catégorielle}
-
-\item{abs}{une valeur logique : \code{TRUE} pour renvoyer des fréquences
-absolues, \code{FALSE} (la valeur par défaut) pour des fréquences
-absolues,}
-
-\item{pct}{une valeur logique : \code{TRUE} pour renvoyer des
-pourcentages (20.2 au lieu de 0.202)}
-
-\item{marge}{permet de calculer des fréquences conditionnelles en
-lignes (\code{marge = 1}) ou en colonnes (\code{marge = 2}) ; avec la
-valeur par défaut de \code{0}, les fréquences jointes et les
-fréquences marginales sont calculées.}
+\item{y2}{une seconde variable catégorielle}
 
 \item{pond}{une éventuelle variable contenant les pondérations à
 utiliser pour passer de l'échantillon à la population}
 
-\item{na.rm}{la valeur par défaut est \code{TRUE}, les observations
-pour lesquelles la valeur de \code{x} est manquante sont retirées de
-l'échantillon}
-
 \item{total}{si \code{TRUE} (valeur par défaut), un total est ajouté au
 tableau}
+
+\item{x}{un tibble contenant la table de contingence}
+
+\item{...}{d'autres arguments}
+
+\item{y}{la variable sur laquelle on veut réaliser l'opération}
 }
 \value{
 un tibble
@@ -52,15 +66,23 @@ un tibble
 Une table de contingence rassemble les fréquences de toutes les
 combinaisons de deux variables catégorielles sous la forme d'un
 tableau à double entrée, avec les différentes modalités de la
-première (seconde) variable en ligne (colonne)
+première (seconde) variable en ligne (colonne). Les fonctions
+\code{joint}, \code{marginal} et \code{conditional} permettent de calculer ces
+trois distributions à partir d'une table de contingence (en
+indiquant la variable pour laquelle la distribution doit être
+calculée pour les deux dernières). Une méthode \code{mean} est définie
+pour calculer la moyenne.
 }
 \examples{
 
 cont_table(Emploi, diplome, sexe)
 cont_table(Emploi, diplome, sexe, pond = pondérations)
-cont_table(Emploi, diplome, sexe, pond = pondérations, pct = TRUE)
-cont_table(Emploi, diplome, sexe, pond = pondérations, pct = TRUE, marge = 1)
-cont_table(Emploi, diplome, sexe, pond = pondérations, pct = TRUE, marge = 2)
+cont_table(Emploi, diplome, sexe) \%>\% conditional(sexe)
+cont_table(Salaires, salaire, taille)
+cont_table(Salaires, salaire, taille) \%>\% joint
+cont_table(Salaires, salaire, taille) \%>\% joint \%>\% mean
+cont_table(Salaires, salaire, taille) \%>\% marginal(taille)
+cont_table(Salaires, salaire, taille) \%>\% conditional(taille) \%>\% mean
 
 }
 \author{
