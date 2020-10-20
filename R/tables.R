@@ -88,15 +88,17 @@ cont_table <- function(data, y1, y2, pond = NULL,
 mean.cont_table <- function(x, ...){
     if (! is.null(attr(x, "y"))){
         y_name <- attr(x, "y")
+        y <- x %>% .[[y_name]] %>% unique %>% setdiff("Total")
         limits <- attr(x, "limits")[[y_name]]
+        y_ctr <- cls2val(y, 0.5,
+                         xfirst = limits$first,
+                         xlast = limits$last,
+                         inflate = limits$inflate)
+        names(y_ctr) <- y
     }
     else y_name <- NULL
     if (length(x) == 2){
-        # marginal distribution
-        x <- x %>% cls2val(y_name,
-                           xfirst = limits$first,
-                           xlast = limits$last,
-                           inflate = limits$inflate)
+        x[[y_name]] <- y_ctr[x[[y_name]]]
         x <- x %>% summarise(mean = sum(!! as.symbol(y_name) * f)) %>%
             set_names(y_name)
     }
@@ -104,8 +106,7 @@ mean.cont_table <- function(x, ...){
         if (! is.null(y_name)){
             # conditional distribution
             cond_name <- setdiff(names(x)[1:2], y_name)
-            x <- x %>% cls2val(y_name, xfirst = limits$first, xlast = limits$last,
-                               inflate = limits$inflate)
+            x[[y_name]] <- y_ctr[x[[y_name]]]
             # put the levels of the conditional variable in the right order
             y <- x %>% pull(cond_name) %>% unique %>% tibble %>% set_names(cond_name)
             x <- x %>% group_by( !! as.symbol(cond_name)) %>%
@@ -115,10 +116,21 @@ mean.cont_table <- function(x, ...){
         }
         else{
             limits <- attr(x, "limits")
-            x <- cls2val(x, names(x)[1], xfirst = limits[[1]]$first, xlast = limits[[1]]$last,
-                         inflate = limits[[1]]$inflate)
-            x <- cls2val(x, names(x)[2], xfirst = limits[[2]]$first, xlast = limits[[2]]$last,
-                         inflate = limits[[2]]$inflate)
+            y1 <- x %>% pull(1) %>% unique %>% setdiff("Total")
+            y1_ctr <- cls2val(y1, 0.5,
+                              xfirst = limits[[1]]$first,
+                              xlast = limits[[1]]$last,
+                              inflate = limits[[1]]$inflate)
+            names(y1_ctr) <- y1
+            x[[1]] <- y1_ctr[x[[1]]]
+            
+            y2 <- x %>% pull(2) %>% unique %>% setdiff("Total")
+            y2_ctr <- cls2val(y2, 0.5,
+                              xfirst = limits[[2]]$first,
+                              xlast = limits[[2]]$last,
+                              inflate = limits[[2]]$inflate)
+            names(y2_ctr) <- y2
+            x[[2]] <- y2_ctr[x[[2]]]
             x <- x %>% summarise(mean1 = sum( !! as.symbol(names(x)[1]) * eff / sum(eff)),
                                  mean2 = sum( !! as.symbol(names(x)[2]) * eff / sum(eff))) %>%
                 set_names(c(names(x)[1], names(x)[2]))
