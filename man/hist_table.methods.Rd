@@ -10,27 +10,24 @@
 \alias{quantile.hist_table}
 \alias{median.hist_table}
 \alias{medial.hist_table}
-\alias{tantile}
 \alias{gini}
 \title{Methods for hist_table objects}
 \usage{
-\method{mean}{hist_table}(x, ..., na.rm = TRUE, tbl = FALSE)
+\method{mean}{hist_table}(x, ...)
 
-\method{variance}{hist_table}(x, ..., na.rm = TRUE)
+\method{variance}{hist_table}(x, ...)
 
-\method{stdev}{hist_table}(x, ..., na.rm = TRUE)
+\method{stdev}{hist_table}(x, ...)
 
-\method{madev}{hist_table}(x, center = c("median", "mean"), ..., na.rm = TRUE)
+\method{madev}{hist_table}(x, center = c("median", "mean"), ...)
 
-\method{modval}{hist_table}(x, ..., tbl = FALSE)
+\method{modval}{hist_table}(x, ...)
 
-\method{quantile}{hist_table}(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...)
+\method{quantile}{hist_table}(x, y = c("value", "mass"), probs = c(0.25, 0.5, 0.75), ...)
 
-\method{median}{hist_table}(x, na.rm, ..., tbl = FALSE)
+\method{median}{hist_table}(x, ...)
 
-\method{medial}{hist_table}(x, tbl = FALSE)
-
-tantile(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...)
+\method{medial}{hist_table}(x, ...)
 
 gini(x)
 }
@@ -39,19 +36,16 @@ gini(x)
 
 \item{...}{further arguments}
 
-\item{na.rm}{a boolean, if \code{TRUE} missing values are removed}
-
-\item{tbl}{if \code{TRUE} a tibble containing the class and the
-densities is returned}
-
 \item{center}{for the \code{madev} method, this can equal \code{"median"}
 (the default) or \code{"mean"}}
+
+\item{y}{for the quantile method, one of \code{"value"} or \code{"mass"}}
 
 \item{probs}{the probabilities for which the quantiles have to be
 computed}
 }
 \value{
-a tibble if \code{tbl} is \code{TRUE}, a numeric otherwise
+a  numeric
 }
 \description{
 Functions and methods to compute the median, the mean, the mode,
@@ -63,10 +57,8 @@ z <- Salaires \%>\% hist_table(salaire)
 z \%>\% median
 z \%>\% medial
 z \%>\% modval
-z \%>\% modval(tbl = TRUE)
 z \%>\% quantile(probs = c(0.25, 0.5, 0.75))
-z \%>\% quantile(probs = c(0.25, 0.5, 0.75), tbl = TRUE)
-z \%>\% tantile(probs = c(0.25, 0.5, 0.75), tbl = TRUE)
+z \%>\% quantile(y = "mass", probs = c(0.25, 0.5, 0.75))
 }
 \author{
 Yves Croissant

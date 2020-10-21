@@ -27,11 +27,6 @@
 #'     classe n'est pas renseignée, elle est fixée à la borne
 #'     inférieure plus ce coefficient multiplié par la moitié de
 #'     l'amplitude de la classe précédente
-#' @param tbl if `TRUE` a tibble is returned while using the `madev`,
-#'     `modval` or `medial` methods
-#' @param ... further arguments
-#' @param na.rm should the missing values be stripped before the
-#'     computation of the statistic,
 #' @return un tibble contenant les valeurs de `vals` et de `cols`
 #'     spécifiées
 #' @export
@@ -143,13 +138,13 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
 #' @name hist_table.methods
 #' @aliases hist_table.methods
 #' @param x a hist_table object,
+#' @param y for the quantile method, one of `"value"` or `"mass"`
+#' @param center for the `madev` method, this can equal `"median"`
+#'     (the default) or `"mean"`
 #' @param ... further arguments
-#' @param na.rm a boolean, if `TRUE` missing values are removed
-#' @param tbl if `TRUE` a tibble containing the class and the
-#'     densities is returned
 #' @param probs the probabilities for which the quantiles have to be
 #'     computed
-#' @return a tibble if `tbl` is `TRUE`, a numeric otherwise
+#' @return a  numeric
 #' @export
 #' @importFrom stats quantile median
 #' @importFrom purrr map_dbl map_dfr
@@ -160,121 +155,80 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
 #' z %>% median
 #' z %>% medial
 #' z %>% modval
-#' z %>% modval(tbl = TRUE)
 #' z %>% quantile(probs = c(0.25, 0.5, 0.75))
-#' z %>% quantile(probs = c(0.25, 0.5, 0.75), tbl = TRUE)
-#' z %>% tantile(probs = c(0.25, 0.5, 0.75), tbl = TRUE)
-mean.hist_table <- function(x, ..., na.rm = TRUE, tbl = FALSE){
-    x <- x %>% rename(cls = 1)
+#' z %>% quantile(y = "mass", probs = c(0.25, 0.5, 0.75))
+mean.hist_table <- function(x, ...){
+    xfirst <- x$x[1]
+    xlast <- rev(x$x)[1]
     if (! "f" %in% names(x)) x <- x %>% mutate(f = compute_freq(.))
-    xb <- x %>% summarise(xb = sum(x * f, na.rm = na.rm)) %>% pull(xb)
-    if (tbl){
-        if (! "d" %in% names(x)) x <- x %>% mutate(d = compute_dens(.))
-        d <- x %>% mutate(xu = cls2val(cls, 1)) %>% filter(xb < xu) %>% slice(1) %>% pull(d)
-        tibble(x = xb, d = d)
-    }
-    else xb
+    mean(x[[1]], x$f, xlast = xlast, xfirst = xfirst)
 }
 
 #' @rdname hist_table.methods
 #' @export
-variance.hist_table <- function(x, ..., na.rm = TRUE){
+variance.hist_table <- function(x, ...){
     x <- x %>% rename(cls = 1)
     if (! "f" %in% names(x)) x <- x %>% mutate(f = compute_freq(.))
-    x %>% summarise(xb = sum(x * f, na.rm = na.rm),
-                    v = sum(f * (x - xb) ^ 2, na.rm = na.rm)) %>% pull(v)
+    xfirst <- (x$x)[1]
+    xlast <- rev(x$x)[1]
+    variance(x[[1]], x$f, xlast = xlast, xfirst = xfirst)
 }
 
 #' @rdname hist_table.methods
 #' @export
-stdev.hist_table <- function(x, ..., na.rm = TRUE)
+stdev.hist_table <- function(x, ...)
     x %>% variance %>% sqrt
 
 #' @rdname hist_table.methods
 #' @export
-madev.hist_table <- function(x, center = c("median", "mean"), ..., na.rm = TRUE){
+madev.hist_table <- function(x, center = c("median", "mean"), ...){
     center <- match.arg(center)
-    x <- x %>% rename(cls = 1)
-    if (center == "median") ctr <- median(x)
-    if (center == "mean") ctr <- mean(x)
+    xfirst <- (x$x)[1]
+    xlast <- rev(x$x)[1]
     if (! "f" %in% names(x)) x <- x %>% mutate(f = compute_freq(.))
-    x %>% summarise(m = sum(f * abs(x - ctr), na.rm = na.rm)) %>% pull(m)
+    madev(x[[1]], w = x$f, center = center, xlast = xlast, xfirst = xfirst)
 }
-
 
 #' @rdname hist_table.methods
 #' @export
-modval.hist_table <- function(x, ..., tbl = FALSE){
-    x <- x %>% rename(cls = 1)
-    if (! "d" %in% names(x)) x <- x %>% mutate(d = compute_dens(.))
-    pos <- x %>% summarise(pos = which.max(d)) %>% pull(pos)
-    if (! tbl) x %>% slice(pos) %>% pull(cls) %>% as.character
-    else slice(x, pos) %>% select(cls, d)
-}
-
-tile <- function(x, y = NULL, probs = NULL, tbl = FALSE){
-    xlast <- x %>% pull(x) %>% rev %>% .[1]
-    if (! inherits(x, "hist_table")) stop("x should be a hist_table object")
-    if (is.null(y)) stop("don't know what kind of tiles to compute")
-    if (! y %in% c("M", "F")) stop("y should be either F or M")
-    if (is.null(probs)) stop("don't know what values of tiles to compute")
-    if (! y %in% names(x)){
-        if (! "f" %in% names(x)) x <- x %>% mutate(f = compute_freq(.))
-        if (y == "F") x <- x %>% mutate(F = cumsum(f))
-        if (y == "M"){
-            if (! "m" %in% names(x)){
-                x <- x %>% mutate(m = f * x,
-                                  m = m / sum(m))
-            }
-            x <- x %>% mutate(M = cumsum(f * x))
-        }
-    }
-    if (tbl){
-        if (! "d" %in% names(x)) x <- x %>% mutate(d = compute_dens(.))
-        x <- x %>% rename(y = y) %>% select(1, x, y, d)
-    } 
-    else x <- x %>% rename(y = y) %>% select(1, x, y)
-    get_quant <- function(aprob){
-        pos <- x %>% mutate(zz = y > aprob) %>% pull(zz) %>% which
-        id <- pos[1]
-        if (id == 1L) Fm1 <- 0
-        else Fm1 <- x %>% pull(y) %>% .[id - 1]
-        F <- x %>% pull(y) %>% .[id]
-        x_cls <- x %>% pull(1)
-        a_x_cls <- as.character(x_cls[id])
-        if (tbl) a_d <- x %>% pull(d) %>% .[id]
-        a_quant <- acls2val(a_x_cls, (aprob - Fm1) / (F - Fm1), xlast = xlast)
-        if (tbl) list(cls = a_x_cls, p = aprob, d = a_d, q = a_quant) else a_quant
-    }
-    if (tbl) map_dfr(probs, get_quant) else map_dbl(probs, get_quant)
+modval.hist_table <- function(x, ...){
+    xfirst <- (x$x)[1]
+    xlast <- rev(x$x)[1]
+    if (! "d" %in% names(x))
+        d <- compute_dens(x, xlast = xlast, xfirst = xfirst)
+    pos <- which.max(d)
+    x[pos, , drop =FALSE]
 }
         
-
 #' @rdname hist_table.methods
 #' @export
-quantile.hist_table <- function(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...){
-    tile(x, y = "F", probs = probs, tbl = tbl)
+quantile.hist_table <- function(x, y = c("value", "mass"), probs = c(0.25, 0.5, 0.75), ...){
+    y <- match.arg(y)
+    if (! "f" %in% names(x)) x <- x %>% mutate(f = compute_freq(.))
+    if (y == "mass" & ! "m" %in% names(x)){
+        x <- x %>% mutate(m = f * x,
+                          m = m / sum(m))
+        y <- x %>% pull(m)
+    }
+    else y <- x %>% pull(f)
+    xfirst <- pull(x, x)[1]
+    xlast <- rev(pull(x, x))[1]
+    quantile(as.character(x[[1]]), y, probs = probs, xlast = xlast, xfirst = xfirst)
 }
 
 
 #' @rdname hist_table.methods
 #' @export
-median.hist_table <- function(x, na.rm, ..., tbl = FALSE){
-    quantile(x, 0.5, tbl = tbl)
+median.hist_table <- function(x, ...){
+    quantile(x, y = "value", 0.5)
 }
 
 
 #' @rdname hist_table.methods
 #' @export
-medial.hist_table <- function(x, tbl = FALSE){
-    tantile(x, 0.5, tbl = tbl)
+medial.hist_table <- function(x, ...){
+    quantile(x, y = "mass", probs = 0.5, ...)
 }
-
-
-#' @rdname hist_table.methods
-#' @export
-tantile <- function(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...)
-    tile(x, y = "M", probs = probs, tbl = tbl)
 
 
 #' @rdname hist_table.methods

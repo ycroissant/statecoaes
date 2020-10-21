@@ -9,7 +9,6 @@
 #'     last characters should be any of `[`, `(`, `]`, `)` and the
 #'     other characters should be interpreted as two numerical values
 #'     separated by a `,`
-#' @param y a series
 #' @param pos a numeric between 0 and 1, 0 for the lower bond, 1
 #'     for the upper bond, 0.5 for the center of the class (and any
 #'     other value between 0 and 1)
@@ -114,6 +113,7 @@ acls2val <- function(x, pos = 0, xfirst = NULL, xlast = NULL){
         if ((xfirst >= xl & xfirst <= xu))  xl <- xfirst - (xu - xfirst)
     if (! is.null(xlast)){
         if ((xlast >= xl & xlast <= xu))  xu <- xl + 2 * (xlast - xl)
+        else stop("irrelevant value for xlast")
     }
     else{
         if (is.infinite(xu))

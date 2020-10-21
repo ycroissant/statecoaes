@@ -15,6 +15,7 @@
 #' @param plot one of `histogram` (the default) and `freqpoly` ; in
 #'     the first case a tibble is returned with columns `x`, `y`,
 #'     `xend`, `yend` and in the second case `x` and `y`.
+#' @param ... further arguments
 #' @return a tibble
 #' @importFrom dplyr desc
 #' @export
@@ -35,7 +36,7 @@ pre_plot <- function(x, y = NULL, plot = NULL, ...)
 
 #' @rdname pre_plot
 #' @export
-pre_plot.hist_table <- function(x, y = NULL, plot = "histogram"){
+pre_plot.hist_table <- function(x, y = NULL, plot = "histogram", ...){
     data <- x
     if (! "x" %in% names(data))
         stop("the table should contains the center of the classes")
