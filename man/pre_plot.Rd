@@ -8,7 +8,7 @@
 \usage{
 pre_plot(x, y = NULL, plot = NULL, ...)
 
-\method{pre_plot}{hist_table}(x, y = NULL, plot = "histogram")
+\method{pre_plot}{hist_table}(x, y = NULL, plot = "histogram", ...)
 
 \method{pre_plot}{freq_table}(x, y = NULL, plot = NULL, ...)
 }
@@ -24,6 +24,8 @@ frequency or density}
 \item{plot}{one of \code{histogram} (the default) and \code{freqpoly} ; in
 the first case a tibble is returned with columns \code{x}, \code{y},
 \code{xend}, \code{yend} and in the second case \code{x} and \code{y}.}
+
+\item{...}{further arguments}
 }
 \value{
 a tibble

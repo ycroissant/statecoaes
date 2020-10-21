@@ -37,8 +37,6 @@ previous class times this coefficient (which default value is
 one)}
 
 \item{...}{further arguments}
-
-\item{y}{a series}
 }
 \value{
 a numerical vector

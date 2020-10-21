@@ -44,6 +44,9 @@ gini(x)
 \item{tbl}{if \code{TRUE} a tibble containing the class and the
 densities is returned}
 
+\item{center}{for the \code{madev} method, this can equal \code{"median"}
+(the default) or \code{"mean"}}
+
 \item{probs}{the probabilities for which the quantiles have to be
 computed}
 }
