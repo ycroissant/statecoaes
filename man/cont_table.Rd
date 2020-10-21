@@ -6,7 +6,6 @@
 \alias{joint}
 \alias{marginal}
 \alias{conditional}
-\alias{pre_print}
 \alias{pre_print.cont_table}
 \alias{format.cont_table}
 \title{Table de contingence}
@@ -32,8 +31,6 @@ joint(x)
 marginal(x, y = NULL)
 
 conditional(x, y = NULL)
-
-pre_print(x)
 
 \method{pre_print}{cont_table}(x)
 

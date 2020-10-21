@@ -37,8 +37,8 @@ supérieure, \code{a} pour l'amplitude}
 \item{xfirst}{une valeur numérique indiquant le centre de la
 première classe}
 
-\item{xlast}{une valeur numérique indiquant le centre de la dernière
-classe}
+\item{xlast}{une valeur numérique indiquant le centre de la
+dernière classe}
 
 \item{right}{un booléen indiquant si les classes doivent être
 fermées (\code{right = TRUE}) ou fermée (\code{right = FALSE}) à droite}
@@ -49,6 +49,14 @@ fermées (\code{right = TRUE}) ou fermée (\code{right = FALSE}) à droite}
 classe n'est pas renseignée, elle est fixée à la borne
 inférieure plus ce coefficient multiplié par la moitié de
 l'amplitude de la classe précédente}
+
+\item{tbl}{if \code{TRUE} a tibble is returned while using the \code{madev},
+\code{modval} or \code{medial} methods}
+
+\item{...}{further arguments}
+
+\item{na.rm}{should the missing values be stripped before the
+computation of the statistic,}
 }
 \value{
 un tibble contenant les valeurs de \code{vals} et de \code{cols}

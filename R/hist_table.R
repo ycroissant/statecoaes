@@ -18,8 +18,8 @@
 #' @param breaks un vecteur de limites de classes
 #' @param xfirst une valeur numérique indiquant le centre de la
 #'     première classe
-#' @param xlast une valeur numérique indiquant le centre de la dernière
-#'     classe
+#' @param xlast une valeur numérique indiquant le centre de la
+#'     dernière classe
 #' @param right un booléen indiquant si les classes doivent être
 #'     fermées (`right = TRUE`) ou fermée (`right = FALSE`) à droite
 #' @param total un total doit il être renvoyé ?
@@ -27,6 +27,11 @@
 #'     classe n'est pas renseignée, elle est fixée à la borne
 #'     inférieure plus ce coefficient multiplié par la moitié de
 #'     l'amplitude de la classe précédente
+#' @param tbl if `TRUE` a tibble is returned while using the `madev`,
+#'     `modval` or `medial` methods
+#' @param ... further arguments
+#' @param na.rm should the missing values be stripped before the
+#'     computation of the statistic,
 #' @return un tibble contenant les valeurs de `vals` et de `cols`
 #'     spécifiées
 #' @export
@@ -129,9 +134,6 @@ hist_table <- function(data, x, cols = "n", vals = "x", breaks = NULL,
     res <- res %>% select({{ x }}, all_of(c(vals_pos, cols_pos)))
     structure(res, class = c("hist_table", class(res)))
 }
-
-
-
     
 #' Methods for hist_table objects
 #'
@@ -173,15 +175,34 @@ mean.hist_table <- function(x, ..., na.rm = TRUE, tbl = FALSE){
     }
     else xb
 }
-        
 
-#' @name hist_table.methods
+#' @rdname hist_table.methods
 #' @export
-modval <- function(x, ...)
-    UseMethod("modval")
+variance.hist_table <- function(x, ..., na.rm = TRUE){
+    x <- x %>% rename(cls = 1)
+    if (! "f" %in% names(x)) x <- x %>% mutate(f = compute_freq(.))
+    x %>% summarise(xb = sum(x * f, na.rm = na.rm),
+                    v = sum(f * (x - xb) ^ 2, na.rm = na.rm)) %>% pull(v)
+}
+
+#' @rdname hist_table.methods
+#' @export
+stdev.hist_table <- function(x, ..., na.rm = TRUE)
+    x %>% variance %>% sqrt
+
+#' @rdname hist_table.methods
+#' @export
+madev.hist_table <- function(x, center = c("median", "mean"), ..., na.rm = TRUE){
+    center <- match.arg(center)
+    x <- x %>% rename(cls = 1)
+    if (center == "median") ctr <- median(x)
+    if (center == "mean") ctr <- mean(x)
+    if (! "f" %in% names(x)) x <- x %>% mutate(f = compute_freq(.))
+    x %>% summarise(m = sum(f * abs(x - ctr), na.rm = na.rm)) %>% pull(m)
+}
 
 
-#' @name hist_table.methods
+#' @rdname hist_table.methods
 #' @export
 modval.hist_table <- function(x, ..., tbl = FALSE){
     x <- x %>% rename(cls = 1)
@@ -229,38 +250,34 @@ tile <- function(x, y = NULL, probs = NULL, tbl = FALSE){
 }
         
 
-#' @name hist_table.methods
+#' @rdname hist_table.methods
 #' @export
 quantile.hist_table <- function(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...){
     tile(x, y = "F", probs = probs, tbl = tbl)
 }
 
 
-#' @name hist_table.methods
+#' @rdname hist_table.methods
 #' @export
 median.hist_table <- function(x, na.rm, ..., tbl = FALSE){
     quantile(x, 0.5, tbl = tbl)
 }
 
-#' @name hist_table.methods
-#' @export
-medial <- function(x, tbl = FALSE)
-    UseMethod("medial")
 
-#' @name hist_table.methods
+#' @rdname hist_table.methods
 #' @export
 medial.hist_table <- function(x, tbl = FALSE){
     tantile(x, 0.5, tbl = tbl)
 }
 
 
-#' @name hist_table.methods
+#' @rdname hist_table.methods
 #' @export
 tantile <- function(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...)
     tile(x, y = "M", probs = probs, tbl = tbl)
 
 
-#' @name hist_table.methods
+#' @rdname hist_table.methods
 #' @export
 gini <- function(x){
     if (! inherits(x, "hist_table")) stop("x should be a hist_table object")

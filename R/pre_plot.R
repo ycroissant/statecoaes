@@ -3,7 +3,7 @@
 #' Convert a tibble built using hist_table in a shape that make it
 #' easy to plot
 #'
-#' #'
+#' 
 #' @name pre_plot
 #' @aliases pre_plot
 #' @param x a tibble returned by the `hist_table` function, it
@@ -32,7 +32,6 @@
 #' 
 pre_plot <- function(x, y = NULL, plot = NULL, ...)
     UseMethod("pre_plot")
-
 
 #' @rdname pre_plot
 #' @export

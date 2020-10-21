@@ -3,11 +3,12 @@
 \name{hist_table.methods}
 \alias{hist_table.methods}
 \alias{mean.hist_table}
-\alias{modval}
+\alias{variance.hist_table}
+\alias{stdev.hist_table}
+\alias{madev.hist_table}
 \alias{modval.hist_table}
 \alias{quantile.hist_table}
 \alias{median.hist_table}
-\alias{medial}
 \alias{medial.hist_table}
 \alias{tantile}
 \alias{gini}
@@ -15,15 +16,17 @@
 \usage{
 \method{mean}{hist_table}(x, ..., na.rm = TRUE, tbl = FALSE)
 
-modval(x, ...)
+\method{variance}{hist_table}(x, ..., na.rm = TRUE)
+
+\method{stdev}{hist_table}(x, ..., na.rm = TRUE)
+
+\method{madev}{hist_table}(x, center = c("median", "mean"), ..., na.rm = TRUE)
 
 \method{modval}{hist_table}(x, ..., tbl = FALSE)
 
 \method{quantile}{hist_table}(x, probs = c(0.25, 0.5, 0.75), tbl = FALSE, ...)
 
 \method{median}{hist_table}(x, na.rm, ..., tbl = FALSE)
-
-medial(x, tbl = FALSE)
 
 \method{medial}{hist_table}(x, tbl = FALSE)
 

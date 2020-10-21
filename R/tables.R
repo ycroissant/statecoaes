@@ -178,10 +178,6 @@ conditional <- function(x, y = NULL){
     structure(x, class = c("cont_table", class(x)), y = y_name, limits = limits)
 }
     
-#' @rdname cont_table
-#' @export
-pre_print <- function(x)
-    UseMethod("pre_print")
 
 #' @rdname cont_table
 #' @export
