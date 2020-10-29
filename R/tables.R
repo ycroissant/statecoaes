@@ -27,13 +27,16 @@
 #' @param first2 the center of the first class for the second variable
 #' @param last2 the center of the last class for the second variable
 #' @param inflate2 the width of the last class for the second variable
+#' @param drop if `TRUE`, the default, a numeric is returned,
+#'     otherwise the result is a tibble
 #' @param ... d'autres arguments
 #' @param n the number of lines to print
 #' @param width the width of the table to print
 #' @param n_extra extra n lines
 #' @return un tibble
 #' @export
-#' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows mutate filter ungroup select
+#' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows
+#'     mutate filter ungroup select
 #' @importFrom tidyr pivot_wider
 #' @importFrom rlang set_names
 #' @author Yves Croissant
@@ -209,14 +212,32 @@ variance.cont_table <- function(x, ...)
 stdev.cont_table <- function(x, ...)
     fun.cont_table(x, fun = stdev, ...)
 
+#' @rdname cont_table
+#' @export
+covariance.cont_table <- function(x, drop = TRUE, ...){
+    x <- total.omit(x)
+    limits <- attr(x, "limits")
+    means <- x %>% mean
+    vals_1 <- tibble(unique(x[[1]])) %>% set_names(names(x)[1])
+    vals_1$val1 <- cls2val(vals_1[[1]], 0.5,
+                           xfirst  = limits[[1]]$first,
+                           xlast = limits[[1]]$last)
+    vals_2 <- tibble(unique(x[[2]])) %>% set_names(names(x)[2])
+    vals_2$val2 <- cls2val(vals_2[[1]], 0.5,
+                           xfirst  = limits[[2]]$first,
+                           xlast = limits[[2]]$last)
+    x <- x %>% left_join(vals_1) %>% left_join(vals_2)
+    x <- x %>% summarise(covariance = sum(f * (val1 - means[1]) * (val2 - means[2])))
+    if (drop) x <- x %>% pull
+    x
+}
 
 total.omit <- function(x) x[ x[[1]] != "Total" & x[[2]] != "Total", ]
 
 #' @rdname cont_table
 #' @export
-joint <- function(x){
+joint <- function(x)
     x %>% total.omit %>% mutate(eff = eff / sum(eff)) %>% rename(f = eff)
-}
 
 #' @rdname cont_table
 #' @export

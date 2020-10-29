@@ -5,6 +5,7 @@
 \alias{mean.cont_table}
 \alias{variance.cont_table}
 \alias{stdev.cont_table}
+\alias{covariance.cont_table}
 \alias{joint}
 \alias{marginal}
 \alias{conditional}
@@ -33,6 +34,8 @@ cont_table(
 \method{variance}{cont_table}(x, ...)
 
 \method{stdev}{cont_table}(x, ...)
+
+\method{covariance}{cont_table}(x, drop = TRUE, ...)
 
 joint(x)
 
@@ -72,6 +75,9 @@ tableau}
 \item{x}{un tibble contenant la table de contingence}
 
 \item{...}{d'autres arguments}
+
+\item{drop}{if \code{TRUE}, the default, a numeric is returned,
+otherwise the result is a tibble}
 
 \item{y}{la variable sur laquelle on veut réaliser l'opération}
 

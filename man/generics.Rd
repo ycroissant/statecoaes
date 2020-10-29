@@ -3,6 +3,7 @@
 \name{generics}
 \alias{generics}
 \alias{variance}
+\alias{covariance}
 \alias{stdev}
 \alias{madev}
 \alias{modval}
@@ -22,6 +23,8 @@
 \title{Generic functions provided by the statecoaes package}
 \usage{
 variance(x, ...)
+
+covariance(x, ...)
 
 stdev(x, ...)
 

@@ -28,6 +28,11 @@ variance <- function(x, ...)
 
 #' @rdname generics
 #' @export
+covariance <- function(x, ...)
+    UseMethod("covariance")
+
+#' @rdname generics
+#' @export
 stdev <- function(x, ...)
     UseMethod("stdev")
 
