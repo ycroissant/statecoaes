@@ -49,6 +49,7 @@ medial <- function(x, ...)
 #' @rdname generics
 #' @export
 variance.default <- function(x, w = NULL, xlast = NULL, xfirst = NULL, ...){
+    print(class(x))
     if (! (is.character(x) | is.factor(x))) stop("x should be either a factor or a character")
     if (is.factor(x)) x <- as.character(x)
     if (is.null(w)) stop("w should be indicated")
@@ -57,10 +58,24 @@ variance.default <- function(x, w = NULL, xlast = NULL, xfirst = NULL, ...){
     weighted.mean((x - xb) ^ 2, w)
 }
 
+
+#' @rdname generics
+#' @export
+variance.numeric <- function(x, w = NULL, ...){
+    xb <- weighted.mean(x, w)
+    weighted.mean((x - xb) ^ 2, w)
+}
+
 #' @rdname generics
 #' @export
 stdev.default <- function(x, w = NULL, xlast = NULL, xfirst = NULL, ...)
     sqrt(variance(x = x, w = w, xlast = xlast, xfirst = xfirst, ...))
+
+#' @rdname generics
+#' @export
+stdev.numeric <- function(x, w = NULL, ...)
+    sqrt(variance(x = x, w = w, ...))
+
 
 #' @rdname generics
 #' @export

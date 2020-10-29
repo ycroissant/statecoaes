@@ -194,6 +194,22 @@ fun.cont_table <- function(x, fun = weighted.mean, ...){
     x
 }
 
+#' @rdname cont_table
+#' @export
+mean.cont_table <- function(x, ...)
+    fun.cont_table(x, fun = weighted.mean, ...)
+
+#' @rdname cont_table
+#' @export
+variance.cont_table <- function(x, ...)
+    fun.cont_table(x, fun = variance, ...)
+
+#' @rdname cont_table
+#' @export
+stdev.cont_table <- function(x, ...)
+    fun.cont_table(x, fun = stdev, ...)
+
+
 total.omit <- function(x) x[ x[[1]] != "Total" & x[[2]] != "Total", ]
 
 #' @rdname cont_table

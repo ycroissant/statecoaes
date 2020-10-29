@@ -3,6 +3,8 @@
 \name{cont_table}
 \alias{cont_table}
 \alias{mean.cont_table}
+\alias{variance.cont_table}
+\alias{stdev.cont_table}
 \alias{joint}
 \alias{marginal}
 \alias{conditional}
@@ -25,6 +27,12 @@ cont_table(
 )
 
 \method{mean}{cont_table}(x, ...)
+
+\method{mean}{cont_table}(x, ...)
+
+\method{variance}{cont_table}(x, ...)
+
+\method{stdev}{cont_table}(x, ...)
 
 joint(x)
 

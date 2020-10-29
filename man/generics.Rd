@@ -8,7 +8,9 @@
 \alias{modval}
 \alias{medial}
 \alias{variance.default}
+\alias{variance.numeric}
 \alias{stdev.default}
+\alias{stdev.numeric}
 \alias{madev.default}
 \alias{quantile.character}
 \alias{quantile.factor}
@@ -31,7 +33,11 @@ medial(x, ...)
 
 \method{variance}{default}(x, w = NULL, xlast = NULL, xfirst = NULL, ...)
 
+\method{variance}{numeric}(x, w = NULL, ...)
+
 \method{stdev}{default}(x, w = NULL, xlast = NULL, xfirst = NULL, ...)
+
+\method{stdev}{numeric}(x, w = NULL, ...)
 
 \method{madev}{default}(
   x,
