@@ -4,6 +4,7 @@
 \alias{pre_plot}
 \alias{pre_plot.hist_table}
 \alias{pre_plot.freq_table}
+\alias{pre_plot.cont_table}
 \title{Put a tibble in form to plot}
 \usage{
 pre_plot(x, y = NULL, plot = NULL, ...)
@@ -11,6 +12,8 @@ pre_plot(x, y = NULL, plot = NULL, ...)
 \method{pre_plot}{hist_table}(x, y = NULL, plot = "histogram", ...)
 
 \method{pre_plot}{freq_table}(x, y = NULL, plot = NULL, ...)
+
+\method{pre_plot}{cont_table}(x, ...)
 }
 \arguments{
 \item{x}{a tibble returned by the \code{hist_table} function, it
