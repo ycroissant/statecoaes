@@ -55,12 +55,17 @@ cls2val <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL, ...
 #' @export
 cls2val.character <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL, ...){
     K <- length(x)
-    if (length(unique(x)) != K)
-        stop("no duplicated values allowed for the character method of cls2val")
+    ox <- x
+    if (length(unique(x)) != K){
+#        warning("no duplicated values allowed for the character method of cls2val")
+        ox <- x
+        x <- unique(x)
+        K <- length(x)
+    }
+    cls <- x
     if (! is.null(xlast) & ! is.null(inflate)) stop("only one of last or inflate should be set")
     if (! is.numeric(pos)) stop("pos should be numeric")
     if (is.numeric(pos) & ! (pos >= 0 & pos <= 1)) stop("pos should be between 0 and 1")
-    ox <- x
     x <- x %>% as.character %>% strsplit(",")
     if (length(x[[1]]) == 1) stop("the series doesn't seem to be numeric")
     xl <- sapply(x, function(x) x[1])
@@ -71,6 +76,7 @@ cls2val.character <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate =
     xu <- xu[ord_x]
     xl <- xl[ord_x]
     x <- x[ord_x]
+    cls <- cls[ord_x]
     if (any(is.na(xl))) stop("the series doesn't seem to be numeric")
     if (! is.null(xfirst)){
         if (! (xfirst >= xl[1] & xfirst <= xu[1])) stop("irrelevant value for xfirst")
@@ -87,7 +93,9 @@ cls2val.character <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate =
             else xu[K] <- xl[K] + inflate * (xl[K]- xl[K - 1])
         }
     }
-    x <- (1 - pos) * xl + pos * xu
+    xnum <- (1 - pos) * xl + pos * xu
+    x2 <- tibble(cls = cls, center = xnum)
+    x <- tibble(cls = ox) %>% left_join(tibble(cls = cls, center = xnum)) %>% pull(center)
     x
 }
 

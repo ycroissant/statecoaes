@@ -97,3 +97,15 @@ pre_plot.freq_table <- function(x, y = NULL, plot = NULL, ...){
     x %>% total.omit %>% arrange(desc(!! as.symbol(z))) %>%
         mutate(ypos = cumsum(!! as.symbol(y)) - 0.5 * !! as.symbol(y))
 }
+
+#' @rdname pre_plot
+#' @export
+pre_plot.cont_table <- function(x, ...){
+    x <- x %>% total.omit
+    lim1 <- attr(x, "limits")[[1]]
+    lim2 <- attr(x, "limits")[[2]]
+    x <- as_tibble(x)
+    x[[1]] <- cls2val(x[[1]], 0.5, xfirst = lim1$first, xlast = lim1$last)
+    x[[2]] <- cls2val(x[[2]], 0.5, xfirst = lim2$first, xlast = lim2$last)
+    x
+}
