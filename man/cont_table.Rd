@@ -27,13 +27,11 @@ cont_table(
   inflate2 = NULL
 )
 
-\method{mean}{cont_table}(x, ...)
+\method{mean}{cont_table}(x, ..., drop = TRUE)
 
-\method{mean}{cont_table}(x, ...)
+\method{variance}{cont_table}(x, ..., drop = TRUE)
 
-\method{variance}{cont_table}(x, ...)
-
-\method{stdev}{cont_table}(x, ...)
+\method{stdev}{cont_table}(x, ..., drop = TRUE)
 
 \method{covariance}{cont_table}(x, drop = TRUE, ...)
 
