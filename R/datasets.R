@@ -219,7 +219,9 @@ NULL
 #' - département : le code du département de naissance,
 #' - sexe : le sexe de l'enfant,
 #' - mois : le mois de la naissance,
-#' - age : l'âge de la mère.
+#' - age : l'âge de la mère,
+#' - tranche : tranche d'âge de la mère,
+#' - trimestre : trimestre de naissance
 #'
 #' @source Etat civil, site de l'[INSEE](www.insee.fr)
 #' 

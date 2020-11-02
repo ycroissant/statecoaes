@@ -10,7 +10,9 @@ Un tibble contenant :
 \item département : le code du département de naissance,
 \item sexe : le sexe de l'enfant,
 \item mois : le mois de la naissance,
-\item age : l'âge de la mère.
+\item age : l'âge de la mère,
+\item tranche : tranche d'âge de la mère,
+\item trimestre : trimestre de naissance
 }
 }
 \source{
