@@ -102,7 +102,7 @@ pour calculer la moyenne.
 \examples{
 
 cont_table(Emploi, diplome, sexe)
-cont_table(Emploi, diplome, sexe, pond = pondérations)
+cont_table(Emploi, diplome, sexe, pond = ponderations)
 cont_table(Emploi, diplome, sexe) \%>\% conditional(sexe)
 cont_table(Salaires, salaire, taille)
 cont_table(Salaires, salaire, taille) \%>\% joint
