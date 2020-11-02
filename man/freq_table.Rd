@@ -62,9 +62,9 @@ fréquences associées
 }
 \examples{
 
-freq_table(Emploi, activité, "n")
-freq_table(Emploi, activité, "nN")
-freq_table(Emploi, activité, "fF", weights = pondérations)
+freq_table(Emploi, activite, "n")
+freq_table(Emploi, activite, "nN")
+freq_table(Emploi, activite, "fF", weights = ponderations)
 freq_table(RGP78, enfants, "npNP")
 freq_table(RGP78, enfants, "npNP", max = 5)
 }
