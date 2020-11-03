@@ -13,7 +13,9 @@
 #' @name cont_table
 #' @aliases cont_table
 #' @param data un tibble
-#' @param x un tibble contenant la table de contingence
+#' @param x,object un tibble contenant la table de contingence
+#' @param formula une formule qui décrit le modèle à estimer pour la
+#'     fonction `regline`
 #' @param y la variable sur laquelle on veut réaliser l'opération
 #' @param y1 une première variable catégorielle
 #' @param y2 une seconde variable catégorielle
@@ -39,11 +41,12 @@
 #'     mutate filter ungroup select
 #' @importFrom tidyr pivot_wider
 #' @importFrom rlang set_names
+#' @importFrom stat var
 #' @author Yves Croissant
 #' @examples
 #'
 #' cont_table(Emploi, diplome, sexe)
-#' cont_table(Emploi, diplome, sexe, pond = pondérations)
+#' cont_table(Emploi, diplome, sexe, pond = ponderations)
 #' cont_table(Emploi, diplome, sexe) %>% conditional(sexe)
 #' cont_table(Salaires, salaire, taille)
 #' cont_table(Salaires, salaire, taille) %>% joint
@@ -85,10 +88,7 @@ cont_table <- function(data, y1, y2, pond = NULL,
               limits = limits)
 }
 
-    
-#' @rdname cont_table
-#' @export
-mean.cont_table <- function(x, ...){
+fun.cont_table <- function(x, fun = weighted.mean, drop = TRUE, ...){
     if (! is.null(attr(x, "y"))){
         y_name <- attr(x, "y")
         y <- x %>% .[[y_name]] %>% unique %>% setdiff("Total")
@@ -101,61 +101,7 @@ mean.cont_table <- function(x, ...){
     }
     else y_name <- NULL
     if (length(x) == 2){
-        x[[y_name]] <- y_ctr[x[[y_name]]]
-        x <- x %>% summarise(mean = sum(!! as.symbol(y_name) * f)) %>%
-            set_names(y_name)
-    }
-    else{
-        if (! is.null(y_name)){
-            # conditional distribution
-            cond_name <- setdiff(names(x)[1:2], y_name)
-            x[[y_name]] <- y_ctr[x[[y_name]]]
-            # put the levels of the conditional variable in the right order
-            y <- x %>% pull(cond_name) %>% unique %>% tibble %>% set_names(cond_name)
-            x <- x %>% group_by( !! as.symbol(cond_name)) %>%
-                summarise(mean = sum( !! as.symbol(y_name) * f)) %>%
-                set_names(c(cond_name, y_name))
-            x <- y %>% left_join(x)
-        }
-        else{
-            limits <- attr(x, "limits")
-            y1 <- x %>% pull(1) %>% unique %>% setdiff("Total")
-            y1_ctr <- cls2val(y1, 0.5,
-                              xfirst = limits[[1]]$first,
-                              xlast = limits[[1]]$last,
-                              inflate = limits[[1]]$inflate)
-            names(y1_ctr) <- y1
-            x[[1]] <- y1_ctr[x[[1]]]
-            
-            y2 <- x %>% pull(2) %>% unique %>% setdiff("Total")
-            y2_ctr <- cls2val(y2, 0.5,
-                              xfirst = limits[[2]]$first,
-                              xlast = limits[[2]]$last,
-                              inflate = limits[[2]]$inflate)
-            names(y2_ctr) <- y2
-            x[[2]] <- y2_ctr[x[[2]]]
-            x <- x %>% summarise(mean1 = sum( !! as.symbol(names(x)[1]) * f / sum(f)),
-                                 mean2 = sum( !! as.symbol(names(x)[2]) * f / sum(f))) %>%
-                set_names(c(names(x)[1], names(x)[2]))
-        }
-    }
-    x
-}
-
-
-fun.cont_table <- function(x, fun = weighted.mean, ...){
-    if (! is.null(attr(x, "y"))){
-        y_name <- attr(x, "y")
-        y <- x %>% .[[y_name]] %>% unique %>% setdiff("Total")
-        limits <- attr(x, "limits")[[y_name]]
-        y_ctr <- cls2val(y, 0.5,
-                         xfirst = limits$first,
-                         xlast = limits$last,
-                         inflate = limits$inflate)
-        names(y_ctr) <- y
-    }
-    else y_name <- NULL
-    if (length(x) == 2){
+        # marginal distribution
         x[[y_name]] <- y_ctr[x[[y_name]]]
         x <- x %>% summarise(stat = fun(!! as.symbol(y_name), w = f, ...)) %>%
             set_names(y_name)
@@ -170,9 +116,10 @@ fun.cont_table <- function(x, fun = weighted.mean, ...){
             x <- x %>% group_by( !! as.symbol(cond_name)) %>%
                 summarise(stat = fun(!! as.symbol(y_name), w = f, ...)) %>%
                 set_names(c(cond_name, y_name))
-            x <- y %>% left_join(x)
+            x <- y %>% left_join(x, by = cond_name)
         }
         else{
+            # joint distribution
             limits <- attr(x, "limits")
             y1 <- x %>% pull(1) %>% unique %>% setdiff("Total")
             y1_ctr <- cls2val(y1, 0.5,
@@ -181,7 +128,6 @@ fun.cont_table <- function(x, fun = weighted.mean, ...){
                               inflate = limits[[1]]$inflate)
             names(y1_ctr) <- y1
             x[[1]] <- y1_ctr[x[[1]]]
-            
             y2 <- x %>% pull(2) %>% unique %>% setdiff("Total")
             y2_ctr <- cls2val(y2, 0.5,
                               xfirst = limits[[2]]$first,
@@ -194,23 +140,24 @@ fun.cont_table <- function(x, fun = weighted.mean, ...){
                 set_names(c(names(x)[1], names(x)[2]))
         }
     }
+    if (ncol(x) == 1) x <- x %>% pull
     x
 }
 
 #' @rdname cont_table
 #' @export
-mean.cont_table <- function(x, ...)
-    fun.cont_table(x, fun = weighted.mean, ...)
+mean.cont_table <- function(x, ..., drop = TRUE)
+    fun.cont_table(x, fun = weighted.mean, drop = drop, ...)
 
 #' @rdname cont_table
 #' @export
-variance.cont_table <- function(x, ...)
-    fun.cont_table(x, fun = variance, ...)
+variance.cont_table <- function(x, ..., drop = TRUE)
+    fun.cont_table(x, fun = variance, drop = drop, ...)
 
 #' @rdname cont_table
 #' @export
-stdev.cont_table <- function(x, ...)
-    fun.cont_table(x, fun = stdev, ...)
+stdev.cont_table <- function(x, ..., drop = TRUE)
+    fun.cont_table(x, fun = stdev, drop = drop, ...)
 
 #' @rdname cont_table
 #' @export
@@ -226,7 +173,9 @@ covariance.cont_table <- function(x, drop = TRUE, ...){
     vals_2$val2 <- cls2val(vals_2[[1]], 0.5,
                            xfirst  = limits[[2]]$first,
                            xlast = limits[[2]]$last)
-    x <- x %>% left_join(vals_1) %>% left_join(vals_2)
+    x <- x %>%
+        left_join(vals_1, by = names(vals_1)[1]) %>%
+        left_join(vals_2, by = names(vals_2)[1])
     x <- x %>% summarise(covariance = sum(f * (val1 - means[1]) * (val2 - means[2])))
     if (drop) x <- x %>% pull
     x
@@ -241,35 +190,101 @@ joint <- function(x)
 
 #' @rdname cont_table
 #' @export
-marginal <- function(x, y = NULL){
-    limits <- attr(x, "limits")
-    N <- x %>% total.omit %>% summarise(N = sum(eff)) %>% pull(N)
-    y_name <- deparse(substitute(y))
-    y_name <- ifelse(y_name == "NULL", NA, y_name)
-    if (is.na(y_name)) stop("y should be indicated")
-    if (! y_name %in% names(x)[1:2]) stop(y_name, "unknown")
-    # put the classes in the right order
-    y_ord <- tibble(unique(setdiff(x[[y_name]], "Total"))) %>% set_names(y_name)
-    x <- x %>% total.omit %>% group_by( {{ y }}) %>%
-        summarise(f = sum(eff)) %>% mutate(f = f / sum(f))
-    x <- y_ord %>% left_join(x)
-    structure(x, class = c("cont_table", class(x)), y = y_name, limits = limits)
-}
-
-#' @rdname cont_table
-#' @export
 conditional <- function(x, y = NULL){
     limits <- attr(x, "limits")
     y_name <- deparse(substitute(y))
     if (y_name == "NULL") y_name <- NA
     if (is.na(y_name)) stop("the variable should be indicated")
-    if (! y_name %in% names(x)[1:2]) stop(paste("variable", y_name, "unknown"))
+    if (! y_name %in% names(x)[1:2]){
+        if (is.numeric(y)){
+            y <- as.integer(y)
+            if (! y %in% 1L:2L) stop("y should be equal to 1 or 2")
+            y_name <- names(x)[y]
+        }
+        if (is.character(y)){
+            if (! y %in% names(x)[1:2]) stop("y don't exist")
+            else y_name <- y
+        }
+    }
     cond_name <- setdiff(names(x)[1:2], y_name)
     x <- x %>% total.omit %>% group_by(!! as.symbol(cond_name)) %>%
         mutate(eff = eff / sum(eff)) %>% ungroup %>% rename(f = eff)
     structure(x, class = c("cont_table", class(x)), y = y_name, limits = limits)
 }
-    
+
+#' @rdname cont_table
+#' @export
+marginal <- function(x, y = NULL){
+    limits <- attr(x, "limits")
+    N <- x %>% total.omit %>% summarise(N = sum(eff)) %>% pull(N)
+    y_name <- deparse(substitute(y))
+    if (y_name == "NULL") y_name <- NA
+    if (is.na(y_name)) stop("the variable should be indicated")
+    if (! y_name %in% names(x)[1:2]){
+        if (is.numeric(y)){
+            y <- as.integer(y)
+            if (! y %in% 1L:2L) stop("y should be equal to 1 or 2")
+            y_name <- names(x)[y]
+        }
+        if (is.character(y)){
+            if (! y %in% names(x)[1:2]) stop("y don't exist")
+            else y_name <- y
+        }
+    }
+    # put the classes in the right order
+    y_ord <- tibble(unique(setdiff(x[[y_name]], "Total"))) %>% set_names(y_name)
+    x <- x %>% total.omit %>% group_by(!! as.symbol(y_name)) %>%
+        summarise(f = sum(eff)) %>% mutate(f = f / sum(f))
+    x <- y_ord %>% left_join(x, by = y_name)
+    structure(x, class = c("cont_table", class(x)), y = y_name, limits = limits)
+}
+
+
+#' @rdname cont_table
+#' @export
+var_decomp <- function(x, y){
+    if (is.numeric(y)) y <- names(x)[y]
+    cond <- setdiff(names(x)[1:2], y)
+    cond_pos <- match(cond, names(x)[1:2])
+    var_name <- y
+    m_x <- x %>% conditional(y) %>% mean
+    s2_x <- x %>% conditional(y) %>% variance
+    f_y <- x %>% marginal(cond)
+    val_y <- x %>% cls2val(cond_pos)
+    names(m_x)[2] <- "mean"#paste("mean", var_name, sep = "_")
+    names(s2_x)[2] <- "var"#paste("var", var_name, sep = "_")
+    x <- val_y %>% left_join(f_y, by = cond) %>% left_join(m_x, by = cond) %>% left_join(s2_x, by = cond)
+    structure(x, class = c("decomp", class(x)))
+}
+
+#' @rdname cont_table
+#' @export
+summary.var_decomp <- function(object, ...){
+    object %>% summarise(gmean = sum(mean * f),
+                         inter = sum( (mean - gmean) ^ 2 * f),
+                         intra = sum(var * f),
+                         total = inter + intra,
+                         ratio = inter / total) %>%
+        select(- gmean)
+}
+
+#' @rdname cont_table
+#' @export
+regline <- function(formula, data){
+    if (! inherits(data, "cont_table")) stop("regline only suitable for cont_table data")
+    formula <- as.list(formula)
+    y <- paste(deparse(formula[[2]]))
+    x <- paste(deparse(formula[[3]]))
+    if (! y %in% names(data)[1:2]) stop(paste(y, "doesn't exist"))
+    if (! x %in% names(data)[1:2]) stop(paste(x, "doesn't exist"))
+    c_xy <- data %>% joint %>% covariance
+    m_x <- data %>% marginal(x) %>% mean
+    m_y <- data %>% marginal(y) %>% mean
+    v_x <- data %>% marginal(x) %>% mean
+    slope <- c_xy / v_x
+    intercept <- m_y - slope * m_x
+    c(intercept, slope)
+}
 
 #' @rdname cont_table
 #' @export

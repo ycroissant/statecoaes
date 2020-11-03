@@ -95,7 +95,7 @@ cls2val.character <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate =
     }
     xnum <- (1 - pos) * xl + pos * xu
     x2 <- tibble(cls = cls, center = xnum)
-    x <- tibble(cls = ox) %>% left_join(tibble(cls = cls, center = xnum)) %>% pull(center)
+    x <- tibble(cls = ox) %>% left_join(tibble(cls = cls, center = xnum), by = "cls") %>% pull(center)
     x
 }
 
@@ -106,7 +106,7 @@ cls2val.factor <- function(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NU
     cls_val <- tibble(x = lev_x,
                       x_center = cls2val(x = x, pos = pos, xfirst = xfirst,
                                          xlast = xlast, inflate = inflate))
-    left_join(tibble(x = as.character(x)), cls_val) %>% pull(x_center)
+    left_join(tibble(x = as.character(x)), cls_val, by = "x") %>% pull(x_center)
 }
 
 acls2val <- function(x, pos = 0, xfirst = NULL, xlast = NULL){
@@ -179,7 +179,7 @@ recut <- function(x, breaks = NULL){
                                 sep = "")
     cls_table <- cls_table %>% mutate(new_cls = cut(center, breaks, right = right)) %>%
         select(x, new_cls)
-    tibble(x = x) %>% left_join(cls_table) %>% pull(new_cls)
+    tibble(x = x) %>% left_join(cls_table, by = "x") %>% pull(new_cls)
 }
 
 
