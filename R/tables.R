@@ -305,6 +305,3 @@ format.cont_table <- function(x, ..., n = NULL, width = NULL, n_extra = NULL){
     class(x) <- setdiff(class(x), "cont_table")
     format(x, ..., n = n, width = width, n_extra = n_extra)
 }    
-
-
-

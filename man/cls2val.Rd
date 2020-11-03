@@ -4,6 +4,7 @@
 \alias{cls2val}
 \alias{cls2val.character}
 \alias{cls2val.factor}
+\alias{cls2val.cont_table}
 \title{Convert class to values}
 \usage{
 cls2val(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL, ...)
@@ -11,6 +12,8 @@ cls2val(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL, ...)
 \method{cls2val}{character}(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL, ...)
 
 \method{cls2val}{factor}(x, pos = 0, xfirst = NULL, xlast = NULL, inflate = NULL, ...)
+
+\method{cls2val}{cont_table}(x, y = 1, pos = 0.5, ...)
 }
 \arguments{
 \item{x}{a series that contains a class of values, the first and

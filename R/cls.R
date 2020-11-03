@@ -182,5 +182,13 @@ recut <- function(x, breaks = NULL){
     tibble(x = x) %>% left_join(cls_table, by = "x") %>% pull(new_cls)
 }
 
-
-
+#' @rdname cls2val
+#' @export
+cls2val.cont_table <- function(x, y = 1, pos = 0.5, ...){
+    nms_x <- names(x)[[y]]
+    x <- x %>% total.omit
+    lim <- attr(x, "limits")[[y]]
+    x_cls <- x[[y]]
+    x_val <- cls2val(x[[y]], pos = pos, xfirst = lim$first, xlast = lim$last, inflate = lim$inflate)
+    tibble(cls = x_cls, val = x_val) %>% unique %>% set_names(c(nms_x, paste(nms_x, "val", sep = "_")))
+}
