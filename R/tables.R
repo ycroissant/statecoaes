@@ -41,7 +41,7 @@
 #'     mutate filter ungroup select
 #' @importFrom tidyr pivot_wider
 #' @importFrom rlang set_names
-#' @importFrom stat var
+#' @importFrom stats var
 #' @author Yves Croissant
 #' @examples
 #'
