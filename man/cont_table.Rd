@@ -7,8 +7,11 @@
 \alias{stdev.cont_table}
 \alias{covariance.cont_table}
 \alias{joint}
-\alias{marginal}
 \alias{conditional}
+\alias{marginal}
+\alias{var_decomp}
+\alias{summary.var_decomp}
+\alias{regline}
 \alias{pre_print.cont_table}
 \alias{format.cont_table}
 \title{Table de contingence}
@@ -37,9 +40,15 @@ cont_table(
 
 joint(x)
 
+conditional(x, y = NULL)
+
 marginal(x, y = NULL)
 
-conditional(x, y = NULL)
+var_decomp(x, y)
+
+\method{summary}{var_decomp}(object, ...)
+
+regline(formula, data)
 
 \method{pre_print}{cont_table}(x)
 
@@ -70,7 +79,7 @@ tableau}
 
 \item{inflate2}{the width of the last class for the second variable}
 
-\item{x}{un tibble contenant la table de contingence}
+\item{x, object}{un tibble contenant la table de contingence}
 
 \item{...}{d'autres arguments}
 
@@ -78,6 +87,9 @@ tableau}
 otherwise the result is a tibble}
 
 \item{y}{la variable sur laquelle on veut réaliser l'opération}
+
+\item{formula}{une formule qui décrit le modèle à estimer pour la
+fonction \code{regline}}
 
 \item{n}{the number of lines to print}
 
