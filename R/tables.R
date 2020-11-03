@@ -254,7 +254,7 @@ var_decomp <- function(x, y){
     names(m_x)[2] <- "mean"#paste("mean", var_name, sep = "_")
     names(s2_x)[2] <- "var"#paste("var", var_name, sep = "_")
     x <- val_y %>% left_join(f_y, by = cond) %>% left_join(m_x, by = cond) %>% left_join(s2_x, by = cond)
-    structure(x, class = c("decomp", class(x)))
+    structure(x, class = c("var_decomp", class(x)))
 }
 
 #' @rdname cont_table
