@@ -470,3 +470,28 @@ NULL
 #' [site de l'INSEE](https://www.insee.fr/fr/statistiques/4507685?sommaire=4508161)
 #'
 NULL
+
+
+#' Relation entre richesse et développement
+#'
+#' Données sur l'espérance de vie et le PIB par tête, qui permettent
+#' d'analyser la relation entre richesse et développement
+#' 
+#' @name Deaton
+#' @docType data
+#' @format Un tibble de 179 observations contenant :
+#' - code : le code du pays
+#' - nom : le nom du pays
+#' - region : la région du monde dans laquelle est située le pays
+#' - incgp : le groupe de revenu du pays
+#' - gdp : le PIB par tête
+#' - pop : la population
+#' - le : l'espérance de vie
+#' - subnom : un sous-ensemble de 17 noms de pays
+#' 
+#' @source
+#' [site de la banque mondiale](https://www.https://databank.worldbank.org/home.aspx)
+#'
+NULL
+
+
