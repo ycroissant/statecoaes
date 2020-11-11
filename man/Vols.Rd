@@ -7,10 +7,8 @@
 \format{
 Un tibble contenant :
 \itemize{
-\item date : la date d'observation (dernier jour du trimestre),
-\item an : l'année d'observation,
-\item trimestre : le trimestre d'observation
-\item pays : code du pays (2 caractères)
+\item date : la date d'observation (premier jour du mois),
+\item vols : nombe de vols
 \item passagers : nombre de passagers transportés
 }
 }
@@ -18,6 +16,6 @@ Un tibble contenant :
 \href{https://ec.europa.eu/eurostat/fr/}{site d'Eurostat}
 }
 \description{
-Ce jeux de données indique pour les différents pays de l'union
-européenne le nombre de trajets en avion réalisés par trimestre
+Ce jeux de données indique pour l'Italie le nombre de vols et le
+nombre de passagers par mois
 }

@@ -320,16 +320,14 @@ NULL
 
 #' Transport aérien en Europe
 #'
-#' Ce jeux de données indique pour les différents pays de l'union
-#' européenne le nombre de trajets en avion réalisés par trimestre
+#' Ce jeux de données indique pour l'Italie le nombre de vols et le
+#' nombre de passagers par mois
 #'
 #' @name Vols
 #' @docType data
 #' @format Un tibble contenant :
-#' - date : la date d'observation (dernier jour du trimestre),
-#' - an : l'année d'observation,
-#' - trimestre : le trimestre d'observation
-#' - pays : code du pays (2 caractères)
+#' - date : la date d'observation (premier jour du mois),
+#' - vols : nombe de vols
 #' - passagers : nombre de passagers transportés
 #'
 #' @source
