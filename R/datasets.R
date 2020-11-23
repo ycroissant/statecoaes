@@ -454,7 +454,7 @@ NULL
 #' Différentes informations concernant les familles en Seine et Marne,
 #' issues du recensement de la population de 2017
 #' 
-#' @name RGP78
+#' @name RGP77
 #' @docType data
 #' @format Un tibble de 101,987 observations contenant :
 #' - voitures : le nombre de voitures
@@ -493,3 +493,19 @@ NULL
 NULL
 
 
+#' Ventes de voitures d'occasion
+#'
+#' Données sur des voitures d'occasion aux Etats-Unis vendues sur le site Ebay
+#'
+#' @name Ebay
+#' @docType data
+#' @format Un tibble contenant :
+#' - miles : le kilométrage,
+#' - bid : le montant de l'enchère gagnante,
+#' - year : l'année de mise en service de la voiture
+#'
+#' @source
+#' [Journal of Applied Econometrics data archive](https://qed.econ.queensu.ca/jae/)
+#' @references
+#' LEWI:11
+NULL
