@@ -272,19 +272,17 @@ NULL
 
 NULL
 
-#' Pêche au Merlan
+#' Pêche en France
 #'
-#' Pêche au Merlan (volume et valeur) par semaine pour les différents ports de pêche francais
+#' Données hebdomadaires sur la pêche en France pour différents types de poissons
 #'
-#' @name Merlan
+#' @name Poissons
 #' @docType data
 #' @format Un tibble contenant :
-#' - debut : date de début de la semaine d'observation
-#' - fin : date de la fin de la semaine d'observation
+#' - poisson : espèce de poisson
+#' - date : date de début de la semaine d'observation
 #' - poids : quantité de merlan pêchée en kg
 #' - valeur : valeur des ventes de merlan
-#' - id : identifiant du port
-#' - nom : nom du port
 #'
 #' @source
 #' [site data.gouv.fr](https://www.data.gouv.fr/fr/datasets/serie-hebdomadaire-par-espece-produits-de-la-mer/)
