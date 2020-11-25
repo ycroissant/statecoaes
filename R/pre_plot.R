@@ -6,15 +6,19 @@
 #' 
 #' @name pre_plot
 #' @aliases pre_plot
-#' @param x a tibble returned by the `hist_table` function, it
-#'     should contains the center of the classes (`x`) and at least
-#'     one measure of the frequencies or densities (one of `f`, `n`,
-#'     `p`, `d`)
+#' @param x a tibble returned by the `hist_table` function, it should
+#'     contains the center of the classes (`x`) and at least one
+#'     measure of the frequencies or densities (one of `f`, `n`, `p`,
+#'     `d`)
 #' @param y mandatory argument if the tibble contains more than one
 #'     frequency or density
-#' @param plot one of `histogram` (the default) and `freqpoly` ; in
-#'     the first case a tibble is returned with columns `x`, `y`,
-#'     `xend`, `yend` and in the second case `x` and `y`.
+#' @param plot for object of class `hist_table` one of `histogram`
+#'     (the default) and `freqpoly` : in the first case a tibble is
+#'     returned with columns `x`, `y`, `xend`, `yend` and in the
+#'     second case `x` and `y` ; for object of class `freq_table` one
+#'     of `banner` (the default) and `cumulative` : in the first case
+#'     a tibble is returned with columns `x`, `y` and in the second
+#'     case `x`, `y`, `xend` and `yend`.
 #' @param ... further arguments
 #' @return a tibble
 #' @importFrom dplyr desc
@@ -90,12 +94,28 @@ pre_plot.hist_table <- function(x, y = NULL, plot = "histogram", ...){
 
 #' @rdname pre_plot
 #' @export
-pre_plot.freq_table <- function(x, y = NULL, plot = NULL, ...){
-    if (is.null(y)) y <- names(x)[2]
-    x <- x %>% select(1, all_of(y))
-    z <- x %>% names %>% .[1]
-    x %>% total.omit %>% arrange(desc(!! as.symbol(z))) %>%
-        mutate(ypos = cumsum(!! as.symbol(y)) - 0.5 * !! as.symbol(y))
+pre_plot.freq_table <- function(x, y = NULL, plot = "banner", ...){
+    if (plot == "banner"){
+        if (is.null(y)) y <- names(x)[2]
+        x <- x %>% select(1, all_of(y))
+        z <- x %>% names %>% .[1]
+        x <- x %>% total.omit %>%
+            arrange(desc(!! as.symbol(z))) %>%
+            mutate(ypos = cumsum(!! as.symbol(y)) - 0.5 * !! as.symbol(y))
+    }
+    if (plot == "cumulative"){
+        if (! "F" %in% names(x)) stop("the frequency table should contain F")
+        x <- x %>% select(x = 1, y = F) %>% 
+            mutate(ly = lag(y), lx =  lag(x)) %>%
+            transmute(x_hor = x, xend_hor = lag(x), y_hor = y, yend_hor = y,
+                      x_vert = lag(x), xend_vert = lag(x), y_vert = y, yend_vert = lag(y)) %>%
+            pivot_longer(1:8) %>%
+            separate(name, into = c("coord", "pos")) %>%
+            bind_cols(id = rep(1:(2 * nrow(x)), each = 4)) %>%
+            pivot_wider(names_from = coord, values_from = value) %>%
+            select(-id)
+    }
+    x
 }
 
 #' @rdname pre_plot

@@ -11,22 +11,26 @@ pre_plot(x, y = NULL, plot = NULL, ...)
 
 \method{pre_plot}{hist_table}(x, y = NULL, plot = "histogram", ...)
 
-\method{pre_plot}{freq_table}(x, y = NULL, plot = NULL, ...)
+\method{pre_plot}{freq_table}(x, y = NULL, plot = "banner", ...)
 
 \method{pre_plot}{cont_table}(x, ...)
 }
 \arguments{
-\item{x}{a tibble returned by the \code{hist_table} function, it
-should contains the center of the classes (\code{x}) and at least
-one measure of the frequencies or densities (one of \code{f}, \code{n},
-\code{p}, \code{d})}
+\item{x}{a tibble returned by the \code{hist_table} function, it should
+contains the center of the classes (\code{x}) and at least one
+measure of the frequencies or densities (one of \code{f}, \code{n}, \code{p},
+\code{d})}
 
 \item{y}{mandatory argument if the tibble contains more than one
 frequency or density}
 
-\item{plot}{one of \code{histogram} (the default) and \code{freqpoly} ; in
-the first case a tibble is returned with columns \code{x}, \code{y},
-\code{xend}, \code{yend} and in the second case \code{x} and \code{y}.}
+\item{plot}{for object of class \code{hist_table} one of \code{histogram}
+(the default) and \code{freqpoly} : in the first case a tibble is
+returned with columns \code{x}, \code{y}, \code{xend}, \code{yend} and in the
+second case \code{x} and \code{y} ; for object of class \code{freq_table} one
+of \code{banner} (the default) and \code{cumulative} : in the first case
+a tibble is returned with columns \code{x}, \code{y} and in the second
+case \code{x}, \code{y}, \code{xend} and \code{yend}.}
 
 \item{...}{further arguments}
 }
