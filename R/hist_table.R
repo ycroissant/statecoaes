@@ -221,8 +221,9 @@ quantile.hist_table <- function(x, y = c("value", "mass"), probs = c(0.25, 0.5, 
 
 #' @rdname hist_table.methods
 #' @export
-median.hist_table <- function(x, ...){
-    quantile(x, y = "value", 0.5)
+median.hist_table <- function(x, ..., y = c("value", "mass")){
+    y <- match.arg(y)
+    quantile(x, y = y, 0.5)
 }
 
 
