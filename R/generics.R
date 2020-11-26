@@ -54,7 +54,6 @@ medial <- function(x, ...)
 #' @rdname generics
 #' @export
 variance.default <- function(x, w = NULL, xlast = NULL, xfirst = NULL, ...){
-    print(class(x))
     if (! (is.character(x) | is.factor(x))) stop("x should be either a factor or a character")
     if (is.factor(x)) x <- as.character(x)
     if (is.null(w)) stop("w should be indicated")
