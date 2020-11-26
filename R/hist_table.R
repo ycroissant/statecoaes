@@ -205,9 +205,11 @@ modval.hist_table <- function(x, ...){
 quantile.hist_table <- function(x, y = c("value", "mass"), probs = c(0.25, 0.5, 0.75), ...){
     y <- match.arg(y)
     if (! "f" %in% names(x)) x <- x %>% mutate(f = compute_freq(.))
-    if (y == "mass" & ! "m" %in% names(x)){
-        x <- x %>% mutate(m = f * x,
-                          m = m / sum(m))
+    if (y == "mass"){
+        if (! "m" %in% names(x)){
+            x <- x %>% mutate(m = f * x,
+                              m = m / sum(m))
+        }
         y <- x %>% pull(m)
     }
     else y <- x %>% pull(f)
