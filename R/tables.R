@@ -183,6 +183,15 @@ covariance.cont_table <- function(x, drop = TRUE, ...){
     x
 }
 
+#' @rdname cont_table
+#' @export
+correlation.cont_table <- function(x, drop = TRUE, ...){
+    sdevs <- stdev(x)
+    covar <- covariance(x, drop = drop)
+    covar / sdevs[1, 1, drop = TRUE] / sdevs[1, 2, drop = TRUE]
+}
+
+
 #total.omit <- function(x) x[ x[[1]] != "Total" & x[[2]] != "Total", ]
 total.omit <- function(x) x[ ! (is.na(x[[1]]) | is.na(x[[2]])), ]
 

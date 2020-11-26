@@ -3,8 +3,9 @@
 #' Some generics were created, some of them don't exist in base R (to
 #' compute the mode and the mediale of a distribution for example) or
 #' because the functions exist but are not generic (this is the case
-#' of var, sd, mad, which are replaced by our variance, stdev and
-#' madev generic functions
+#' of `var`, `sd`, `mad`, `cov` and `cor` which are replaced by our
+#' `variance`, `stdev`, `madev`, `covariance` and `correlation`
+#' generic functions
 #'
 #' @name generics
 #' @param x the main argument, basically a character containing the
@@ -30,6 +31,11 @@ variance <- function(x, ...)
 #' @export
 covariance <- function(x, ...)
     UseMethod("covariance")
+
+#' @rdname generics
+#' @export
+correlation <- function(x, ...)
+    UseMethod("correlation")
 
 #' @rdname generics
 #' @export
