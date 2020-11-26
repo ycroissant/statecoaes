@@ -89,6 +89,7 @@ cont_table <- function(data, y1, y2, pond = NULL,
 }
 
 
+
 fun.cont_table <- function(x, fun = weighted.mean, drop = TRUE, ...){
     if (! is.null(attr(x, "y"))){
         y_name <- attr(x, "y")
