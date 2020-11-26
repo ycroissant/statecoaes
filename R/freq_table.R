@@ -166,4 +166,3 @@ cond_table <- function(data, x, x1, x2 = NULL, fun = mean, na.rm = TRUE, total =
     ct
 }
 
-

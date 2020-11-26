@@ -70,13 +70,13 @@ cont_table <- function(data, y1, y2, pond = NULL,
     if (total){
         mg_1 <- ct %>% group_by({{ y1 }}) %>%
             summarise(eff = sum(eff)) %>%
-            bind_cols("{{ y2 }}" := "Total")
+            bind_cols("{{ y2 }}" := NA)
         mg_2 <- ct %>% group_by({{ y2 }}) %>%
             summarise(eff = sum(eff)) %>%
-            bind_cols("{{ y1 }}" := "Total")
+            bind_cols("{{ y1 }}" := NA)
         mg_tot <- summarise(mg_1, eff = sum(eff)) %>%
-            bind_cols("{{ y2 }}" := "Total",
-                      "{{ y1 }}" := "Total")
+            bind_cols("{{ y2 }}" := NA,
+                      "{{ y1 }}" := NA)
         ct <- bind_rows(ct, mg_1, mg_2, mg_tot)
     }
     limits = list(list(first = first1, last = last1, inflate = inflate1),
@@ -87,6 +87,7 @@ cont_table <- function(data, y1, y2, pond = NULL,
               total = total,
               limits = limits)
 }
+
 
 fun.cont_table <- function(x, fun = weighted.mean, drop = TRUE, ...){
     if (! is.null(attr(x, "y"))){
