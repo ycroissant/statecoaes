@@ -6,6 +6,7 @@
 \alias{variance.cont_table}
 \alias{stdev.cont_table}
 \alias{covariance.cont_table}
+\alias{correlation.cont_table}
 \alias{joint}
 \alias{conditional}
 \alias{marginal}
@@ -37,6 +38,8 @@ cont_table(
 \method{stdev}{cont_table}(x, ..., drop = TRUE)
 
 \method{covariance}{cont_table}(x, drop = TRUE, ...)
+
+\method{correlation}{cont_table}(x, drop = TRUE, ...)
 
 joint(x)
 

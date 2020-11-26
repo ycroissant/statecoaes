@@ -4,6 +4,7 @@
 \alias{generics}
 \alias{variance}
 \alias{covariance}
+\alias{correlation}
 \alias{stdev}
 \alias{madev}
 \alias{modval}
@@ -25,6 +26,8 @@
 variance(x, ...)
 
 covariance(x, ...)
+
+correlation(x, ...)
 
 stdev(x, ...)
 
@@ -92,8 +95,9 @@ a numeric or a tibble
 Some generics were created, some of them don't exist in base R (to
 compute the mode and the mediale of a distribution for example) or
 because the functions exist but are not generic (this is the case
-of var, sd, mad, which are replaced by our variance, stdev and
-madev generic functions
+of \code{var}, \code{sd}, \code{mad}, \code{cov} and \code{cor} which are replaced by our
+\code{variance}, \code{stdev}, \code{madev}, \code{covariance} and \code{correlation}
+generic functions
 }
 \author{
 Yves Croissant

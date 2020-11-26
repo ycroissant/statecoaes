@@ -25,7 +25,7 @@
 
 \method{quantile}{hist_table}(x, y = c("value", "mass"), probs = c(0.25, 0.5, 0.75), ...)
 
-\method{median}{hist_table}(x, ...)
+\method{median}{hist_table}(x, ..., y = c("value", "mass"))
 
 \method{medial}{hist_table}(x, ...)
 
