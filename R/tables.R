@@ -183,7 +183,8 @@ covariance.cont_table <- function(x, drop = TRUE, ...){
     x
 }
 
-total.omit <- function(x) x[ x[[1]] != "Total" & x[[2]] != "Total", ]
+#total.omit <- function(x) x[ x[[1]] != "Total" & x[[2]] != "Total", ]
+total.omit <- function(x) x[ ! (is.na(x[[1]]) | is.na(x[[2]])), ]
 
 #' @rdname cont_table
 #' @export
@@ -234,7 +235,7 @@ marginal <- function(x, y = NULL){
         }
     }
     # put the classes in the right order
-    y_ord <- tibble(unique(setdiff(x[[y_name]], "Total"))) %>% set_names(y_name)
+    y_ord <- tibble(unique(na.omit(x[[y_name]]))) %>% set_names(y_name)
     x <- x %>% total.omit %>% group_by(!! as.symbol(y_name)) %>%
         summarise(f = sum(eff)) %>% mutate(f = f / sum(f))
     x <- y_ord %>% left_join(x, by = y_name)
