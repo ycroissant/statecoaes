@@ -131,7 +131,6 @@ acls2val <- function(x, pos = 0, xfirst = NULL, xlast = NULL){
 }
 
 
-
 #' Recode a classified variable
 #'
 #' `cut` take a numerical series as argument and return a class

@@ -1,28 +1,28 @@
-#' Table de contingence
+#' Contingency table
 #'
-#' Une table de contingence rassemble les fréquences de toutes les
-#' combinaisons de deux variables catégorielles sous la forme d'un
-#' tableau à double entrée, avec les différentes modalités de la
-#' première (seconde) variable en ligne (colonne). Les fonctions
-#' `joint`, `marginal` et `conditional` permettent de calculer ces
-#' trois distributions à partir d'une table de contingence (en
-#' indiquant la variable pour laquelle la distribution doit être
-#' calculée pour les deux dernières). Une méthode `mean` est définie
-#' pour calculer la moyenne.
+#' A contingency table returns the counts of all the combinations of
+#' the modalities of two factors in a table for which every modality
+#' of the first factor is a row and every modality of the second
+#' factor is a column. The `joint`, `marginal` and `conditional`
+#' functions compute these three distribution from the contingency
+#' table (by indicating on series for the last two). `mean`,
+#' `variance`, `stdev`, `covariance` and `correlation` methods are
+#' provided. `regline` computes the regression line and `var_decomp`
+#' the variance decomposition.
 #'
 #' @name cont_table
 #' @aliases cont_table
-#' @param data un tibble
-#' @param x,object un tibble contenant la table de contingence
-#' @param formula une formule qui décrit le modèle à estimer pour la
-#'     fonction `regline`
-#' @param y la variable sur laquelle on veut réaliser l'opération
-#' @param y1 une première variable catégorielle
-#' @param y2 une seconde variable catégorielle
-#' @param pond une éventuelle variable contenant les pondérations à
-#'     utiliser pour passer de l'échantillon à la population
-#' @param total si `TRUE` (valeur par défaut), un total est ajouté au
-#'     tableau
+#' @param data a tibble
+#' @param x,object a tibble containing the contingency table
+#' @param formula a formula which describe the model to estimate with
+#'     the `regline` function
+#' @param y the series on which the operation should be computed
+#' @param y1 a first factor
+#' @param y2 a second factor
+#' @param pond a series containing the weights that should be used to
+#'     mimic the population
+#' @param total if `TRUE` (the defaut values), a total is added to the
+#'     table
 #' @param first1 the center of the first class for the first variable
 #' @param last1 the center of the last class for the first variable
 #' @param inflate1 the width of the last class for the first variable
@@ -31,11 +31,11 @@
 #' @param inflate2 the width of the last class for the second variable
 #' @param drop if `TRUE`, the default, a numeric is returned,
 #'     otherwise the result is a tibble
-#' @param ... d'autres arguments
+#' @param ... further arguments
 #' @param n the number of lines to print
 #' @param width the width of the table to print
 #' @param n_extra extra n lines
-#' @return un tibble
+#' @return a tibble
 #' @export
 #' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows
 #'     mutate filter ungroup select

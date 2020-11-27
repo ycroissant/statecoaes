@@ -1,34 +1,36 @@
-#' Tables de Fréquence
+#' Frequency table
 #'
-#' Une table de fréquence est adaptée pour les variables
-#' catégorielles, elle renvoit les différentes modalités et les
-#' fréquences associées
+#' A frequency table is suitable for a factor or for a discrete
+#' numerical variable. It returns the modalities/values and the
+#' associated frequencies
 #'
 #' @name freq_table
 #' @aliases freq_table
-#' @param data un tibble
-#' @param x une variable catégorielle
-#' @param cols une chaîne de caractère contenant les lettres `n` pour
-#'     nombre, `f` pour fréquence et `p` pour pourcentage ; les séries
-#'     cumulées sont obtenues en indiquant les mêmes lettres en
-#'     majuscule
-#' @param weights une éventuelle variable contenant les pondérations à
-#'     utiliser pour passer de l'échantillon à la population
-#' @param na.rm la valeur par défaut est `TRUE`, les observations
-#'     pour lesquelles la valeur de `x` est manquante sont retirées de
-#'     l'échantillon
-#' @param total si `TRUE` (valeur par défaut), un total est ajouté au
-#'     tableau
-#' @param max dans le cas où la variable est numérique entière, cet
-#'     argument indique que les valeurs supérieures ou égales à `max`
-#'     seront regroupées
-#' @param n le nombre de ligne à imprimer (pour `format`)
-#' @param width la largeur du tableau à imprimer (pour `format`)
-#' @param n_extra le nombre de colonnes suplémentaires décrites (pour `format`)
-#' @param ... d'autres arguments (pour `format`)
-#' @return un objet de class `freq_table` qui hérite de `tbl_df`
+#' @param data a tibble
+#' @param x a factor or a discrete numerical variable
+#' @param cols a string containing `n` for counts, `f` for relative
+#'     frequencies and `p` for percentages : cumulative series are
+#'     obtained using the same letters in upper caps
+#' @param weights a series that contain the weights than enables the
+#'     sample to mimic the population
+#' @param na.rm with the default value `TRUE`, missing values of `x`
+#'     are removed l'échantillon
+#' @param total if `TRUE` (the default value), a total is added to the
+#'     table
+#' @param max if the series is a discrete numerical value, this
+#'     argument indicates that all the values greater than `max`
+#'     should be merged in the same modality
+#' @param n the number of rows to print (passed to `format`)
+#' @param width the width of the table to be printed (passed to
+#'     `format`)
+#' @param n_extra the number of extra columns described (passed to
+#'     `format`)
+#' @param ... other arguments (for `format`)
+#' @return an object of class `freq_table` which inherits from
+#'     `tbl_df`
 #' @export
-#' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows `%>%` n matches pull summarise_all
+#' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows
+#'     `%>%` n matches pull summarise_all
 #' @importFrom stats na.omit
 #' @importFrom rlang `:=`
 #' @author Yves Croissant

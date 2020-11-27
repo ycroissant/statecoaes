@@ -4,7 +4,7 @@
 \alias{freq_table}
 \alias{format.freq_table}
 \alias{pre_print.freq_table}
-\title{Tables de Fréquence}
+\title{Frequency table}
 \usage{
 freq_table(
   data,
@@ -21,44 +21,45 @@ freq_table(
 \method{pre_print}{freq_table}(x)
 }
 \arguments{
-\item{data}{un tibble}
+\item{data}{a tibble}
 
-\item{x}{une variable catégorielle}
+\item{x}{a factor or a discrete numerical variable}
 
-\item{cols}{une chaîne de caractère contenant les lettres \code{n} pour
-nombre, \code{f} pour fréquence et \code{p} pour pourcentage ; les séries
-cumulées sont obtenues en indiquant les mêmes lettres en
-majuscule}
+\item{cols}{a string containing \code{n} for counts, \code{f} for relative
+frequencies and \code{p} for percentages : cumulative series are
+obtained using the same letters in upper caps}
 
-\item{weights}{une éventuelle variable contenant les pondérations à
-utiliser pour passer de l'échantillon à la population}
+\item{weights}{a series that contain the weights than enables the
+sample to mimic the population}
 
-\item{na.rm}{la valeur par défaut est \code{TRUE}, les observations
-pour lesquelles la valeur de \code{x} est manquante sont retirées de
-l'échantillon}
+\item{na.rm}{with the default value \code{TRUE}, missing values of \code{x}
+are removed l'échantillon}
 
-\item{total}{si \code{TRUE} (valeur par défaut), un total est ajouté au
-tableau}
+\item{total}{if \code{TRUE} (the default value), a total is added to the
+table}
 
-\item{max}{dans le cas où la variable est numérique entière, cet
-argument indique que les valeurs supérieures ou égales à \code{max}
-seront regroupées}
+\item{max}{if the series is a discrete numerical value, this
+argument indicates that all the values greater than \code{max}
+should be merged in the same modality}
 
-\item{...}{d'autres arguments (pour \code{format})}
+\item{...}{other arguments (for \code{format})}
 
-\item{n}{le nombre de ligne à imprimer (pour \code{format})}
+\item{n}{the number of rows to print (passed to \code{format})}
 
-\item{width}{la largeur du tableau à imprimer (pour \code{format})}
+\item{width}{the width of the table to be printed (passed to
+\code{format})}
 
-\item{n_extra}{le nombre de colonnes suplémentaires décrites (pour \code{format})}
+\item{n_extra}{the number of extra columns described (passed to
+\code{format})}
 }
 \value{
-un objet de class \code{freq_table} qui hérite de \code{tbl_df}
+an object of class \code{freq_table} which inherits from
+\code{tbl_df}
 }
 \description{
-Une table de fréquence est adaptée pour les variables
-catégorielles, elle renvoit les différentes modalités et les
-fréquences associées
+A frequency table is suitable for a factor or for a discrete
+numerical variable. It returns the modalities/values and the
+associated frequencies
 }
 \examples{
 

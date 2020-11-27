@@ -2,7 +2,7 @@
 % Please edit documentation in R/hist_table.R
 \name{hist_table}
 \alias{hist_table}
-\title{Histogrammes}
+\title{Histograms}
 \usage{
 hist_table(
   data,
@@ -20,48 +20,50 @@ hist_table(
 \arguments{
 \item{data}{un tibble}
 
-\item{x}{la variable considérée (nécessairement numérique)}
+\item{x}{a numerical series (either numerical values or numerical
+classes)}
 
-\item{cols}{une chaîne de caractère contenant les lettres \code{n} pour
-nombre, \code{f} pour fréquence et \code{p} pour pourcentage ; les séries
-cumulées sont obtenues en indiquant les mêmes lettres en
-majuscule. Par rapport à \code{freq_table}, la lettre \code{d} peut
-également être indiquée pour calculer des densités}
+\item{cols}{a string containing \code{n} for counts, \code{f} pour
+frequencies and \code{p} for percentages ; the cumulative series are
+obtained using the same letters in upper caps. Compared to
+\code{freq_table}, densities can be computed using the letter \code{d}.}
 
-\item{vals}{les valeurs de la variable renvoyées ; \code{x} pour le
-centre de la classe, \code{l} et \code{u} pour les limites inférieure et
-supérieure, \code{a} pour l'amplitude}
+\item{vals}{a character containing letters indicating the values of
+the variable that should be returned ; \code{x} for the center of
+the class, \code{l} and \code{u} for the lower and upper limit of the
+class, \code{a} for the range}
 
-\item{breaks}{un vecteur de limites de classes}
+\item{breaks}{a numerical vector of class limits}
 
-\item{xfirst}{une valeur numérique indiquant le centre de la
-première classe}
+\item{xfirst}{a numeric indicating the value of the center of the
+first class}
 
-\item{xlast}{une valeur numérique indiquant le centre de la
-dernière classe}
+\item{xlast}{a numeric indicating the center of the last class}
 
-\item{right}{un booléen indiquant si les classes doivent être
-fermées (\code{right = TRUE}) ou fermée (\code{right = FALSE}) à droite}
+\item{right}{a logical indicating whether classes should be closed
+(\code{right = TRUE}) or open (\code{right = FALSE}) on the right}
 
-\item{total}{un total doit il être renvoyé ?}
+\item{total}{a logical indicating whether the total should be
+returned}
 
-\item{inflate}{dans le cas où la valeur centrale de la dernière
-classe n'est pas renseignée, elle est fixée à la borne
-inférieure plus ce coefficient multiplié par la moitié de
-l'amplitude de la classe précédente}
+\item{inflate}{if \code{xlast} is not set, the width of the last class
+is set to the one of the second to last width times this
+parameter}
 }
 \value{
-un tibble contenant les valeurs de \code{vals} et de \code{cols}
-spécifiées
+a tibble containing the specified values of \code{vals} and
+\code{cols}
 }
 \description{
-Calcule les effectifs par classe pour une variable numérique
+Compute the counts for each class of  a numerical variable
 }
 \examples{
 
 # price is a numeric variable, a vector of breaks should be provided
-Padoue \%>\% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400), right = TRUE)
-Padoue \%>\% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400), right = TRUE, cols = "fd", vals = "xa")
+Padoue \%>\% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400),
+                      right = TRUE)
+Padoue \%>\% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400),
+                      right = TRUE, cols = "fd", vals = "xa")
 # salaire is a factor that represents the classes
 Salaires \%>\% hist_table(salaire, "d")
 # a breaks argument is provided to reduce the number of classes

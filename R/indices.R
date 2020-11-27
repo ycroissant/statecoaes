@@ -1,21 +1,22 @@
-#' Indices synthétiques
+#' Composite indexes
 #'
-#' Calculs d'indices synthétiques (Laspeyres, Paasche et Fisher),
-#' chaînés ou non.
-#'
+#' Computation of composite indexes (Laspeyres, Paasche and Fisher),
+#' chained or not.
 #' 
 #' @name indices
 #' @aliases indices
-#' @param data un tibble
-#' @param an la date d'observation
-#' @param bien le bien considéré
-#' @param quant la quantité
-#' @param prix le prix
-#' @param base l'année de base
-#' @param chaine si vrai, la formule de l'indice chaînée est utilisée
-#' @return un tibble
+#' @param data a tibble
+#' @param an the date of observation
+#' @param bien the series containing the goods that are part of the
+#'     computation of the indexes
+#' @param quant the quantity
+#' @param prix the price
+#' @param base the base date
+#' @param chaine if `TRUE`, chained indexes are computed
+#' @return a tibble
 #' @export
-#' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows lag rename left_join
+#' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows
+#'     lag rename left_join
 #' @importFrom tidyr pivot_wider pivot_longer separate
 #' @author Yves Croissant
 indices <- function(data, an, bien, quant, prix, base, chaine = FALSE){
@@ -76,40 +77,4 @@ indices <- function(data, an, bien, quant, prix, base, chaine = FALSE){
             select(- prix_base, - quant_base)
     }
     data_synth
-}
-
-#' Indicateurs de tendance centrale
-#'
-#' Calcule les trois indicateurs de tendance centrale (moyenne,
-#' médiane et mode), ainsi que les densités correspondantes
-#'
-#' 
-#' @name central
-#' @aliases central
-#' @param data un tibble
-#' @param x la variable considérée (nécessairement numérique)
-#' @param breaks un vecteur de limites de classes
-#' @return un tibble contenant trois variables, `name`, `x` et `y`
-#' @importFrom stats median
-#' @importFrom dplyr add_row
-#' @export
-#' @author Yves Croissant
-central <- function(data, x, breaks){
-    mu <- data %>% pull({{ x }}) %>% mean
-    Me <- data %>% pull({{ x }}) %>% median
-    ra <- data %>% mutate(xcl = cut({{ x }}, breaks)) %>%
-        freq_table(xcl, "f", total = FALSE) %>%
-        bind_cols(a = diff(breaks)) %>%
-        mutate(y = f / a) %>%
-        separate(xcl, into = c("deb", "fin"), sep = ",", remove = FALSE) %>%
-        mutate(deb = substr(deb, 2, nchar(deb)),
-               fin = substr(fin, 1, nchar(fin) - 1),
-               deb = as.numeric(deb),
-               fin = as.numeric(fin),
-               x = (deb + fin) / 2) %>%
-        select(- a, - f)
-    mode <- ra %>% filter(y == max(y)) %>% mutate(name = "mode") %>% select(name, x, y)
-    mu2 <- ra %>% filter(mu > deb, mu <= fin) %>% mutate(x = mu, name = "moyenne") %>% select(name, x, y)
-    Me2 <- ra %>% filter(Me > deb, Me <= fin) %>% mutate(x = Me, name = "médiane") %>% select(name, x, y)
-    mu2 %>% add_row(Me2) %>% add_row(mode)
 }

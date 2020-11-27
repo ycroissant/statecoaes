@@ -2,31 +2,32 @@
 % Please edit documentation in R/indices.R
 \name{indices}
 \alias{indices}
-\title{Indices synthétiques}
+\title{Composite indexes}
 \usage{
 indices(data, an, bien, quant, prix, base, chaine = FALSE)
 }
 \arguments{
-\item{data}{un tibble}
+\item{data}{a tibble}
 
-\item{an}{la date d'observation}
+\item{an}{the date of observation}
 
-\item{bien}{le bien considéré}
+\item{bien}{the series containing the goods that are part of the
+computation of the indexes}
 
-\item{quant}{la quantité}
+\item{quant}{the quantity}
 
-\item{prix}{le prix}
+\item{prix}{the price}
 
-\item{base}{l'année de base}
+\item{base}{the base date}
 
-\item{chaine}{si vrai, la formule de l'indice chaînée est utilisée}
+\item{chaine}{if \code{TRUE}, chained indexes are computed}
 }
 \value{
-un tibble
+a tibble
 }
 \description{
-Calculs d'indices synthétiques (Laspeyres, Paasche et Fisher),
-chaînés ou non.
+Computation of composite indexes (Laspeyres, Paasche and Fisher),
+chained or not.
 }
 \author{
 Yves Croissant

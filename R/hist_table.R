@@ -1,42 +1,43 @@
-
-#' Histogrammes
+#' Histograms
 #'
-#' Calcule les effectifs par classe pour une variable numérique
+#' Compute the counts for each class of  a numerical variable
 #' 
 #' @name hist_table
 #' @aliases hist_table
 #' @param data un tibble
-#' @param x la variable considérée (nécessairement numérique)
-#' @param cols une chaîne de caractère contenant les lettres `n` pour
-#'     nombre, `f` pour fréquence et `p` pour pourcentage ; les séries
-#'     cumulées sont obtenues en indiquant les mêmes lettres en
-#'     majuscule. Par rapport à `freq_table`, la lettre `d` peut
-#'     également être indiquée pour calculer des densités
-#' @param vals les valeurs de la variable renvoyées ; `x` pour le
-#'     centre de la classe, `l` et `u` pour les limites inférieure et
-#'     supérieure, `a` pour l'amplitude
-#' @param breaks un vecteur de limites de classes
-#' @param xfirst une valeur numérique indiquant le centre de la
-#'     première classe
-#' @param xlast une valeur numérique indiquant le centre de la
-#'     dernière classe
-#' @param right un booléen indiquant si les classes doivent être
-#'     fermées (`right = TRUE`) ou fermée (`right = FALSE`) à droite
-#' @param total un total doit il être renvoyé ?
-#' @param inflate dans le cas où la valeur centrale de la dernière
-#'     classe n'est pas renseignée, elle est fixée à la borne
-#'     inférieure plus ce coefficient multiplié par la moitié de
-#'     l'amplitude de la classe précédente
-#' @return un tibble contenant les valeurs de `vals` et de `cols`
-#'     spécifiées
+#' @param x a numerical series (either numerical values or numerical
+#'     classes)
+#' @param cols a string containing `n` for counts, `f` pour
+#'     frequencies and `p` for percentages ; the cumulative series are
+#'     obtained using the same letters in upper caps. Compared to
+#'     `freq_table`, densities can be computed using the letter `d`.
+#' @param vals a character containing letters indicating the values of
+#'     the variable that should be returned ; `x` for the center of
+#'     the class, `l` and `u` for the lower and upper limit of the
+#'     class, `a` for the range
+#' @param breaks a numerical vector of class limits
+#' @param xfirst a numeric indicating the value of the center of the
+#'     first class
+#' @param xlast a numeric indicating the center of the last class
+#' @param right a logical indicating whether classes should be closed
+#'     (`right = TRUE`) or open (`right = FALSE`) on the right
+#' @param total a logical indicating whether the total should be
+#'     returned
+#' @param inflate if `xlast` is not set, the width of the last class
+#'     is set to the one of the second to last width times this
+#'     parameter
+#' @return a tibble containing the specified values of `vals` and
+#'     `cols`
 #' @export
 #' @importFrom dplyr all_of slice arrange tibble
 #' @author Yves Croissant
 #' @examples
 #'
 #' # price is a numeric variable, a vector of breaks should be provided
-#' Padoue %>% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400), right = TRUE)
-#' Padoue %>% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400), right = TRUE, cols = "fd", vals = "xa")
+#' Padoue %>% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400),
+#'                       right = TRUE)
+#' Padoue %>% hist_table(price, breaks = c(50, 100, 150, 200, 250, 300, 350, 400),
+#'                       right = TRUE, cols = "fd", vals = "xa")
 #' # salaire is a factor that represents the classes
 #' Salaires %>% hist_table(salaire, "d")
 #' # a breaks argument is provided to reduce the number of classes
