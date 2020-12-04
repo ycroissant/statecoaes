@@ -1,9 +1,0 @@
-variance <- function(x, ..., na.rm = TRUE)
-    UseMethod("variance")
-
-stdev <- function(x, ..., na.rm = TRUE)
-    UseMethod("stdev")
-
-madev <- function(x, ..., na.rm = TRUE)
-    UseMethod("madev")
-
