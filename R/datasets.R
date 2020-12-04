@@ -14,6 +14,8 @@
 #' \insertRef{BATE:MURR:00}{statecoaes}
 #' @keywords datasets
 #' @importFrom Rdpack reprompt
+#' @import dplyr
+#' @import descstat
 
 NULL
 
