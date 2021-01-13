@@ -8,6 +8,7 @@
 #' @param theta voir `coord_polar`
 #' @param start voir `coord_polar`
 #' @param direction voir `coord_polar`
+#' @export
 #' @importFrom ggplot2 ggproto CoordPolar
 #' @source [page web de Erwan Le Pennec](https://www.cmap.polytechnique.fr/~lepennec/en/post/radar/radarandparallelplots/)
 coord_radar <- function (theta = "x", start = 0, direction = 1) {
