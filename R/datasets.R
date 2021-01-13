@@ -137,15 +137,20 @@ NULL
 #'
 #' - activité : une variable catégorielle permettant de distinguer les
 #' inactifs `inactif, les chômeurs `chômeur` et les actifs occupés
-#' `occupé`.
-#' - temps : temps de travail, `néant`, `partiel`, `complet` et `inconnu`.
-#' - diplome : niveau de diplome
-#' - âge : l'âge en années
-#' - ménage : type de ménage, une personne `unepers`, famille
+#' `occupé`,
+#' - temps : temps de travail, `néant`, `partiel`, `complet` et `inconnu`,
+#' - diplome : niveau de diplome,
+#' - age : l'âge en tranche,
+#' - sexe : le sexe (`F` ou `M`),
+#' - menage : type de ménage, une personne `unepers`, famille
 #' monoparentale `monop`, couple sans enfants `cpl`, couple avec
-#' enfants `cplenf` et autres ménages `autre`
-#' - pondérations : pondération pour chaque observation permettant de
-#' passer de l'enquête à la population
+#' enfants `cplenf` et autres ménages `autre`,
+#' - ponderations : pondération pour chaque observation permettant de
+#' passer de l'enquête à la population,
+#' - durchom : durée de l'épisode de chômage, en tranche,
+#' - durinact : durée de l'épisode d'inactivité, en tranche, 
+#' - durentr : durée de travail dans l'entreprise, en tranche,
+#' - horaires : nombre d'heures de travail hebdomadaire, en tranche d'heures,
 #' - statut : variable catégorielle intégrant les deux variables `activité` et `temps`, soit `inactif`, `chômeur`, `partiel`, `complet` et `inconnu`
 #'
 #' @source Enquête emploi 2018, site de l'[INSEE](https://www.insee.fr/fr/statistiques/4191029)
@@ -215,7 +220,7 @@ NULL
 #' Les fichiers de l'Etat-Civil recense de manière exhaustive les
 #' naissances, les décès et les mariages. 
 #'
-#' @name Naissance
+#' @name Naissances
 #' @docType data
 #' @format Un tibble contenant :
 #' - département : le code du département de naissance,

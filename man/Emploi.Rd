@@ -8,15 +8,20 @@
 Un tibble contenant
 \itemize{
 \item activité : une variable catégorielle permettant de distinguer les
-inactifs \verb{inactif, les chômeurs }chômeur\verb{et les actifs occupés}occupé`.
-\item temps : temps de travail, \code{néant}, \code{partiel}, \code{complet} et \code{inconnu}.
-\item diplome : niveau de diplome
-\item âge : l'âge en années
-\item ménage : type de ménage, une personne \code{unepers}, famille
+inactifs \verb{inactif, les chômeurs }chômeur\verb{et les actifs occupés}occupé`,
+\item temps : temps de travail, \code{néant}, \code{partiel}, \code{complet} et \code{inconnu},
+\item diplome : niveau de diplome,
+\item age : l'âge en tranche,
+\item sexe : le sexe (\code{F} ou \code{M}),
+\item menage : type de ménage, une personne \code{unepers}, famille
 monoparentale \code{monop}, couple sans enfants \code{cpl}, couple avec
-enfants \code{cplenf} et autres ménages \code{autre}
-\item pondérations : pondération pour chaque observation permettant de
-passer de l'enquête à la population
+enfants \code{cplenf} et autres ménages \code{autre},
+\item ponderations : pondération pour chaque observation permettant de
+passer de l'enquête à la population,
+\item durchom : durée de l'épisode de chômage, en tranche,
+\item durinact : durée de l'épisode d'inactivité, en tranche,
+\item durentr : durée de travail dans l'entreprise, en tranche,
+\item horaires : nombre d'heures de travail hebdomadaire, en tranche d'heures,
 \item statut : variable catégorielle intégrant les deux variables \code{activité} et \code{temps}, soit \code{inactif}, \code{chômeur}, \code{partiel}, \code{complet} et \code{inconnu}
 }
 }
