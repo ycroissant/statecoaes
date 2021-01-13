@@ -15,7 +15,7 @@
 moving_average <- function(data, freq = c("month", "quarter")){
     freq <- match.arg(freq)
     freq <- ifelse(freq == "month", 12, 4)
-    x <- zoo::rollmean(x, freq, fill = NA, align = "center")
+    x <- zoo::rollmean(data, freq, fill = NA, align = "center")
     zoo::rollmean(x, 2, fill = NA, align = "right")
 }
 
