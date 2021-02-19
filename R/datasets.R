@@ -549,4 +549,5 @@ NULL
 #' @source
 #' **Clap** (Connaissance locale de l'appareil productif), site de
 #' l'[INSEE](https://www.insee.fr/fr/statistiques/2021289)
+NULL
 
