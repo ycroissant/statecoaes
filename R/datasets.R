@@ -514,3 +514,39 @@ NULL
 #' @references
 #' LEWI:11
 NULL
+
+
+#' Nombre de pièces des logements
+#'
+#' Table de fréquence indiquant le nombre de pièce par logements
+#'
+#' @name Logements
+#' 
+#' @docType data
+#' @format Un tibble contenant :
+#' - pieces : le nombre de pièces du logement,
+#' - nombre : le nombre de logements (en millions) pour chaque nombre
+#' de pièces.
+#'
+#' @source
+#' Recensement de la population, disponible sur le Site de
+#' l'[INSEE](https://www.insee.fr/fr/statistiques/4515537?sommaire=4516107#consulter).
+NULL
+
+#' Nombre de pièces des logements
+#'
+#' Table de fréquence indiquant le nombre de pièce par logements
+#'
+#' @name Clap
+#'
+#' @docType data
+#' @format Un tibble contenant :
+#' - secteur le secteur d'activité
+#' - taille la trance de taille de l'entreprise mesurée par le nombre de salariés,
+#' - nombre le nombre d'établissements,
+#' - salaries le nombre de salariés
+#' 
+#' @source
+#' **Clap** (Connaissance locale de l'appareil productif), site de
+#' l'[INSEE](https://www.insee.fr/fr/statistiques/2021289)
+
