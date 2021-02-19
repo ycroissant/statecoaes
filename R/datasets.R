@@ -533,16 +533,17 @@ NULL
 #' l'[INSEE](https://www.insee.fr/fr/statistiques/4515537?sommaire=4516107#consulter).
 NULL
 
-#' Nombre de pièces des logements
+#' Nombre d'entreprises par secteur et par taille
 #'
-#' Table de fréquence indiquant le nombre de pièce par logements
+#' Table de contingence indiquant le nombre d'entreprises par tranche
+#' de taille et par secteur d'activité
 #'
 #' @name Clap
 #'
 #' @docType data
 #' @format Un tibble contenant :
 #' - secteur le secteur d'activité
-#' - taille la trance de taille de l'entreprise mesurée par le nombre de salariés,
+#' - taille la tranche de taille de l'entreprise mesurée par le nombre de salariés,
 #' - nombre le nombre d'établissements,
 #' - salaries le nombre de salariés
 #' 

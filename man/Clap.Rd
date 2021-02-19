@@ -3,12 +3,12 @@
 \docType{data}
 \name{Clap}
 \alias{Clap}
-\title{Nombre de pièces des logements}
+\title{Nombre d'entreprises par secteur et par taille}
 \format{
 Un tibble contenant :
 \itemize{
 \item secteur le secteur d'activité
-\item taille la trance de taille de l'entreprise mesurée par le nombre de salariés,
+\item taille la tranche de taille de l'entreprise mesurée par le nombre de salariés,
 \item nombre le nombre d'établissements,
 \item salaries le nombre de salariés
 }
@@ -18,5 +18,6 @@ Un tibble contenant :
 l'\href{https://www.insee.fr/fr/statistiques/2021289}{INSEE}
 }
 \description{
-Table de fréquence indiquant le nombre de pièce par logements
+Table de contingence indiquant le nombre d'entreprises par tranche
+de taille et par secteur d'activité
 }
