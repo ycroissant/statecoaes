@@ -1,0 +1,302 @@
+---
+title: Exercices corrigés du chapitre 8
+author: Yves Croissant
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+  pdf_document:
+    number_sections: true
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Exercices corrigés du chapitre 8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+### Exercice 1 {-}
+
+#### Intitulé
+
+On considère la pêche à la sole en France par semestre. On a les
+valeurs suivantes pour la période 2016-2019\ :
+
+```{r echo = FALSE, messages = FALSE}
+library("statecoaes")
+library("ggplot2")
+library("dplyr")
+library("lubridate")
+Poissons_sem <- Poissons %>%
+    mutate(date = dmy(date), poids = poids / 1E03, valeur = valeur / 1E03) %>%
+    mutate(date = floor_date(date, "halfyear")) %>%
+    group_by(poisson, date) %>%
+    summarise(across(where(is.numeric), sum)) %>%
+    filter(date >= "2016-01-01", date < "2020-01-01")
+#Poissons_sem %>% ggplot(aes(date, poids)) + geom_line() + facet_wrap(~ poisson, scales = "free")
+Soles <- Poissons_sem %>% filter(poisson == "Sole Commune")
+Thon <- Poissons_sem %>% filter(poisson == "Thon Rouge")
+Merlu <- Poissons_sem %>% filter(poisson == "Merlu Commun")
+Soles <- Soles %>% ungroup %>% mutate(poids = poids / 1000) %>% select(date, poids)
+Soles %>% knitr::kable(booktabs = TRUE, escape = FALSE, digits = 2) %>%
+    kableExtra::kable_styling(position = "center")
+```
+
+**Q1.** Représentez la série chronologique. Indiquez s'il vous semble qu'il
+   y a une composante saisonnière et un trend.
+
+**Q2.** La série vous semble t'elle plutôt additive ou multiplicative ?
+
+**Q3.** Calculez et représentez la série en moyennes mobiles.
+
+**Q4.** Calculez les composantes saisonnières.
+
+**Q5.** Calculez et représentez la série détrendée et désaisonnalisée.
+
+#### Corrigé
+
+
+**Q1.**
+
+```{r echo = FALSE}
+Soles %>% ggplot(aes(date, poids)) +  geom_line() + geom_point()
+```
+
+Il y a une composante saisonnière marquée, la quantité pêchée étant
+beaucoup plus importante au premier semestre qu'au deuxième. Il y a
+également un trend légèrement décroissant.
+
+
+**Q2.** Lorsque on considère les droites qui relient les points
+extrêmes au dessus et en dessous de la série, on obtient deux droites
+à peu près parallèles. Le modèle additif semble donc adapté.
+
+**Q3.** La moyenne mobile se calcule sur deux périodes, ce qui correspond à
+une année. Pour, par exemple, le premier semestre de l'année 2017,
+deux moyennes mobiles sont envisageables\ :
+
+- celle qui correspond à l'année constituée du second semestre de 2016
+  et du premier semestre de 2017, soit\ : $\frac{y_{2016-2} + y_{2017-1}}{2}$,
+- celle qui correspond à l'année constituée du premier semestre de 2017
+  et du second semestre de 2017, soit\ : $\frac{y_{2017-1} +
+  y_{2017-2}}{2}$.
+  
+On calcule la moyenne des deux et on obtient finalement\ :
+$\frac{y_{2016-2}}{4} + \frac{y_{2017-1}}{2} + \frac{y_{2017-2}}{4}=
+\frac{`r round(pull(Soles, poids)[2], 3)`}{4} + 
+\frac{`r round(pull(Soles, poids)[3], 3)`}{2} + 
+\frac{`r round(pull(Soles, poids)[4], 3)`}{4}=
+`r round(sum(pull(Soles, poids)[2:4] * c(0.25, 0.5, 0.25)), 3)`$
+
+Plus généralement, on obtient la série `ma` et on calcule la série
+`detrend` en soustrayant de la série brute la série de moyenne mobile\ :
+
+```{r echo = FALSE}
+Soles <- Soles %>% mutate(poidsm1 = lag(poids), poidsp1 = lead(poids),
+                          ma = poids / 2 + (poidsm1 + poidsp1) / 4,
+                          detrend = poids - ma)
+Soles %>% select(date, poids, ma, detrend) %>%
+    knitr::kable(booktabs = TRUE, escape = FALSE, digits = 3) %>%
+    kableExtra::kable_styling(position = "center")
+```
+
+```{r echo = FALSE}
+Soles %>% ggplot(aes(date, poids)) + geom_line() + geom_line(aes(y = ma), color = "blue")
+```
+
+**Q4.** Pour calculer la composante saisonnière, on fait la moyenne
+saisonnière (ici semestrielle) de la série `detrend`\ :
+
+```{r echo  = FALSE}
+sais <- Soles %>% group_by(month(date)) %>% summarise(mean(detrend, na.rm = TRUE)) %>% pull(2)
+```
+
+On obtient `r round(sais[1], 4)` pour le premier semestre et 
+`r round(sais[2], 4)`. La somme des composantes saisonnières doit être
+nulle, ce qui n'est jamais exactement le cas. On calcule donc la
+moyenne des deux composantes saisonnières `r round(mean(sais), 4)` et
+on la retire des deux composantes saisonnières brutes. On obtient
+finalement\ : `r round(sais[1] - mean(sais), 4)` et 
+`r round(sais[2] - mean(sais), 4)`. Comme il n'y a que deux saisons
+sur des données semestrielles, les deux coefficients saisonniers
+corrigés sont donc nécessairement opposés.
+
+**Q5.** La série détrendée et désaisonnalisée est obtenue en retirant
+de la série brute la moyenne mobile et le coefficient saisonnier\ :
+
+
+```{r echo = FALSE}
+sais <- sais - mean(sais)
+Soles <- Soles %>% select(date, poids, ma, detrend) %>%
+    mutate(residus = detrend - rep(sais, 4))
+Soles %>% knitr::kable(booktabs = TRUE, escape = FALSE, digits = 3) %>%
+    kableExtra::kable_styling(position = "center")
+
+```
+
+```{r echo = FALSE}
+Soles %>% ggplot(aes(date, residus)) + geom_line()
+```
+
+
+### Exercice 2 {-}
+
+#### Intitulé
+
+On considère la population française (en millions) de 1950 à 2010.
+
+```{r echo = FALSE}
+popfr <- FranceLT %>% filter(an %in% ((195:201) * 10)) %>% select(an, pop) %>%
+    mutate(pop = pop / 1E03) %>% tibble::add_column(t = 1:7)
+popfr %>% select(1:2) %>%
+    knitr::kable(booktabs = TRUE, escape = FALSE, digits = 2) %>%
+    kableExtra::kable_styling(position = "center")
+```
+**Q1.** Représentez la série de population.
+
+**Q2.** Déterminez la droite de régression de la population en
+fonction du temps. Interprétez les coefficients estimés.
+
+**Q3.** Déterminez la droite de régression du logarithme de la
+population en fonction du temps. Interprétez les coefficients estimés.
+
+
+#### Corrigé
+
+**Q1.**
+
+```{r echo = FALSE}
+popfr %>% ggplot(aes(an, pop)) + geom_line() + geom_point()
+```
+
+**Q2.** Pour calculer la droite de régression, on crée une variable
+$x$ égale à 1 pour la première observation (1950), 2 pour la seconde
+(1960), ..., 7 pour la septième (2010). 
+
+La pente de la droite de régression est : 
+$a = \frac{\sum_{t = 1} ^ T (x_n - \bar{x})(y_n -
+\bar{y})}{\sum_{t=1}^T (x_n - \bar{x}) ^ 2}$.
+
+La somme des $x$ est $T(T+1)/2$, donc $\bar{x} = \frac{T(T +1)}{2 T} =
+\frac{T+1}{2} = 4$. La moyenne des 7 valeurs de $y$ est 
+`r round(mean(pull(popfr, pop), 3))`. Dans le tableau ci-dessous, on
+calcule les différents éléments permettant de calculer la pente de la
+droite\ :
+
+
+```{r echo = FALSE}
+yb <- mean(pull(popfr, pop))
+tabreg <- popfr %>% select(t, pop) %>%
+    mutate(xmxb = t - 4, ymyb = pop - yb,
+           Sxx = xmxb ^ 2, Sxy = xmxb * ymyb) %>% 
+    rlang::set_names(c("$x$", "$y$", "$x - \\bar{x}$",
+                       "$y - \\bar{y}$", "$(x - \\bar{x}) ^ 2$",
+                       "$(x-\\bar{x})(y-\\bar{y})$"))
+
+Sxy <- sum(pull(tabreg, 6))
+Sxx <- sum(pull(tabreg, 5))
+a <- Sxy / Sxx
+b <- yb - a * 4
+tabreg %>% mutate(`$x$` = as.character(`$x$`)) %>%
+    tibble::add_row(`$x$` = "$\\sum$", `$(x - \\bar{x}) ^ 2$` = sum(pull(tabreg, 5)),
+            `$(x-\\bar{x})(y-\\bar{y})$` = sum(pull(tabreg, 6))) %>%
+    knitr::kable(booktabs = TRUE, escape = FALSE, digits = 3) %>%
+        kableExtra::kable_styling(position = "center")
+```
+
+La pente de la droite est donc égale à $\frac{`r round(Sxy, 3)`}
+{`r round(Sxx, 3)`} = `r round(a, 2)`$ et l'ordonnée à l'origine 
+
+$b = \bar{y} - a \bar{x} = `r round(yb, 3)` - `r round(a, 3)` \times 4 = 
+`r round(b, 1)`$.
+
+La série temporelle et la droite de régression sont représentées sur
+la figure ci-dessous.
+
+
+```{r echo = FALSE}
+popfr %>% ggplot(aes(t, pop)) + geom_line(linetype = "dotted") +
+    geom_point() +
+    geom_abline(slope = a, intercept = b, color = "blue") + 
+    scale_x_continuous(limits = c(0, 7)) +
+    scale_y_continuous(limits = c(40, 65))
+```
+
+Le coefficient de la droite mesure le rapport (constant) entre une
+variation de $y$ et une variation de $x$\ : $a=\frac{\Delta y}{\Delta
+x}=`r round(a, 2)`$. Lorsque $x$ augmente de 1 (c'est-à-dire pour 10
+ans de plus), $y$ augmente de `r round(a, 2)` (millions
+d'habitants). Cela signifie qu'en moyenne, sur la période 1950-2010,
+la population française augmente de `r round(a, 2)` millions
+d'habitants par décade.
+
+L'ordonnée à l'origine est la valeur de $y$ prédite par le modèle pour
+$x = 0$. $x = 0$ correspond ici à l'année 1940 et donc le modèle
+prédit une population de `r round(b, 1)` millions d'habitants.
+
+
+**Q3.** On représente le même tableau que précédemment, $y$ étant
+désormais le logarithme népérien de la population, dont la moyenne est 
+$\bar{y}=`r round(mean(log(pull(popfr, pop))), 3)`$%.
+
+
+```{r echo = FALSE}
+opopfr <- popfr
+popfr <- popfr %>% mutate(pop = log(pop))
+yb <- mean(pull(popfr, pop))
+tabreg <- popfr %>% select(t, pop) %>%
+    mutate(xmxb = t - 4, ymyb = pop - yb,
+           Sxx = xmxb ^ 2, Sxy = xmxb * ymyb) %>% 
+    rlang::set_names(c("$x$", "$y$", "$x - \\bar{x}$",
+                "$y - \\bar{y}$", "$(x - \\bar{x}) ^ 2$",
+                "$(x-\\bar{x})(y-\\bar{y})$"))
+
+Sxy <- sum(pull(tabreg, 6))
+Sxx <- sum(pull(tabreg, 5))
+a <- Sxy / Sxx
+b <- yb - a * 4
+tabreg %>% mutate(`$x$` = as.character(`$x$`)) %>%
+    tibble::add_row(`$x$` = "$\\sum$", `$(x - \\bar{x}) ^ 2$` = sum(pull(tabreg, 5)),
+            `$(x-\\bar{x})(y-\\bar{y})$` = sum(pull(tabreg, 6))) %>%
+    knitr::kable(booktabs = TRUE, escape = FALSE, digits = 3) %>%
+        kableExtra::kable_styling(position = "center")
+```
+La pente de la droite est donc égale à $\frac{`r round(Sxy, 3)`}
+{`r round(Sxx, 3)`} = `r round(a, 3)`$ et l'ordonnée à l'origine 
+
+$\bar{y} - a \bar{x} = `r round(yb, 3)` - `r round(a, 3)` \times 4 = 
+`r round(b, 3)`$.
+
+La série temporelle et la droite de régression sont représentées sur
+la figure ci-dessous.
+
+
+```{r echo = FALSE}
+opopfr %>% ggplot(aes(t, pop)) + geom_line(linetype = "dotted") +
+    geom_point() +
+    geom_function(fun = function(x) exp(b + a * x), color = "blue") + 
+    scale_y_continuous(trans = "log")
+```
+
+Le coefficient de la droite mesure le rapport (constant) entre une
+variation du log de la population et une variation de $x$\ :
+$a=\frac{\Delta \ln pop}{\Delta
+x}=`r round(a, 3)`$. Or, si on considère une variation du log de
+`pop`, on obtient\ :
+
+$$\Delta \ln pop = \ln pop_2 - \ln pop_1 = \ln \frac{pop_2}{pop_1}=
+\ln 1 + \frac{pop_2 - pop_1}{pop_1} = \ln 1 + \tau = \approx \tau$$
+
+où $\tau$ est le taux de variation relative de la population. Le
+coefficient directeur de la droite mesure donc approximativement le
+taux de croissance moyen par décade de la population, soit\ : 
+$`r round(a * 100, 2)`$%. Cette approximation est d'autant meilleure que
+$a$ est petit. Comme $a = \ln 1 + \tau$, la "vraie" valeur du taux de
+croissance de la population prédite par le modéle est $e^a-1=
+`r round(100 * exp(a)-100, 2)`$%.
+	   
+
+L'ordonnée à l'origine est la valeur de $y$ prédite par le modèle
+(c'est-à-dire le logarithme de la population) pour $x = 0$. $x = 0$
+correspond ici à l'année 1940 et donc le modèle prédit une population
+en logarithme de `r round(b, 3)`, soit 
+$e^{`r round(b, 3)`} = `r round(exp(b), 1)`$ millions d'habitants.
+1

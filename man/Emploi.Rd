@@ -8,8 +8,8 @@
 Un tibble contenant
 \itemize{
 \item activité : une variable catégorielle permettant de distinguer les
-inactifs \verb{inactif, les chômeurs }chômeur\verb{et les actifs occupés}occupé`,
-\item temps : temps de travail, \code{néant}, \code{partiel}, \code{complet} et \code{inconnu},
+inactifs \verb{inactif, les chômeurs }chomeur\verb{et les actifs occupés}occupé`,
+\item temps : temps de travail, \code{neant}, \code{partiel}, \code{complet} et \code{inconnu},
 \item diplome : niveau de diplome,
 \item age : l'âge en tranche,
 \item sexe : le sexe (\code{F} ou \code{M}),
@@ -22,7 +22,7 @@ passer de l'enquête à la population,
 \item durinact : durée de l'épisode d'inactivité, en tranche,
 \item durentr : durée de travail dans l'entreprise, en tranche,
 \item horaires : nombre d'heures de travail hebdomadaire, en tranche d'heures,
-\item statut : variable catégorielle intégrant les deux variables \code{activité} et \code{temps}, soit \code{inactif}, \code{chômeur}, \code{partiel}, \code{complet} et \code{inconnu}
+\item statut : variable catégorielle intégrant les deux variables \code{activite} et \code{temps}, soit \code{inactif}, \code{chomeur}, \code{partiel}, \code{complet} et \code{inconnu}
 }
 }
 \source{

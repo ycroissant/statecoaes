@@ -1,15 +1,17 @@
 Package: statecoaes
 Version: 0.1-1
-Date: 2021-02-19
+Date: 2021-02-21
 Title: Statistiques et Probabilites pour L1-L2 Economie et AES
 Author: Yves Croissant <yves.croissant@univ-reunion.fr>
 Maintainer: Yves Croissant <yves.croissant@univ-reunion.fr>
 Depends: R (>= 3.5.0)
 Imports: Rdpack, dplyr, descstat, tidyr, zoo, ggplot2
+Suggests: knitr, kableExtra, purrr, tibble, scales, rlang, lubridate, forcats
 Description: Ce package contient des donnees pour accompagner le livre d'introduction aux statistiques et probabilites.
 Encoding: UTF-8
 License: GPL (>=2)
 URL: http://www.r-project.org
+VignetteBuilder: knitr
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 RdMacros: Rdpack

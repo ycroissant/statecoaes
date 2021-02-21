@@ -1,0 +1,290 @@
+---
+title: Exercices corrigés du chapitre 3
+author: Yves Croissant
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+  pdf_document:
+    number_sections: true
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Exercices corrigés du chapitre 3}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+### Exercice 1 {-}
+
+#### Intitulé
+
+On s'intéresse, à partir des fichiers de l'état-civil, aux
+caractéristiques des naissances. Dans l'extrait présenté ci-dessous,
+on indique le sexe de l'enfant, l'âge en années et par tranche d'âge
+de la mère et le mois de naissance.
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+fmt <- function(x) format(x, scientific = FALSE, big.mark = " ")
+library("statecoaes")
+library("descstat")
+library("ggplot2")
+library("dplyr")
+ra <- Naissances %>% dplyr::select(sexe, age, tranche, mois) %>% head
+ra[[3]] <- paste("$", ra[[3]], "$", sep = "")
+ra %>% knitr::kable(booktabs = TRUE, escape = FALSE) %>%
+    kableExtra::kable_styling(position = "center")    
+```
+
+Indiquez précisément quelle est la nature de chacun de ces
+caractères\ : qualitatif / quantitatif, quantitatif discret / continu,
+quantitatif observé au niveau individuel ou par classe.
+
+#### Corrigé
+
+- `sexe` est un caractère qualitatif, avec deux modalités `feminin` et
+  `masculin`,
+- `age` est un caractère quantitatif ; il est discret car il prend
+  comme valeur des nombres entiers, mais le nombre de valeurs possible
+  est assez élevé, ce qui fait que l'on peut l'assimiler à un
+  caractère quantitatif continu,
+- `tranche` est un caractère quantitatif continu, pour lequel on
+  n'observe pas les valeurs individuelles, mais uniquement dans quelle
+  classe de valeurs elles se trouvent,
+- `mois` est un caractère quantitatif discret, dont les valeurs
+  possibles sont les entiers de 1 à 12.
+
+
+### Exercice 2 {-}
+
+#### Intitulé
+
+Le nombre de pièces des logements est connu grâce au recensement de la
+population et l'information est disponible sur le site de l'INSEE.
+
+(https://www.insee.fr/fr/statistiques/4515537?sommaire=4516107#consulter)
+
+Le nombre de logements (en millions) en fonction du nombre de pièces
+est présenté dans le tableau ci-dessous.
+
+
+```{r echo = FALSE}
+Logements %>%
+    knitr::kable(booktabs = TRUE, escape = FALSE, digits = c(0, 2)) %>%
+    kableExtra::kable_styling(position = "center")
+ntotlog <- sum(Logements$nombre)
+fl <- Logements$nombre / ntotlog
+Fl <- cumsum(fl)
+```
+
+1. Indiquez quelle est la nature de la variable `pièces`
+   (catégorielle, numérique discrète ou numérique continue).
+1. Calculez les fréquences pour chaque taille de logement.
+1. Le calcul des fréquences cumulées a t'il un sens ? Si oui, réalisez
+   le. Que signifie par exemple la seconde fréquence ?
+1. Représentez les fréquences à l'aide du graphique de votre choix.
+
+#### Corrigé
+
+**Q1.** La variable `pieces` est une variable numérique discrète qui prend
+   les valeurs de 1 à 6. En fait, la valeur 6 regroupe tous les
+   logements dont le nombre de pièces est au moins égal à 6.
+   
+**Q2.** Pour calculer les fréquences, on commence par calculer le nombre
+   total de logements, en sommant les valeurs de la colonne
+   `nombre`. On obtient ici `r round(ntotlog, 2)`, soit environ 30
+   millions de logements. Ensuite, on divise chaque effectif par le
+   total, soit par exemple, pour les logements de 1, 2 et 3 pièces : $f_1
+   = \frac{`r round(Logements$nombre[1], 2)`}{`r round(ntotlog, 2)`} = 
+   `r round(fl[1], 2)`$, 
+   $f_2
+   = \frac{`r round(Logements$nombre[2], 2)`}{`r round(ntotlog, 2)`} = 
+   `r round(fl[2], 2)`$ 
+   et    $f_3
+   = \frac{`r round(Logements$nombre[3], 2)`}{`r round(ntotlog, 2)`} = 
+   `r round(fl[3], 2)`$ 
+   (`r round(fl[1] * 100)`% des logements ont une seule pièces, `r round(fl[2] * 100)`% en
+   ont deux et `r round(fl[3] * 100)`% en ont 3).
+
+**Q3.** La variable étant numérique, le calcul des fréquences cumulées a du
+   sens. Pour les logements d'une pièce, on a $F_1=f_1=
+   `r round(Fl[1], 2)`$. Pour ceux de deux pièces, on a $F_2 = f_1 + f_2 = 
+   `r round(Fl[2], 2)`$. Enfin, pour ceux de trois pièces, on a $F_3 =
+   f_1 + f_2 + f_3 = F_2 + f_3 = `r round(Fl[3], 2)`$. $F_2$ signifie
+   que `r round(Fl[2] * 100)`% des logements ont au plus deux pièces et
+   $F_3$ indique que `r round(Fl[3] * 100)`% des logements ont au plus
+   trois pièces.
+
+**Q4.** Le graphique le plus adapté pour une variable numérique discrète
+   est un graphique en bâton. Pour chaque valeur de la variable, on
+   trace un trait vertical dont la hauteur est proportionnelle à la fréquence.
+
+
+```{r echo = FALSE}
+Logements %>% tibble::add_column(f = fl) %>%
+    ggplot(aes(pieces, fl)) + geom_col(width = 0.05) +
+    labs(x = "nombre de pièces", y = "fréquences") +
+    scale_y_continuous(label = scales::percent)
+```
+
+### Exercice 3 {-}
+
+#### Intitulé
+
+La répartition des entreprises selon le secteur d'activité est connue
+en France au niveau communal via **Clap** (Connaissance locale de
+l'appareil productif). Les données pour 2015 sont disponibles sur le
+site de l'INSEE.
+
+(https://www.insee.fr/fr/statistiques/2021289)
+
+
+Les résultats au niveau national sont présentés dans le tableau
+ci-dessous ; `nombre` indique le nombre d'entreprises (en milliers).
+
+```{r echo = FALSE}
+clap_secteur <- Clap %>%  group_by(secteur) %>% summarise(nombre = round(sum(nombre)))
+ntot <- clap_secteur %>% pull(nombre) %>% sum
+f <- clap_secteur$nombre / ntot
+clap_secteur %>% 
+    knitr::kable(booktabs = TRUE, escape = FALSE) %>%
+        kableExtra::kable_styling(position = "center")    
+```
+
+1. Indiquez quelle est la nature de la variable `secteur`
+   (catégorielle, numérique discrète ou numérique continue).
+1. Calculez les fréquences pour chaque secteur.
+1. Le calcul des fréquences cumulées a t'il un sens ? Que
+   signifierait par exemple la deuxième fréquence cumulée ?
+1. Représentez les fréquences à l'aide du graphique de votre
+choix.
+
+
+#### Corrigé
+
+**Q1.** La variable secteur est une variable catégorielle, avec 5
+   modalités. 
+   
+**Q2.** Pour calculer les fréquences, on commence par calculer l'effectif
+   total, en sommant les différentes valeurs de la colonne `nombre`,
+   on obtient ici `r ntot`. On divise ensuite chaque effectif par
+   l'effectif total. On obtient par exemple, pour le premier secteur
+   (l'agriculture) `r round(f[1], 3)`, ce qui
+   signifie que `r round(f[1] * 100, 1)`% des
+   entreprises en France sont des exploitations agricoles.
+   
+**Q3.** Le calcul des fréquences cumulées n'a pas de sens, car elle
+   consiste à sommer des fréquences successives alors que l'ordre des
+   lignes est arbitraire. Par exemple, la fréquence cumulée pour la
+   seconde ligne $F_2 = f_1 + f_2= `r round(f[1], 3)` + 
+   `r round(f[2], 3)` = `r round(f[1] + f[2], 3)`$, ce qui signifie
+   que `r round((f[1] + f[2]) * 100, 1)`% des entreprises françaises
+   sont des exploitations agricoles ou des entreprises industrielles.
+   
+**Q4.** Les deux graphiques les plus courants pour représenter la
+   distribution d'une variable catégorielle sont :
+
+  - le graphique en barre, pour lequel la hauteur de la barre est
+     proportionelle à la fréquence,
+  - le graphique circulaire, pour lequel les angles permettant de
+     représenter les parts sont proportionnels aux fréquences.
+ 
+```{r echo = FALSE}
+clap_secteur %>% mutate(f = nombre / sum(nombre)) %>%
+    ggplot(aes(f, secteur)) + geom_col() +
+    scale_x_continuous(label = scales::percent) +
+    labs(x = "Fréquences", y = "Secteurs d'activité")
+```
+
+```{r echo = FALSE}
+pie <- clap_secteur %>% mutate(nombre = nombre / sum(nombre)) %>%
+    mutate(ypos = cumsum(f) - 0.5 * f, pourc = paste(round(f * 100, 1), "%", sep = "")) %>%
+    purrr::map_df(rev) %>% mutate(secteur = factor(secteur, levels = secteur))
+pie %>% ggplot(aes(x = "", y = nombre, fill = secteur)) +
+    geom_col() +
+    geom_label(aes(y = ypos, label = secteur), fill = "white") +
+    coord_polar(theta = "y") + theme_void() + guides(fill = FALSE)                 
+```
+
+### Exercice 4 {-}
+
+#### Intitulé
+
+La répartition des entreprises selon la taille est connue en France au
+niveau communal via **Clap** (Connaissance locale de l'appareil
+productif). Les données pour 2015 sont disponibles sur le site de l'INSEE.
+
+(https://www.insee.fr/fr/statistiques/2021289)
+
+
+Les résultats au niveau national sont présentés dans le tableau
+ci-dessous :
+
+
+```{r echo = FALSE}
+clap_taille <- Clap %>% group_by(taille) %>%
+    summarise(entreprises = round(sum(nombre)), salaries = round(sum(salaries))) %>%
+    rename(classe = taille) %>% mutate(taille = round(salaries / entreprises, 2))
+ntott <- sum(pull(clap_taille, entreprises))
+clap_taille %>% mutate(classe = paste("$", classe, "$", sep = "")) %>%
+    knitr::kable(booktabs = TRUE, escape = FALSE) %>%
+        kableExtra::kable_styling(position = "center")
+clap_taille <- clap_taille %>% mutate(f = entreprises / sum(entreprises), F = cumsum(f))
+```
+
+La taille est mesurée en classes, `entreprises` et `salariés`
+indiquent respectivement le nombre d'entreprises et les effectifs
+salariés des entreprises pour chaque classe de taille. 
+
+1. Calculez le centre de chaque classe, en divisant l'effectif salarié
+   par le nombre d'entreprises.
+1. Calculez les fréquences relatives du nombre d'entreprises pour les
+   différentes classes de taille.
+1. Représentez les fréquences relatives par un graphique en
+bâtons.
+1. Calculez les fréquences relatives cumulées et interprétez celles
+   associées à la classe `[10,20)`.
+
+#### Corrigé
+
+**Q1.** On est dans une situation où on peut calculer avec exactitude la
+   moyenne de chaque classe, car on connaît le nombre total d'employés
+   pour chaque classe de taille. La moyenne pour la classe `0` est par
+   définition 0. Pour la classe `[1,10)` par exemple, on obtient 
+   $\frac{`r fmt(clap_taille[2,3,drop = TRUE])`}{`r fmt(clap_taille[2, 2, drop = TRUE])`} = 
+   `r round(clap_taille[2,3,drop = TRUE] / clap_taille[2,2,drop = TRUE], 3)`$.
+   
+**Q2.** Le nombre total d'entreprises est égal à  `r fmt(ntott)`.
+La fréquence relative par exemple pour les classes 0 et `[1,10)` sont
+ de $f_1 = \frac{`r fmt(clap_taille[1,2,drop = TRUE])`}{`r fmt(ntott)`} = `r round(clap_taille[1,5,drop = TRUE], 2)`$
+et $f_2 = \frac{`r fmt(clap_taille[2,2,drop = TRUE])`}{`r fmt(ntott)`} = `r round(clap_taille[2,5,drop = TRUE], 2)`$
+
+**Q3.**
+
+```{r echo = FALSE}
+clap_taille %>% mutate(f = entreprises / sum(entreprises), classe = factor(classe, levels = classe)) %>%
+    ggplot(aes(classe)) + geom_col(aes(y = f), width = .05) +
+    labs(x = "Classes de taille", y = "Fréquences relatives")
+```
+
+**Q4.** Les fréquences cumulées s'obtiennent en sommant de manière
+   cumulative les fréquences pour chaque classe. Pour la première
+   classe `0`, la fréquence cumulée est égale à la fréquence, soit 
+   $F_1=f_1=`r round(clap_taille[1, 5, drop = TRUE], 2)`$. Pour la deuxième classe
+   `[1,10)`, la fréquence cumulée est égale à la somme des deux
+   premières fréquences, soit $F_2 = f_1 + f_2=
+   `r round(clap_taille$f[1],2)` + `r round(clap_taille$f[2], 2)`=
+   `r round(clap_taille$F[2], 2)`$. Pour la troisième classe `[20,50)`, soit
+   on somme les trois premières fréquences, soit on ajoute $f_3$ à la
+   fréquence cumulée de la classe précédente $F_2$, pour obtenir $F_3
+   = `r round(clap_taille$F[3], 2)`$. La valeur obtenue indique que `r round(clap_taille$F[3] * 100, 2)`%
+   des entreprises ont moins de 20 salariés.
+
+Les résultats complets de l'exercice sont présentés dans le tableau
+ci-dessous.
+
+
+```{r echo = FALSE}
+clap_taille2 <- clap_taille %>% mutate(classe = paste("$", classe, "$", sep = "")) %>%
+    select(classe, taille, f, F)
+clap_taille2 %>% knitr::kable(booktabs = TRUE, escape = FALSE, digits = c(NA, 1, 3, 3)) %>%
+        kableExtra::kable_styling(position = "center")
+```

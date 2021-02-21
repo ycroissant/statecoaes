@@ -1,0 +1,358 @@
+---
+title: Exercices corrigés du chapitre 6
+author: Yves Croissant
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+  pdf_document:
+    number_sections: true
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Exercices corrigés du chapitre 6}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+### Exercice 1 {-}
+
+#### Intitulé
+
+On considère une classe de 5 élèves qui ont obtenu une note au premier
+semestre ($x$) et au second semestre ($y$). Les notes sont données
+dans le tableau ci-dessous\ :
+
+
+```{r echo = FALSE, message = FALSE}
+library("statecoaes")
+library("dplyr")
+library("descstat")
+y <- c(1, 5, 7, 9, 10)
+x <- c(3, 7, 9, 5, 6)
+resid <- resid(lm(y ~ x))
+resid_mef <- paste("(", paste(resid, collapse = ", "), ")", sep = "")
+ssr <- sum(resid ^ 2)
+tibble(x = x, y = y) %>% rlang::set_names(c("$x$", "$y$")) %>% 
+    knitr::kable(booktabs = TRUE, escape = FALSE, digits = 2) %>%
+    kableExtra::kable_styling(position = "center")
+```
+
+1. Calculez les moyennes pour les deux notes.
+1. Calculez les variances pour les deux notes.
+1. Calculez les écarts-types pour les deux notes.
+1. Calculez la covariance entre les deux notes.
+1. Calculez le coefficient de corrélation linéaire entre les deux
+   notes, commentez.
+1. Calculez les paramètres de la droite de régression linéaire de la
+   note du second semestre en fonction de la note du premier semestre.
+1. Calculez les 5 résidus.
+1. Calculez le coefficient de détermination
+
+#### Corrigé
+
+
+**Q1.** $\bar{x} = \frac{3 + 7 + 9 + 5 + 6}{5} = `r mean(x)`$ et 
+$\bar{y} = \frac{1 + 5 + 7 + 9 + 10}{5} = `r mean(y)`$. Les notes
+moyennes aux deux semestres sont très proches.
+
+**Q2.**  La variance est la moyenne des écarts quadratiques par rapport à la
+   moyenne\ : $s_x^2 = \frac{ (-3) ^ 2 + 1 ^ 2 + 3 ^ 2 + (-1) ^ 2 + 0
+   ^ 2}{5} =4$ et $s_y^2 = \frac{ (-5.4) ^ 2 + (-1.4) ^ 2 + 0.6 ^ 2 +
+   2.6 ^ 2 + 3.6 ^ 2}{5} =10.24$. La variance est plus élevée pour les
+   notes du second semestre que pour le premier. Les valeurs
+   sont difficiles à interpréter car leur unité de mesure est un
+   nombre de points (sur 10) au carré.
+   
+**Q3.**  $s_x = \sqrt{s_x^2}=2$ et $s_y = \sqrt{s_y^2}=3.2$.  La dispersion
+   des notes est beaucoup plus importante au second semestre qu'au
+   premier. 2 et 3.2 peuvent s'interpréter par l'écart moyen par
+   rapport à la moyenne ; l'unité est celle de la variable,
+   c'est-à-dire un nombre de points sur 10.
+   
+**Q4.**  $s_{xy} = \frac{ (-3) \times (-5.4) +  1 \times (-1.4) + 3 \times
+   0.6 + (-1) \times 2.6 + 0 \times 3.6}{5} = 2.8$. La covariance est
+   positive, il y a donc une liaison positive entre les deux
+   notes. Cependant, il est difficile d'interpréter la valeur de la
+   covariance car son unité de mesure est le produit de celles des
+   deux notes exprimées en points.
+   
+**Q5.**  $r_{xy} = \frac{s_{xy}}{s_xs_y} = \frac{2.8}{2 \times 3.2} =
+   0.4375$. Le coefficient de corrélation est positif (ce qui était
+   attendu car son signe est le même que celui de la covariance). La
+   valeur est facilement interprétable car il s'agit d'un nombre sans
+   unité compris entre -1 et +1. La valeur obtenue ici indique une
+   corrélation positive modérée. 
+
+**Q6.**  Le coefficient directeur de la droite est le rapport entre la
+   covariance et la variance de la variable explicative (ici $x$),
+   soit $a = \frac{2.8}{4}=0.7$. L'ordonnée à l'origine est
+   obtenue à l'aide de la relation $b = \bar{y}-a\bar{x} = 6.4 -
+   0.7 \times 6 = 2.2$.
+
+**Q7.** Les résidus s'obtiennent avec la formule $y_n - b - a x_n$. On
+   obtient ici\ : `r resid_mef`.
+   
+**Q8.** La somme des carrés des résidus est égale à `r ssr`. La
+   variation totale de $y$ est égale à 51.2. Le coefficient de
+   détermination est donc égal à $1 - \frac{`r ssr`}{51.2} = 0.1914$.
+
+
+### Exercice 2 {-}
+
+#### Intitulé
+
+On s'intéresse à la relation entre le nombre de voitures dans une
+famille et le nombre d'adultes (1 pour les familles mono-parentales et
+2 pour les couples). La distribution jointe est donnée dans le tableau
+ci-dessous.
+
+```{r echo = FALSE}
+voit <- RGP77 %>%
+    mutate(adultes = ifelse(type == "couple", 2, 1)) %>%
+    cont_table(voitures, adultes, total = TRUE)
+voitj <- voit %>% joint
+voitj %>% pre_print %>% rename(" " = 1) %>%
+    knitr::kable(booktabs = TRUE, escape = FALSE, digits = 3) %>%
+    kableExtra::kable_styling(position = "center")
+marg_voit <- voit %>% marginal(voitures) 
+mom_voit <- marg_voit %>%
+    summarise(m = weighted.mean(voitures, f),
+              s2 = weighted.mean((voitures - m) ^ 2, f))
+marg_adu <- voit %>% marginal(adultes)
+mom_adu <- marg_adu %>%
+    summarise(m = weighted.mean(adultes, f),
+              s2 = weighted.mean((adultes - m) ^ 2, f))
+marg_voit_mef <- marg_voit %>% pull(f) %>% round(3) %>% paste(collapse = ", ")
+marg_voit_mef <- paste("(", marg_voit_mef, ")", sep = "")
+marg_adu_mef <- marg_adu %>% pull(f) %>% round(3) %>% paste(collapse = ", ")
+marg_adu_mef <- paste("(", marg_adu_mef, ")", sep = "")
+probj <- voitj %>% pre_print %>% .[, -1] %>% as.matrix %>% round(3)
+cov_voit_adu <- voitj %>% as_tibble %>%
+    mutate(item = f * (voitures - mom_voit$m) * (adultes - mom_adu$m)) %>%
+    summarise(sum(item)) %>% pull
+s_voit <- sqrt(mom_voit$s2)
+s_adu <- sqrt(mom_adu$s2)
+```
+
+1. Calculez les distributions marginales du nombre d'adultes et du
+   nombre de voitures.
+1. Calculez le nombre moyen d'adultes et le nombre moyen de voitures.
+1. Calculez la variance du nombre d'adultes et du nombre de voitures. 
+1. Calculez l'écart-type du nombre d'adultes et du nombre de voitures. 
+1. Calculez la covariance entre le nombre d'adultes et le nombre de voitures.
+
+
+#### Corrigé
+
+**Q1.**  La distribution marginale des voitures est obtenue en sommant pour
+   chaque lignes les probabilités jointes. On obtient 
+   `r marg_voit_mef`. Pour la distribution marginale des adultes, on
+   somme les probabilités jointes en colonne. On obtient
+   `r marg_adu_mef`
+
+**Q2.**  La moyenne du nombre de voitures s'obtient en faisant la moyenne
+   pondérée du nombre de voitures avec les probabilités marginales. On
+   obtient\ : $\bar{v} = `r round(marg_voit$f[1], 3)` \times 0 +
+                         `r round(marg_voit$f[2], 3)` \times 1 +
+                         `r round(marg_voit$f[3], 3)` \times 2 +
+                         `r round(marg_voit$f[4], 3)` \times 3 = 
+						 `r round(mom_voit$m, 3)`$.
+						 
+La moyenne du nombre d'adultes s'obtient en faisant la moyenne
+   pondérée du nombre d'adultes avec les probabilités marginales. On 
+   obtient\ : $\bar{a} = `r round(marg_adu$f[1], 3)` \times 1 +
+                         `r round(marg_adu$f[2], 3)` \times 2 = 
+						 `r round(mom_adu$m, 3)`$.
+
+**Q3.**  La variance du nombre de voitures s'obtient en faisant la moyenne
+   pondérée du nombre de voitures avec les probabilités marginales. On
+   obtient\ : $s^2_v = `r round(marg_voit$f[1], 3)` \times (0-`r round(mom_voit$m, 3)`) ^ 2 +
+                       `r round(marg_voit$f[2], 3)` \times (1-`r round(mom_voit$m, 3)`) ^ 2 +
+                       `r round(marg_voit$f[3], 3)` \times (2-`r round(mom_voit$m, 3)`) ^ 2 +
+                       `r round(marg_voit$f[4], 3)` \times (3-`r round(mom_voit$m, 3)`) ^ 2 = 
+            		   `r round(mom_voit$s2, 3)`$.
+  La variance du nombre d'adultes s'obtient en faisant la moyenne
+   pondérée du nombre d'adultes avec les probabilités marginales. On 
+   obtient\ : $s^2_a = `r round(marg_adu$f[1], 3)` \times (1-`r round(mom_adu$m, 3)`)  ^ 2 +
+                         `r round(marg_adu$f[2], 3)` \times (2-`r round(mom_adu$m, 3)`)  ^ 2 = 
+						 `r round(mom_adu$s2, 3)`$.
+
+**Q4.**  Les écart-types sont simplement les racines carrés des
+   variances. On obtient $s_v=`r round(s_voit, 3)`$ et $s_a=
+   `r round(s_adu, 3)`$.
+   
+**Q5.**  La covariance s'obtient en faisant la moyenne des produits des
+   écarts entre chaque variable et sa moyenne, pondérée par les
+   probabilités jointes. On obtient ici\ :
+   $s_{av} = `r probj[1, 1]` \times (0-`r round(mom_voit$m, 3)`) \times (1-`r round(mom_adu$m, 3)`) + 
+             `r probj[1, 2]` \times (0-`r round(mom_voit$m, 3)`) \times (2-`r round(mom_adu$m, 3)`) + 
+             `r probj[2, 1]` \times (1-`r round(mom_voit$m, 3)`) \times (1-`r round(mom_adu$m, 3)`) + 
+             `r probj[2, 2]` \times (1-`r round(mom_voit$m, 3)`) \times (2-`r round(mom_adu$m, 3)`) + 
+             `r probj[3, 1]` \times (2-`r round(mom_voit$m, 3)`) \times (1-`r round(mom_adu$m, 3)`) + 
+             `r probj[3, 2]` \times (2-`r round(mom_voit$m, 3)`) \times (2-`r round(mom_adu$m, 3)`) + 
+             `r probj[4, 1]` \times (3-`r round(mom_voit$m, 3)`) \times (1-`r round(mom_adu$m, 3)`) + 
+             `r probj[4, 2]` \times (3-`r round(mom_voit$m, 3)`) \times (2-`r round(mom_adu$m, 3)`) = 
+             `r round(cov_voit_adu, 3)`$.
+   La covariance est positive, ce qui indique une corrélation positive
+   entre le nombre d'adultes et le nombre de voitures. Cependant la
+   valeur de la covariance est difficile à interpréter car son unité
+   est le nombre de voitures multiplié par le nombre d'adulte.
+
+**Q6.**  Le coefficient de corrélation est le rapport entre la covariance
+   entre les deux variables et le produit de leurs écarts-types. On
+   obtient\ : $r_{av} = \frac{s_{av}}{s_as_v}=\frac{`r round(cov_voit_adu, 3)`}
+   {`r round(s_adu, 3)` \times `r round(s_voit, 3)`} = 
+   `r round(cov_voit_adu / s_adu / s_voit, 3)`$.
+
+
+### Exercice 3 {-}
+
+#### Intitulé
+
+On présente dans le tableau ci-dessous la répartition des chômeurs
+selon la durée de l'épisode de chômage (en tranches de durées mesurées
+en mois) et en âge (en tranche d'années). 
+
+```{r echo = FALSE}
+chom_brut <- Emploi %>% select(age, durchom, ponderations) %>% na.omit %>%
+    mutate(age = cut(age, breaks = c(30, 50)),
+           durchom = cut(durchom, breaks = c(12, 24)))
+chom <- chom_brut %>%
+    mutate(age = paste("$", age, "$", sep = ""),
+           durchom = paste("$", durchom, "$", sep = ""),
+           age = forcats::fct_recode(age, `$[50,\\infty)$` = "$[50,Inf)$"),
+           durchom = forcats::fct_recode(durchom, `$[24,\\infty)$` = "$[24,Inf)$")) %>%
+        cont_table(durchom, age, total = TRUE, weights = ponderations) %>%
+    mutate(n = n / 1000)
+
+chom_brut <- chom_brut %>% 
+    cont_table(durchom, age, total = TRUE, weights = ponderations) %>%
+    mutate(n = n / 1000)
+chom %>% pre_print %>% rename(" " = 1) %>% 
+    knitr::kable(booktabs = TRUE, escape = FALSE, digits = 0) %>%
+    kableExtra::kable_styling(position = "center")
+```
+1. Calculez la distribution marginale des chômeurs selon la durée.
+1. Calculez la moyenne et la variance de la durée de chômage (on
+   retiendra un centre de classe de 36 mois pour la dernière classe de
+   durée `[24, Inf)`).
+1. Calculez la distribution conditionnelle des chômeurs selon la durée
+   de chômage en fonction de l'âge. Commentez
+1. Calculez la moyenne de la durée de chômage pour chaque tranche
+   d'âge (on retiendra un centre de classe de 36 mois pour la dernière
+   classe de durée).
+1. Calculez la variance de la durée de chômage pour chaque tranche
+   d'âge (on retiendra un centre de classe de 36 mois pour la dernière
+   classe de durée).
+1. Décomposez la variance totale de la durée du chômage.
+1. Calculez le rapport de corrélation de la durée du chômage par
+   rapport à l'âge.
+
+#### Corrigé
+
+**Q1.**  La distribution marginale selon la durée de chômage s'obtient en
+   divisant chaque cellule de la colonne `Total` par l'effectif
+   total. Le tableau ci-dessous indique ces fréquences marginales,
+   ainsi que les centres de classe.
+   
+```{r echo = FALSE}
+marg <- chom %>% na.omit %>% marginal(durchom)
+marg_age <- chom %>% marginal(age) %>% pull(f) %>% round(3)
+marg_age_mef <- paste("(", paste(marg_age, collapse = ", "), ")", sep = "")
+marg <- tibble(f = marg$f, x = c(6, 18, 30))
+xb <- sum(marg$f * marg$x)
+s2 <- sum(marg$f * (marg$x - xb) ^ 2)
+marg %>% knitr::kable(booktabs = TRUE, escape = FALSE, digits = 3) %>%
+    kableExtra::kable_styling(position = "center")
+```
+
+**Q2.** La durée moyenne de chômage et la variance s'obtiennent en utilisant la distribution
+   marginale précédemment calculée :    
+   $$\bar{x} = 
+    `r round(marg$f[1], 3)` \times `r marg$x[1]` + 
+    `r round(marg$f[2], 3)` \times `r marg$x[2]` + 
+	`r round(marg$f[3], 3)` \times `r marg$x[3]` =
+	`r round(xb, 2)`$$
+  $$\sigma^2 = 	
+    `r round(marg$f[1], 3)` \times (`r marg$x[1]` - `r round(xb, 2)`) ^ 2 + 
+    `r round(marg$f[2], 3)` \times (`r marg$x[2]` - `r round(xb, 2)`) ^ 2 + 
+	`r round(marg$f[3], 3)` \times (`r marg$x[3]` - `r round(xb, 2)`) ^ 2 =
+	`r round(s2, 2)`$$
+
+**Q3.**  La distribution conditionnelle s'obtient en divisant chaque cellule
+    par la ligne total. Par exemple, pour la tranche d'âge `[15,30)`,
+    on obtient\ :
+	$`r round(pre_print(chom)[1,2, drop = TRUE])` / `r round(pre_print(chom)[4,2, drop = TRUE])`$,
+	$`r round(pre_print(chom)[2,2, drop = TRUE])` / `r round(pre_print(chom)[4,2, drop = TRUE])`$ et
+    $`r round(pre_print(chom)[3,2, drop = TRUE])` / `r round(pre_print(chom)[4,2, drop = TRUE])`$.
+	L'ensemble de la distribution conditionnelle est présentée dans le
+    tableau ci-dessous\ :
+	
+```{r echo = FALSE}
+cond <- chom %>% conditional(durchom)
+cond_j <- cond %>% pre_print %>% pull(2) %>% round(3)
+cond  %>% pre_print %>%
+    knitr::kable(booktabs = TRUE, escape = FALSE, digits = 3) %>%
+    kableExtra::kable_styling(position = "center")
+espcond <- chom_brut %>% conditional(durchom) %>% mean %>% pull(2)
+espcond_mef <- paste("(", paste(round(espcond, 2), collapse = ", "), ")", sep = "")
+varcond <- chom_brut %>% conditional(durchom) %>% variance %>% pull(2)
+varcond_mef <- paste("(", paste(round(varcond, 2), collapse = ", "), ")", sep = "")
+```
+On constate que le pourcentage de chômeurs de "courte durée" est plus
+importante pour les jeunes que pour les plus âgés.
+
+
+**Q4.**  Les moyennes conditionnelles s'obtiennent en utilisant, pour chaque
+   tranche d'âge, la distribution conditionnelle. Par exemple, pour la
+   tranche d'âge `[15,30)`, on obtient\ : \newline
+   $$`r cond_j[1]` \times `r marg$x[1]` + 
+    `r cond_j[2]` \times `r marg$x[2]` + 
+	`r cond_j[1]` \times `r marg$x[1]` = 
+	`r round(sum(cond_j * marg$x), 2)`$$
+  Pour l'ensemble des tranches d'âge, on obtient 
+  `r espcond_mef`.
+  
+**Q5.**  Les variances conditionnelles s'obtiennent en calculant les écarts
+   par rapport aux moyennes conditionnelles et en utilisant, pour chaque
+   tranche d'âge, la distribution conditionnelle. Par exemple, pour la
+   tranche d'âge `[15,30)`, on obtient\ :
+
+
+```{r echo = FALSE}
+avar <- chom_brut %>% conditional(durchom) %>% variance %>% pull %>% .[1]
+dec_chom <- chom_brut %>% anova("durchom") %>% summary
+var_exp <- dec_chom %>% select(1) %>% pull
+var_res <- dec_chom %>% select(2) %>% pull
+R2 <- dec_chom %>% pull(ratio)
+```
+
+$$`r cond_j[1]` \times (`r marg$x[1]` - `r round(espcond)[1]`) ^ 2 + 
+    `r cond_j[2]` \times (`r marg$x[2]`  - `r round(espcond)[1]`) ^ 2+ 
+	`r cond_j[1]` \times (`r marg$x[1]`  - `r round(espcond)[1]`) ^ 2= 
+	`r round(avar, 3)`$$
+
+Pour l'ensemble des tranches d'âge, on obtient 
+  `r varcond_mef`.
+  
+**Q6.**  On commence par calculer la distribution marginale des chômeurs
+   selon l'âge\ : $`r marg_age_mef`$.
+   La variance intra-groupe est la moyenne des variances
+   conditionnelles calculée en utilisant la distribution marginale
+   selon les tranches d'âge. 	
+   $$`r marg_age[1]` \times `r round(varcond[1], 2)` + 
+     `r marg_age[2]` \times `r round(varcond[2], 2)` +
+     `r marg_age[3]` \times `r round(varcond[3], 2)` = 
+	 `r round(var_res, 2)`$$
+   La variance inter-groupe est la variance des moyennes
+   conditionnelles, calculée en utilisant la distribution marginale
+   selon les tranches d'âges.	 
+   $$`r marg_age[1]` \times (`r round(espcond[1], 2)` - `r round(xb, 2)`) ^ 2 + 
+     `r marg_age[2]` \times (`r round(espcond[2], 2)` - `r round(xb, 2)`) ^ 2 +
+     `r marg_age[3]` \times (`r round(espcond[3], 2)` - `r round(xb, 2)`) ^ 2 = 
+	 `r round(var_exp, 2)`$$
+   On vérifie la formule de la décomposition de la variance\ : $`r round(var_res, 2)` + `r round(var_exp, 2)` =
+   `r round(s2, 2)`$.
+
+**Q7.**  Le rapport de corrélation est égal au rapport entre la variance
+   inter-groupe et la variance totale, soit\ :
+   $\frac{`r round(var_exp, 2)`}{`r round(s2, 2)`} = `r round(R2, 3)`$.

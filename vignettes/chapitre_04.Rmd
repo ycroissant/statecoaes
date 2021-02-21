@@ -1,0 +1,294 @@
+---
+title: Exercices corrigés du chapitre 4
+author: Yves Croissant
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+  pdf_document:
+    number_sections: true
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Exercices corrigés du chapitre 4}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+### Exercice 1 {-}
+
+#### Intitulé
+
+On considère la répartition des entreprises par taille présentée dans
+le tableau ci-dessous.
+
+
+```{r echo = FALSE, message = FALSE}
+fmt <- function(x) format(x, scientific = FALSE, big.mark = " ")
+library("statecoaes")
+library("dplyr")
+library("ggplot2")
+library("descstat")
+clap_taille <- Clap %>% filter(taille != "0") %>% group_by(taille) %>%
+    summarise(entreprises = round(sum(nombre)), salaries = round(sum(salaries))) %>%
+    rename(classe = taille) %>% mutate(taille = round(salaries / entreprises, 2))
+ntott <- sum(pull(clap_taille, entreprises))
+clap_taille <- clap_taille %>% mutate(f = entreprises / sum(entreprises), F = cumsum(f))
+clap_taille %>% mutate(classe = paste("$", classe, "$", sep = "")) %>%
+    select(classe, taille, entreprises, salaries) %>% 
+    knitr::kable(booktabs = TRUE, escape = FALSE, digits = c(NA, 2, 0, 0)) %>%
+        kableExtra::kable_styling(position = "center")
+```
+
+1. Tracez la courbe de concentration (appelée également courbe de
+   Lorenz).
+2. Calculez l'indicateur de Gini et commentez la valeur obtenue.
+
+#### Corrigé
+
+
+```{r echo = FALSE}
+saltot <- clap_taille %>% pull(salaries) %>% sum
+m <- clap_taille %>% pull(salaries) %>% "/"(saltot)
+M <- cumsum(m)
+```
+
+**Q1.** La courbe de concentration relie les points qui, en abcsisse,
+   indiquent les fréquences cumulées et en ordonnées les fréquences
+   cumulées de la masse de la variable. La masse de la variable est
+   ici constituée du nombre de salariés dans chaque classe de
+   taille. Les fréquences de masse ($m$) s'obtiennent en divisant le
+   nombre de salariés de chaque classe par le nombre total de
+   salarié, celui-ci étant égal à `r fmt(saltot)`. Pour les deux
+   premières classes, on a $m_1 = \frac{`r fmt(clap_taille$salaries[1])`}
+   {`r fmt(saltot)`} = `r round(m[1], 2)`$ et
+   $m_2 = \frac{`r fmt(clap_taille$salaries[2])`}
+   {`r fmt(saltot)`} = `r round(m[2], 2)`$
+   Les fréquences de masse cumulées ($M$) s'obtiennent en faisant la
+   somme cumulée des fréquences de masse ($m$), soit
+   $M_2=m_1+m_2=`r round(M[2], 3)`$,
+   $M_3=m_1+m_2+m_3=M_2+m_3=`r round(M[3], 3)`$, etc.
+   Les fréquences cumulées quant à elles ont été calculées dans
+   l'exercice du chapitre précédent et sont donc uniquement rappelées
+   dans le tableau ci-dessous.      
+```{r echo = FALSE, messages = FALSE, warning = FALSE}
+clap_taille <- clap_taille %>% mutate(f = entreprises / sum(entreprises), F = cumsum(f))
+hist <- clap_taille %>%
+    tibble::add_column(begin = c(0, 10, 20, 50),
+               end = c(10, 20, 50, 100),
+               a = end - begin) %>%
+    mutate(d = f / a) %>%
+    select(begin, end, d)
+clap2 <- clap_taille %>% mutate(m = salaries / sum(salaries),
+                                M = cumsum(m)) %>%
+    select(classe, f, F, m, M)
+FC <- clap2$F
+clap2$classe <- as.character(clap2$classe)
+clap2[4, 1] <- "[50,\\infty)"
+
+clap2 %>% mutate(classe = paste("$", classe, "$", sep = "")) %>% 
+    knitr::kable(booktabs = TRUE, escape = FALSE, digits = c(NA, 3, 3, 3, 3)) %>%
+        kableExtra::kable_styling(position = "center")    
+```
+
+En représentant $M$ en fonction de $f$, on obtient la courbe de
+  Lorenz.
+  
+```{r echo = FALSE, messages = FALSE, warning = FALSE, out.width = "50%", fig.width = 6, fig.align = "center"}
+clap2 <- clap2 %>% tibble::add_row(F = 0, M = 0, .before = 0)
+clap2 %>% 
+    ggplot(aes(F, M)) +
+    geom_polygon(fill = "lightyellow") +
+    geom_polygon(data = tibble::add_row(clap2, F = 1, M = 0), fill = "pink") + 
+    geom_label(aes(x = F - 0.05, y = M + 0.03, label = classe)) +
+    geom_line(data = tibble(F = c(0, 1), M = c(0, 1))) +
+    geom_line(linetype = "dashed") +
+    geom_point(size = 2, col = "blue") +
+    geom_segment(data = tibble::add_column(clap2, Mend = 0, Fend = clap2$F),
+                 aes(xend = Fend, yend = Mend)) + 
+    labs(x = "Fréquences cumulées", y = "Masses cumulées")
+```
+**Q2.** On calcule la surface sous la courbe par la méthode des trapèzes. La
+surface de chaque trapèze est donnée par :
+$$T_n = (F_n - F_{n-1}) \times \frac{M_n + M_{n-1}}{2}$$
+```{r echo = FALSE}
+Trap <- (FC - c(0, FC[-4])) * (M + c(0, M[-4])) / 2
+```
+On obtient ici :
+
+- $T_1 = (F_1 - 0) \times \frac{M_1 + 0}{2} = `r round(Trap[1], 3)`$,
+- $T_2 = (F_2 - F_1) \times \frac{M_2 + M_1}{2} = 
+`r round(Trap[2], 3)`$,
+- $T_3 = (F_3 - F_2) \times \frac{M_2 + M_3}{2} = 
+`r round(Trap[3], 3)`$,
+- $T_4 = (F_4 - F_3) \times \frac{M_3 + M_4}{2} = 
+`r round(Trap[4], 3)`$,
+
+L'indice de Gini est $(0.5 - \sum_n T_n) / 0.5 = 1 - 2 \sum_n T_n = 
+`r round(1 - 2 * sum(Trap), 3)`$.
+
+
+### Exercice 2 {-}
+
+
+#### Intitulé
+
+Une classe de 8 élèves a eu un devoir noté de 1 à 5. Les notes sont
+les suivantes : $(1, 3, 2, 4, 2, 3, 5, 2)$
+
+1. Calculez les trois caractéristiques de tendance centrale.
+1. Calculez la variance et l'écart-type.
+1. Calculez les coefficients de forme de Fisher et commentez les
+   résultats obtenus.
+
+#### Corrigé
+
+```{r echo = FALSE}
+notes <- c(1, 3, 2, 4, 2, 3, 5, 2)
+xb <- mean(notes)
+variance <- mean(notes ^ 2) - xb ^ 2
+sigma <- sqrt(variance)
+```
+**Q1.** On commence par trier le vecteur de notes par ordre croissant, on
+obtient ainsi 
+$`r paste("(", paste(sort(notes), collapse = ", "), ")", sep = "")`$.
+On constate que la modalité pour lequel il y a le plus
+d'observations, c'est-à-dire le mode correspond à la valeur de 2.
+Comme le nombre d'observations est pair, il y a deux valeurs médianes,
+la quatrième (2) et la cinquième (3). La médiane est donc égale à la
+moyenne de ces deux valeurs, soit 2.5.  La moyenne s'écrit : 
+$\frac{`r paste(notes, collapse = " + ")`}{8}=`r mean(notes)`$.
+
+**Q2.** On peut appliquer la formule indiquant que la variance est
+   égale à la moyenne des carrés moins le carré de la moyenne, soit :
+   $\frac{`r paste(paste(notes, "^ 2"), collapse = " + ")`}{8} - 2.75
+   ^ 2 = 9 - 2.75 ^ 2 = 1.4375$. L'écart-type est la racine carré de
+   la variance, soit $\sigma = \sqrt{1.4375} = 1.199$.
+
+**Q3.** Pour calculer les indicateurs de forme, on calcule les écarts par
+   rapport à la moyenne pour chaque observation que l'on éleve ensuite
+   aux puissances 3 et 4\ :   
+```{r echo = FALSE}
+z <- tibble(`$x$` = 1:5, `$n$` = c(1, 3, 2, 1, 1),
+            `$f$` = `$n$` / 8,
+            `$x - \\bar{x}$` = (1:5) - 2.75) %>%
+    mutate(`$(x - \\bar{x}) ^ 3$` = `$x - \\bar{x}$` ^ 3,
+           `$(x - \\bar{x}) ^ 4$` = `$x - \\bar{x}$` ^ 4)
+mu3 <- sum(z[[3]] * z[[5]])
+mu4 <- sum(z[[3]] * z[[6]])
+z %>% knitr::kable(booktabs = TRUE, escape = FALSE, digits = c(0, 0, 3, 2, 3, 3)) %>%
+    kableExtra::kable_styling(position = "center")    
+```
+  L'indicateur d'asymétrie est obtenue en rapportant le moment centré
+  d'ordre 3 : $\mu_3 = \sum_{k=1}^5 f_k (x_k - \bar{x}) ^ 3 = `r round(mu3, 3)`$ et
+  l'écart-type $`r round(sigma, 3)`$ au cube, soit 
+  $\gamma_1 = \frac{`r round(mu3, 3)`}{`r round(sigma ^ 3, 3)`}=
+	   `r round(mu3 / sigma ^ 3, 3)`$.
+  L'excès de Kurtosis est obtenue en rapportant le moment centré
+  d'ordre 4 : $\mu_4 = \sum_{k=1}^5 f_k (x_k - \bar{x}) ^ 4 = `r round(mu4, 3)`$ et
+  l'écart-type $`r round(sigma, 3)`$ à la puissance 4 et en retirant 3, soit 
+  $\gamma_2 = \frac{`r round(mu4, 3)`}{`r round(sigma ^ 3, 4)`} - 3=
+	   `r round(mu4 / sigma ^ 4 - 3, 3)`$. $\gamma_1 > 0$ signifie que
+  la distribution des notes est oblique à gauche, ce qui est cohérent
+  avec le résultat que $\mbox{Mo} < \mbox{Me} < \bar{x}$ obtenu dans
+  la question 1. $\gamma_2 < 0$ signifie que la distribution est
+  platikurtique, c'est-à-dire plus applatie que la normale.
+
+
+### Exercice 3 {-}
+
+#### Intitulé
+
+On considère la distribution des foyers fiscaux français en termes de
+revenu imposable en 2018. Les revenus sont exprimés en milliers
+d'euros par an et le nombre de foyers fiscaux en millions. On
+considérera que le centre de la dernière classe est de 100.
+
+```{r echo = FALSE}
+
+dgi <- descstat::income %>% freq_table(inc_class, freq = number, breaks = c(0, 10, 15, 20, 30, 50)) %>%
+    select(- x) %>% as_tibble %>% rename(nombre = n)
+dgi <- dgi %>% mutate(nombre = round(nombre, 2))
+dgi[6, 1] <- "[50,\\infty)"
+ntot <- sum(dgi$nombre)
+dgi %>% mutate(inc_class = paste("$", inc_class, "$", sep = "")) %>%
+    rename(tranche = inc_class) %>% 
+    knitr::kable(booktabs = TRUE, escape = FALSE, digits = 2) %>%
+        kableExtra::kable_styling(position = "center")
+```
+1. Calculez les trois indicateurs de tendance centrale.
+1. Calculez le premier et le troisième quartile.
+
+#### Corrigés
+
+**Q1.** On commence par calculer le nombre total de foyers fiscaux : 
+`r ntot` et on divise chaque effectif par ce nombre total de manière à
+obtenir des fréquences relatives. Par exemple, $f_1 = 
+`r round(dgi$nombre[1] / ntot, 2)`$. On calcule ensuite les fréquences
+relatives cumulées $F$, ainsi que la densité en divisant les
+fréquences relatives par les intervalles de classe. La moyenne
+s'obtient en faisant la moyenne pondérée des centres de classe avec
+les fréquences relatives. Pour la dernière classe, on considère que le
+centre est de 100 et que l'intervalle de classe est de 100.
+```{r echo = FALSE}
+dgi <- dgi %>% mutate(x = c(5, 12.5, 17.5, 25, 40, 100),
+                      f = nombre / ntot,
+                      F = cumsum(f),
+                      d= f / c(10, 5, 5, 10, 20, 100)) %>%
+    rename(tranche = inc_class)
+dgi %>% mutate(tranche = paste("$", tranche, "$", sep = "")) %>% 
+    knitr::kable(booktabs = TRUE, escape = FALSE, digits = c(NA, 2, 0, 3, 3, 4)) %>%
+        kableExtra::kable_styling(position = "center")
+dgi$xl <- c(0, 10, 15, 20, 30, 50)
+```
+On obtient ainsi $\bar{x} = `r round(weighted.mean(dgi$x, dgi$f), 2)`$. 
+Le mode correspond à la classe pour laquelle la densité est la plus
+élevée, soit ici la classe `[15,20)`, ou encore la valeur de 17.5 si
+on retient le centre de la classe. La valeur médiane est située
+dans la première classe pour laquelle $F > 0.50$, ce qui correspond à
+la classe `[15,20)`. Par interpolation linéaire, on obtient\ :
+
+$$
+\frac{0.5 - `r round(dgi$F[2], 2)`}{\mbox{Me}-`r dgi$x[1]`} = 
+\frac{`r round(dgi$F[3], 2)` - `r round(dgi$F[2],2)`}{`r dgi$x[3]`-`r dgi$x[2]`}
+$$
+
+
+soit encore\ :
+
+$$
+\mbox{Me}=`r dgi$xl[3]` + \frac{0.5 - `r round(dgi$F[2], 2)`}
+{`r round(dgi$F[3], 2)` - `r round(dgi$F[2],2)`}
+(`r dgi$xl[4]`-`r dgi$xl[3]`)=
+`r round(dgi$xl[3] + (0.5 - dgi$F[2])/(dgi$F[3]-dgi$F[2]) * (dgi$xl[4] - dgi$xl[3]), 2)`
+$$
+On observe la relation $\mbox{Mo} < \mbox{Me} < \bar{x}$
+caractéristique des distributions obliques à gauche.
+
+
+**Q2.** Pour déterminer les quartiles, on applique la même technique
+d'interpolation que pour la médiane, mais cette fois avec les valeurs
+de 0.25 et de 0.75.
+
+Le premier quartile est situé dans la première classe pour laquelle 
+$F > 0.25$, soit la classe `[10,15)`. En appliquant la formule
+d'extrapolation linéaire, on obtient :
+
+$$
+\mbox{Q}_1=`r dgi$xl[2]` + \frac{0.25 - `r round(dgi$F[1], 2)`}
+{`r round(dgi$F[2], 2)` - `r round(dgi$F[1], 1)`} 
+(`r dgi$xl[3]` - `r dgi$xl[2]`) = 
+`r round(dgi$xl[2] + (0.25 - dgi$F[1]) / (dgi$F[2]-dgi$F[1]) * (dgi$xl[3] - dgi$xl[2]), 2)`
+$$
+
+Le troisième quartile est situé dans la première classe pour laquelle
+$F > 0.75$, soit la classe `[30,50)`. On obtient\ :
+
+
+$$
+\mbox{Q}_3=`r dgi$xl[5]` + \frac{0.75 - `r round(dgi$F[4], 2)`}
+{`r round(dgi$F[5], 2)` - `r round(dgi$F[4], 1)`} 
+(`r dgi$xl[6]` - `r dgi$xl[5]`) = 
+`r round(dgi$xl[5] + (0.75 - dgi$F[4]) / (dgi$F[5]-dgi$F[4]) * (dgi$xl[6] - dgi$xl[5]), 2)`
+$$
+
+Le troisième quartile est plus éloigné de la médiane que le premier,
+ce qui est également le symptôme d'une distribution oblique à gauche.

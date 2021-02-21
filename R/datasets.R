@@ -136,9 +136,9 @@ NULL
 #' @format Un tibble contenant
 #'
 #' - activité : une variable catégorielle permettant de distinguer les
-#' inactifs `inactif, les chômeurs `chômeur` et les actifs occupés
+#' inactifs `inactif, les chômeurs `chomeur` et les actifs occupés
 #' `occupé`,
-#' - temps : temps de travail, `néant`, `partiel`, `complet` et `inconnu`,
+#' - temps : temps de travail, `neant`, `partiel`, `complet` et `inconnu`,
 #' - diplome : niveau de diplome,
 #' - age : l'âge en tranche,
 #' - sexe : le sexe (`F` ou `M`),
@@ -151,7 +151,7 @@ NULL
 #' - durinact : durée de l'épisode d'inactivité, en tranche, 
 #' - durentr : durée de travail dans l'entreprise, en tranche,
 #' - horaires : nombre d'heures de travail hebdomadaire, en tranche d'heures,
-#' - statut : variable catégorielle intégrant les deux variables `activité` et `temps`, soit `inactif`, `chômeur`, `partiel`, `complet` et `inconnu`
+#' - statut : variable catégorielle intégrant les deux variables `activite` et `temps`, soit `inactif`, `chomeur`, `partiel`, `complet` et `inconnu`
 #'
 #' @source Enquête emploi 2018, site de l'[INSEE](https://www.insee.fr/fr/statistiques/4191029)
 #'
