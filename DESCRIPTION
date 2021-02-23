@@ -5,8 +5,7 @@ Title: Statistiques et Probabilites pour L1-L2 Economie et AES
 Author: Yves Croissant <yves.croissant@univ-reunion.fr>
 Maintainer: Yves Croissant <yves.croissant@univ-reunion.fr>
 Depends: R (>= 3.5.0)
-Imports: Rdpack, dplyr, descstat, tidyr, zoo, ggplot2
-Suggests: knitr, kableExtra, purrr, tibble, scales, rlang, lubridate, forcats
+Imports: Rdpack, tidyr, zoo, ggplot2
 Description: Ce package contient des donnees pour accompagner le livre d'introduction aux statistiques et probabilites.
 Encoding: UTF-8
 License: GPL (>=2)
