@@ -21,32 +21,27 @@ On considère la taille des joueurs de basket américains (NBA). Il y a
 400 joueurs professionnels et le population totale des hommes adultes
 américains est de 117 millions.  La moyenne et l'écart-type de la
 taille sont de 175/10 cm dans la population américaine et de 201/9 cm
-pour les joueurs de baskets.
+pour les joueurs de basket.
 
 On considère les joueurs suivants :
 
 - Mugsy Bugs : 1m60,
-- Yao Ming : 2m29
-- Marc Gasol : 2m11
+- Yao Ming : 2m29,
+- Marc Gasol : 2m11.
 
 On fera l'hypothèse que la distribution des individus selon la taille
 est normale.
 
-**Q1.** Quelle taille font les 1% américains les plus grands ?
-
-**Q2.** Quelle taille font les 1% basketteurs les plus grands ?
-
-**Q3.** Combien y a t'il d'adultes américains au moins aussi grand que
-Marc Gasol ? Même question pour Yao Ming.
-
-**Q4.** Combien y a t'il en moyenne de joueurs de basket au moins aussi grand que
-   Marc Gasol ? Même question pour Yao Ming.
-
-**Q5.** Quelle taille font les 1% américains les plus petit et les 1%
-basketteurs les plus petits ?
-
-**Q6.** Combien y a t'il de joueurs de basket de taille inférieure ou
-égale à celle de Mugsy Bugs.
+1. Quelle taille font les 1% d'Américains les plus grands ?
+1. Quelle taille font les 1% de basketteurs les plus grands ?
+1. Combien y a-t-il d'adultes américains au moins aussi grands que Marc
+Gasol ? Même question pour Yao Ming.
+1. Combien y a-t-il en moyenne de joueurs de basket au moins aussi
+   grands que Marc Gasol ? Même question pour Yao Ming.
+1. Quelle taille font les 1% d'Américains les plus petits et les 1%
+de basketteurs les plus petits ?
+1. Combien y a-t-il de joueurs de basket de taille inférieure ou égale
+à celle de Mugsy Bugs\ ?
 
 
 ```{r echo = FALSE, results = 'hide'}
@@ -103,8 +98,8 @@ basketteurs, une taille moyenne égale à `r mub` et un écart-type de
 qnorm(0.99, mub, sigb)
 ```
 
-**Q3.** Le pourcentage d'américains de taille au moins égale à celle
-de Marc Gasol est donnée par la fonction de répartition normale, en
+**Q3.** Le pourcentage d'Américains de taille au moins égale à celle
+de Marc Gasol est donné par la fonction de répartition normale, en
 utilisant la moyenne et l'écart-type pour la population. On commence
 donc à transformer la taille de ce joueur (2m11) en retirant la
 moyenne et en divisant par l'écart-type. On obtient\ :
@@ -113,7 +108,7 @@ lisant dans la table normale, on obtient pour cette valeur de la
 variable la probabilité $0.99984$. Le nombre de personnes
 correspondant est donc de $0.00016 \times `r fmt(117E06)` = 
 `r round(0.00016 * 117E06, 2)`$. Avec **R**, on utilisera la fonction
-`pnorm`. Sans autre argument que la valeur de la variable, elle revoie
+`pnorm`. Sans autre argument que la valeur de la variable, elle renvoie
 la probabilité associée à une variable normale centrée réduite, mais
 on peut également indiquer comme arguments supplémentaires la moyenne
 et l'écart-type\ :
@@ -127,7 +122,7 @@ pnorm(211, mu, sig, lower.tail = FALSE) * 117E06
 Pour Yao Ming, on a\ :
 $\frac{229 - `r mu`}{`r sig`} = `r round( (229-mu)/sig, 3)`$. Cette
 valeur est tellement élevée qu'elle ne figure pas dans la table. En
-revanche, on peut de nouveau utiliser la fonction `pnorm`\ :
+revanche, on peut à nouveau utiliser la fonction `pnorm`\ :
 
 ```{r  collapse = TRUE}
 pnorm(5.4, lower.tail = FALSE) * 117E06
@@ -159,7 +154,7 @@ la probabilité de 0.$9901$. On pose donc\ :
 $z_{0.01} = -2.33$. On obtient donc $x_{0.01} = `r mu` + z_{0.01} `r sig` = 
 `r round(mu - 2.33 * sig, 2)`$. Le même résultat peut être obtenu à
 l'aide de la fonction `qnorm`. Avec pour seul argument une
-probabilité, la fonction renvoie le quantile pour distribution normale
+probabilité, la fonction renvoie le quantile correspondant à une distribution normale
 centrée réduite. 
 
 ```{r collapse = TRUE}
@@ -174,7 +169,7 @@ mub + sigb * qnorm(0.01)
 
 **Q6.** Le basketteur Mugsy Bugs mesure 1m60. Avec $\mu = `r mu`$ et
 $\sigma = `r sig`$ (les paramètres de la distribution pour les adultes
-américains, on obtient une valeur de la variable normale centrée
+Américains), on obtient une valeur de la variable normale centrée
 réduite de $\frac{160 - `r mu`}{`r sig`} = `r round( (160 - mu) / sig,
 3)`$.  La probabilité associée à `r round( (160 - mu) / sig, 3)` est
 `r round(pnorm((160 - mu) / sig), 3)`, soit un nombre de personnes
@@ -200,20 +195,17 @@ l'histoire de la NBA.
 
 #### Intitulé
 
-On considère un trajet domicile travail constitué d'un temps de
+On considère un trajet domicile-travail constitué d'un temps de
 conduite fixe de 10mn et d'un temps d'attente à un péage qui est en
 moyenne de 10mn et qui par hypothèse suit une loi exponentielle. La
 journée de travail commence à 9h00. 
 
-**Q1.** Quel est l'écart-type du temps d'attente au péage.
-
-**Q2.** Quel est la probabilité d'attendre au moins 15mn au péage ?
-
-**Q3.** Quel est la probabilité d'attendre au moins 25mn au péage,
-sachant qu'on y est déjà depuis 10mn.
-
-**Q4.** Quelle est l'heure de départ qui permet d'arriver à l'heure
-avec une probabilité de 90%
+1. Quel est l'écart-type du temps d'attente au péage ?
+1. Quelle est la probabilité d'attendre au moins 15mn au péage ?
+1. Quelle est la probabilité d'attendre au moins 25mn au péage,
+sachant qu'on y est déjà depuis 10mn ?
+1. Quelle est l'heure de départ qui permet d'arriver à l'heure avec une
+probabilité de 90% ?
 
 #### Corrigé
 
@@ -234,8 +226,8 @@ F(15)=e^{-\lambda 15} =
 F(25)=e^{-\lambda 25} = `r round(pexp(25, rate = lambda, lower.tail = FALSE) * 100, 2)`$%.
 La probabilité d'attendre au moins 10mn au péage est $1 -
 F(10)=e^{-\lambda 10} = `r round(pexp(10, rate = lambda, lower.tail = FALSE) * 100, 2)`$%.
-La probabilité d'attendre au moins 15 mn supplémentaire sachant que
-l'attente est déjà de 10mn est donné par $\mbox{P}(X > t + s | X > t)
+La probabilité d'attendre au moins 15 mn supplémentaires sachant que
+l'attente est déjà de 10mn est donnée par $\mbox{P}(X > t + s | X > t)
 = \frac{\mbox{P}(X > t + s \cap X > t)}{\mbox{P}(X > t)}
 = \frac{\mbox{P}(X > t + s)}{\mbox{P}(X > t)}=\frac{e^{-\lambda (t + s)}}
 {e^{-\lambda t}} = e^{-\lambda s} = \mbox{P}(X > s)$ (avec $t=10$ et

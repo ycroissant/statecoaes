@@ -17,12 +17,12 @@ vignette: >
 
 #### Intitulé
 
-La température moyenne à New-York est de $\mu_F=56$ degrés Fahrenheit,
+La température moyenne à New York est de $\mu_F=56$ degrés Fahrenheit,
 avec un écart-type de $\sigma_F=23$. La relation entre les degrés
 Celsius $C$ et les degrés Fahrenheit $F$ est $C = \frac{5}{9} (F -
 32)$.
 
-Calculer la moyenne et l'écart-type de la température à New-York en
+Calculer la moyenne et l'écart-type de la température à New York en
 degrés Celsius.
 
 #### Corrigé
@@ -50,14 +50,11 @@ On considére un système d'impôt sur le revenu très simplifié :
 - on suppose que le montant du crédit d'impôt ($A$) est indépendant du
   revenu.
 
-**Q1.** Calculez l'espérance et la variance du revenu.
-
-**Q2.** Calculez l'espérance et la variance du crédit d'impôt.
-
-**Q3.** Calculez l'espérance et la variance de l'impôt.
-
-**Q4.** Calculez la covariance et le coefficient de corrélation
-linéaire entre l'impôt et le revenu.
+1. Calculez l'espérance et la variance du revenu.
+1. Calculez l'espérance et la variance du crédit d'impôt.
+1. Calculez l'espérance et la variance de l'impôt.
+1. Calculez la covariance et le coefficient de corrélation linéaire
+entre l'impôt et le revenu.
 
 #### Corrigé
 
@@ -118,12 +115,12 @@ $$
 \end{array}
 $$
 
-La dernière égalité résultant de l'hypothèse d'indépendance de la
+La dernière égalité résulte de l'hypothèse d'indépendance de la
 distribution du revenu et de l'abattement. On obtient ici\ :
 $\sigma_{RI} = 0.4 \times 0.75 = 0.3$.
 
 Enfin, le coefficient de corrélation linéaire est égal au rapport
-entre la variance et le produit des écarts-type :
+entre la variance et le produit des écarts-types :
 
 $$
 \rho_{RI}=\frac{\sigma_{RI}}{\sigma_R\sigma_I}=\frac{\tau \sigma_R ^ 2}{\sigma_R\sigma_I}

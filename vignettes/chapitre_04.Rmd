@@ -51,13 +51,13 @@ m <- clap_taille %>% pull(salaries) %>% "/"(saltot)
 M <- cumsum(m)
 ```
 
-**Q1.** La courbe de concentration relie les points qui, en abcsisse,
+**Q1.** La courbe de concentration relie les points qui, en abcsisses,
    indiquent les fréquences cumulées et en ordonnées les fréquences
    cumulées de la masse de la variable. La masse de la variable est
    ici constituée du nombre de salariés dans chaque classe de
    taille. Les fréquences de masse ($m$) s'obtiennent en divisant le
    nombre de salariés de chaque classe par le nombre total de
-   salarié, celui-ci étant égal à `r fmt(saltot)`. Pour les deux
+   salariés, celui-ci étant égal à `r fmt(saltot)`. Pour les deux
    premières classes, on a $m_1 = \frac{`r fmt(clap_taille$salaries[1])`}
    {`r fmt(saltot)`} = `r round(m[1], 2)`$ et
    $m_2 = \frac{`r fmt(clap_taille$salaries[2])`}
@@ -120,7 +120,7 @@ On obtient ici :
 - $T_3 = (F_3 - F_2) \times \frac{M_2 + M_3}{2} = 
 `r round(Trap[3], 3)`$,
 - $T_4 = (F_4 - F_3) \times \frac{M_3 + M_4}{2} = 
-`r round(Trap[4], 3)`$,
+`r round(Trap[4], 3)`$.
 
 L'indice de Gini est $(0.5 - \sum_n T_n) / 0.5 = 1 - 2 \sum_n T_n = 
 `r round(1 - 2 * sum(Trap), 3)`$.
@@ -150,8 +150,8 @@ sigma <- sqrt(variance)
 **Q1.** On commence par trier le vecteur de notes par ordre croissant, on
 obtient ainsi 
 $`r paste("(", paste(sort(notes), collapse = ", "), ")", sep = "")`$.
-On constate que la modalité pour lequel il y a le plus
-d'observations, c'est-à-dire le mode correspond à la valeur de 2.
+On constate que la modalité pour laquelle il y a le plus
+d'observations, c'est-à-dire le mode, correspond à la valeur de 2.
 Comme le nombre d'observations est pair, il y a deux valeurs médianes,
 la quatrième (2) et la cinquième (3). La médiane est donc égale à la
 moyenne de ces deux valeurs, soit 2.5.  La moyenne s'écrit : 
@@ -160,11 +160,11 @@ $\frac{`r paste(notes, collapse = " + ")`}{8}=`r mean(notes)`$.
 **Q2.** On peut appliquer la formule indiquant que la variance est
    égale à la moyenne des carrés moins le carré de la moyenne, soit :
    $\frac{`r paste(paste(notes, "^ 2"), collapse = " + ")`}{8} - 2.75
-   ^ 2 = 9 - 2.75 ^ 2 = 1.4375$. L'écart-type est la racine carré de
+   ^ 2 = 9 - 2.75 ^ 2 = 1.4375$. L'écart-type est la racine carrée de
    la variance, soit $\sigma = \sqrt{1.4375} = 1.199$.
 
 **Q3.** Pour calculer les indicateurs de forme, on calcule les écarts par
-   rapport à la moyenne pour chaque observation que l'on éleve ensuite
+   rapport à la moyenne pour chaque observation que l'on élève ensuite
    aux puissances 3 et 4\ :   
 ```{r echo = FALSE}
 z <- tibble(`$x$` = 1:5, `$n$` = c(1, 3, 2, 1, 1),
@@ -177,12 +177,12 @@ mu4 <- sum(z[[3]] * z[[6]])
 z %>% knitr::kable(booktabs = TRUE, escape = FALSE, digits = c(0, 0, 3, 2, 3, 3)) %>%
     kableExtra::kable_styling(position = "center")    
 ```
-  L'indicateur d'asymétrie est obtenue en rapportant le moment centré
+  L'indicateur d'asymétrie est obtenu en rapportant le moment centré
   d'ordre 3 : $\mu_3 = \sum_{k=1}^5 f_k (x_k - \bar{x}) ^ 3 = `r round(mu3, 3)`$ et
   l'écart-type $`r round(sigma, 3)`$ au cube, soit 
   $\gamma_1 = \frac{`r round(mu3, 3)`}{`r round(sigma ^ 3, 3)`}=
 	   `r round(mu3 / sigma ^ 3, 3)`$.
-  L'excès de Kurtosis est obtenue en rapportant le moment centré
+  L'excès de Kurtosis est obtenu en rapportant le moment centré
   d'ordre 4 : $\mu_4 = \sum_{k=1}^5 f_k (x_k - \bar{x}) ^ 4 = `r round(mu4, 3)`$ et
   l'écart-type $`r round(sigma, 3)`$ à la puissance 4 et en retirant 3, soit 
   $\gamma_2 = \frac{`r round(mu4, 3)`}{`r round(sigma ^ 3, 4)`} - 3=
@@ -190,7 +190,7 @@ z %>% knitr::kable(booktabs = TRUE, escape = FALSE, digits = c(0, 0, 3, 2, 3, 3)
   la distribution des notes est oblique à gauche, ce qui est cohérent
   avec le résultat que $\mbox{Mo} < \mbox{Me} < \bar{x}$ obtenu dans
   la question 1. $\gamma_2 < 0$ signifie que la distribution est
-  platikurtique, c'est-à-dire plus applatie que la normale.
+  platikurtique, c'est-à-dire plus aplatie que la normale.
 
 
 ### Exercice 3 {-}

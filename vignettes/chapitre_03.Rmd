@@ -43,9 +43,9 @@ quantitatif observé au niveau individuel ou par classe.
 - `sexe` est un caractère qualitatif, avec deux modalités `feminin` et
   `masculin`,
 - `age` est un caractère quantitatif ; il est discret car il prend
-  comme valeur des nombres entiers, mais le nombre de valeurs possible
-  est assez élevé, ce qui fait que l'on peut l'assimiler à un
-  caractère quantitatif continu,
+  comme valeur des nombres entiers, mais le nombre de valeurs
+  possibles est assez élevé, ce qui fait qu'on peut l'assimiler à
+  un caractère quantitatif continu,
 - `tranche` est un caractère quantitatif continu, pour lequel on
   n'observe pas les valeurs individuelles, mais uniquement dans quelle
   classe de valeurs elles se trouvent,
@@ -78,8 +78,8 @@ Fl <- cumsum(fl)
 1. Indiquez quelle est la nature de la variable `pièces`
    (catégorielle, numérique discrète ou numérique continue).
 1. Calculez les fréquences pour chaque taille de logement.
-1. Le calcul des fréquences cumulées a t'il un sens ? Si oui, réalisez
-   le. Que signifie par exemple la seconde fréquence ?
+1. Le calcul des fréquences cumulées a-t-il un sens ? Si oui,
+   réalisez-le. Que signifie par exemple la seconde fréquence ?
 1. Représentez les fréquences à l'aide du graphique de votre choix.
 
 #### Corrigé
@@ -101,7 +101,7 @@ Fl <- cumsum(fl)
    et    $f_3
    = \frac{`r round(Logements$nombre[3], 2)`}{`r round(ntotlog, 2)`} = 
    `r round(fl[3], 2)`$ 
-   (`r round(fl[1] * 100)`% des logements ont une seule pièces, `r round(fl[2] * 100)`% en
+   (`r round(fl[1] * 100)`% des logements ont une seule pièce, `r round(fl[2] * 100)`% en
    ont deux et `r round(fl[3] * 100)`% en ont 3).
 
 **Q3.** La variable étant numérique, le calcul des fréquences cumulées a du
@@ -114,7 +114,7 @@ Fl <- cumsum(fl)
    trois pièces.
 
 **Q4.** Le graphique le plus adapté pour une variable numérique discrète
-   est un graphique en bâton. Pour chaque valeur de la variable, on
+   est un graphique en bâtons. Pour chaque valeur de la variable, on
    trace un trait vertical dont la hauteur est proportionnelle à la fréquence.
 
 
@@ -152,7 +152,7 @@ clap_secteur %>%
 1. Indiquez quelle est la nature de la variable `secteur`
    (catégorielle, numérique discrète ou numérique continue).
 1. Calculez les fréquences pour chaque secteur.
-1. Le calcul des fréquences cumulées a t'il un sens ? Que
+1. Le calcul des fréquences cumulées a-t-il un sens ? Que
    signifierait par exemple la deuxième fréquence cumulée ?
 1. Représentez les fréquences à l'aide du graphique de votre
 choix.
@@ -182,8 +182,8 @@ choix.
 **Q4.** Les deux graphiques les plus courants pour représenter la
    distribution d'une variable catégorielle sont :
 
-  - le graphique en barre, pour lequel la hauteur de la barre est
-     proportionelle à la fréquence,
+  - le graphique en barres, pour lequel la hauteur de la barre est
+     proportionnelle à la fréquence,
   - le graphique circulaire, pour lequel les angles permettant de
      représenter les parts sont proportionnels aux fréquences.
  
@@ -276,7 +276,7 @@ clap_taille %>% mutate(f = entreprises / sum(entreprises), classe = factor(class
    on somme les trois premières fréquences, soit on ajoute $f_3$ à la
    fréquence cumulée de la classe précédente $F_2$, pour obtenir $F_3
    = `r round(clap_taille$F[3], 2)`$. La valeur obtenue indique que `r round(clap_taille$F[3] * 100, 2)`%
-   des entreprises ont moins de 20 salariés.
+   des entreprises ont au plus 20 salariés.
 
 Les résultats complets de l'exercice sont présentés dans le tableau
 ci-dessous.

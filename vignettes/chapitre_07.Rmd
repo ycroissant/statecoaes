@@ -42,7 +42,7 @@ RaieFleurie %>%
     kableExtra::kable_styling(position = "center")
 ```
 Les quantités (`quant`) sont mesurées en tonnes, le prix en euros par
-kilogramme et la recette, produit des quantités et du prix est donc
+kilogramme et la recette, produit des quantités et du prix, est donc
 mesurée en millions d'euros. 
 
 1. Calculez le coefficient multiplicateur, le coefficient de variation
@@ -52,7 +52,7 @@ mesurée en millions d'euros.
 1. Calculez de deux manières différentes l'indice de prix pour l'année
    2019 en base 2017 (directement et en utilisant la propriété de
    circularité).
-1. Calculez de nouveau l'indice de prix de l'année 2019 en base 2015
+1. Calculez à nouveau l'indice de prix de l'année 2019 en base 2015
    à partir des 4 indices de prix pour l'année $t$ en base $t-1$.
 1. Calculez l'indice de la quantité pour l'année 2019 en base 2015.
 1. Calculez l'indice de la recette pour l'année 2019 en base 2015 de
@@ -111,7 +111,7 @@ val_19 <- RaieFleurie %>% pull(recette) %>% .[5]
    $i_{19/15} = `r round(qute_19/qute_15, 3)`$, soit encore en base
    100\ : $I_{19/15} = `r round(qute_19/qute_15 * 100, 1)`$.
 
-**Q6.**  L'indice de recettes de l'année 2019 en base 2015 peut être obtenu
+**Q6.**  L'indice de recette de l'année 2019 en base 2015 peut être obtenu
    directement en divisant les recettes de 2019 `r round(val_19, 0)`
    par celles de 2015 `r round(val_15, 0)`, soit 
    $i_{19/15} = `r round(val_19 / val_15, 3)`$. Il peut également
@@ -263,14 +263,14 @@ $$p^p_{`r int`/`r base`}= \frac{100}
 `r round(100 / sum(cbudg_int / p_elem), 1)`$$
 
 L'indice de prix de Laspeyres est supérieur à celui de Paasche (et
-c'est également le cas pour l'indice des quantités). Ce résultats
+c'est également le cas pour l'indice des quantités). Ce résultat
 serait général dans le cas où les pondérations utilisées dans les deux
 indices seraient les mêmes, car une moyenne arithmétique (indice de
 Laspeyres) est nécessairement supérieure à une moyenne harmonique
 (indice de Paasche). Ici, les pondérations ne sont pas les mêmes car
 il s'agit respectivement des coefficients budgétaires de l'année 
 `r an_base`  et de l'année `r an_int`
-pour les indices de Laspeyre et de Paasche.
+pour les indices de Laspeyres et de Paasche.
 
 **Q5.** L'indice de Fisher est la moyenne géométrique des indices de
 Laspeyres et de Paasche. On a donc\ :

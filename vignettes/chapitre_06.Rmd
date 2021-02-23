@@ -41,7 +41,7 @@ tibble(x = x, y = y) %>% rlang::set_names(c("$x$", "$y$")) %>%
 1. Calculez les écarts-types pour les deux notes.
 1. Calculez la covariance entre les deux notes.
 1. Calculez le coefficient de corrélation linéaire entre les deux
-   notes, commentez.
+   notes. Commentez le résultat obtenu.
 1. Calculez les paramètres de la droite de régression linéaire de la
    note du second semestre en fonction de la note du premier semestre.
 1. Calculez les 5 résidus.
@@ -64,7 +64,7 @@ moyennes aux deux semestres sont très proches.
    
 **Q3.**  $s_x = \sqrt{s_x^2}=2$ et $s_y = \sqrt{s_y^2}=3.2$.  La dispersion
    des notes est beaucoup plus importante au second semestre qu'au
-   premier. 2 et 3.2 peuvent s'interpréter par l'écart moyen par
+   premier. 2 et 3.2 peuvent s'interpréter comme l'écart moyen par
    rapport à la moyenne ; l'unité est celle de la variable,
    c'est-à-dire un nombre de points sur 10.
    
@@ -101,7 +101,7 @@ moyennes aux deux semestres sont très proches.
 #### Intitulé
 
 On s'intéresse à la relation entre le nombre de voitures dans une
-famille et le nombre d'adultes (1 pour les familles mono-parentales et
+famille et le nombre d'adultes (1 pour les familles monoparentales et
 2 pour les couples). La distribution jointe est donnée dans le tableau
 ci-dessous.
 
@@ -144,10 +144,10 @@ s_adu <- sqrt(mom_adu$s2)
 #### Corrigé
 
 **Q1.**  La distribution marginale des voitures est obtenue en sommant pour
-   chaque lignes les probabilités jointes. On obtient 
+   chaque ligne les probabilités jointes. On obtient 
    `r marg_voit_mef`. Pour la distribution marginale des adultes, on
    somme les probabilités jointes en colonne. On obtient
-   `r marg_adu_mef`
+   `r marg_adu_mef`.
 
 **Q2.**  La moyenne du nombre de voitures s'obtient en faisant la moyenne
    pondérée du nombre de voitures avec les probabilités marginales. On
@@ -176,7 +176,7 @@ La moyenne du nombre d'adultes s'obtient en faisant la moyenne
                          `r round(marg_adu$f[2], 3)` \times (2-`r round(mom_adu$m, 3)`)  ^ 2 = 
 						 `r round(mom_adu$s2, 3)`$.
 
-**Q4.**  Les écart-types sont simplement les racines carrés des
+**Q4.**  Les écarts-types sont simplement les racines carrées des
    variances. On obtient $s_v=`r round(s_voit, 3)`$ et $s_a=
    `r round(s_adu, 3)`$.
    
@@ -210,7 +210,7 @@ La moyenne du nombre d'adultes s'obtient en faisant la moyenne
 
 On présente dans le tableau ci-dessous la répartition des chômeurs
 selon la durée de l'épisode de chômage (en tranches de durées mesurées
-en mois) et en âge (en tranche d'années). 
+en mois) et en âge (en tranches d'années). 
 
 ```{r echo = FALSE}
 chom_brut <- Emploi %>% select(age, durchom, ponderations) %>% na.omit %>%
@@ -236,7 +236,7 @@ chom %>% pre_print %>% rename(" " = 1) %>%
    retiendra un centre de classe de 36 mois pour la dernière classe de
    durée `[24, Inf)`).
 1. Calculez la distribution conditionnelle des chômeurs selon la durée
-   de chômage en fonction de l'âge. Commentez
+   de chômage en fonction de l'âge. Commentez le résultat.
 1. Calculez la moyenne de la durée de chômage pour chaque tranche
    d'âge (on retiendra un centre de classe de 36 mois pour la dernière
    classe de durée).
@@ -279,7 +279,7 @@ marg %>% knitr::kable(booktabs = TRUE, escape = FALSE, digits = 3) %>%
 	`r round(s2, 2)`$$
 
 **Q3.**  La distribution conditionnelle s'obtient en divisant chaque cellule
-    par la ligne total. Par exemple, pour la tranche d'âge `[15,30)`,
+    par la ligne `Total`. Par exemple, pour la tranche d'âge `[15,30)`,
     on obtient\ :
 	$`r round(pre_print(chom)[1,2, drop = TRUE])` / `r round(pre_print(chom)[4,2, drop = TRUE])`$,
 	$`r round(pre_print(chom)[2,2, drop = TRUE])` / `r round(pre_print(chom)[4,2, drop = TRUE])`$ et

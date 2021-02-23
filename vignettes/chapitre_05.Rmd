@@ -21,7 +21,7 @@ On considère la répartition des entreprises françaises selon le nombre
 de salariés (par tranche) et par secteur d'activité\ :
 
 
-```{r tailsect, echo = FALSE}
+```{r tailsect, echo = FALSE, message = FALSE}
 library("statecoaes")
 library("dplyr")
 library("descstat")
@@ -80,7 +80,7 @@ part_1020 <- nb_1020 / nb_tot
 **Q5.** La part des entreprises qui sont industrielles et dont le nombre de
    salariés est compris entre 10 et 20 est égal au rapport entre le
    nombre d'entreprises qui vérifie ces deux conditions 
-   (`r round(nb_1020_indus, 1)`) et le nombre total d'entreprise 
+   (`r round(nb_1020_indus, 1)`) et le nombre total d'entreprises
    (`r round(nb_tot, 1)`),
    soit $`r round(nb_1020_indus / nb_tot, 2)`$. Il s'agit d'une
    des 20 valeurs de la distribution jointe des entreprises selon la
@@ -110,7 +110,7 @@ part_1020 <- nb_1020 / nb_tot
 
 #### Intitulé
 
-On considère la distribution des familles de Seine et Marne selon le
+On considère la distribution des familles de Seine-et-Marne selon le
 nombre de voitures et le type de famille (`couple` indique les
 couples, avec ou sans enfants et `monop` les familles monoparentales,
 c'est-à-dire une famille constituée d'un seul adulte et de un ou
@@ -179,7 +179,7 @@ voit %>% conditional(voitures) %>% pre_print %>% rename(voitures = 1) %>%
    $`r round(cond_couples[1], 2)` \times 0 +
    `r round(cond_couples[2], 2)` \times 1 +
    `r round(cond_couples[3], 2)` \times 2=
-   `r round(sum(cond_couples * (0:2)), 2)`$,    
+   `r round(sum(cond_couples * (0:2)), 2)`$,
    alors que pour les familles monoparentales, on a\ :
    $`r round(cond_monop[1], 2)` \times 0 +
    `r round(cond_monop[2], 2)` \times 1 +

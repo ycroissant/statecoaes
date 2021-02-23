@@ -20,7 +20,7 @@ vignette: >
 On considère la pêche à la sole en France par semestre. On a les
 valeurs suivantes pour la période 2016-2019\ :
 
-```{r echo = FALSE, messages = FALSE}
+```{r echo = FALSE, message = FALSE}
 library("statecoaes")
 library("ggplot2")
 library("dplyr")
@@ -40,16 +40,12 @@ Soles %>% knitr::kable(booktabs = TRUE, escape = FALSE, digits = 2) %>%
     kableExtra::kable_styling(position = "center")
 ```
 
-**Q1.** Représentez la série chronologique. Indiquez s'il vous semble qu'il
+1. Représentez la série chronologique. Indiquez s'il vous semble qu'il
    y a une composante saisonnière et un trend.
-
-**Q2.** La série vous semble t'elle plutôt additive ou multiplicative ?
-
-**Q3.** Calculez et représentez la série en moyennes mobiles.
-
-**Q4.** Calculez les composantes saisonnières.
-
-**Q5.** Calculez et représentez la série détrendée et désaisonnalisée.
+1. La série vous semble t-elle plutôt additive ou multiplicative ?
+1. Calculez et représentez la série en moyennes mobiles.
+1. Calculez les composantes saisonnières.
+1. Calculez et représentez la série détrendée et désaisonnalisée.
 
 #### Corrigé
 
@@ -65,8 +61,8 @@ beaucoup plus importante au premier semestre qu'au deuxième. Il y a
 également un trend légèrement décroissant.
 
 
-**Q2.** Lorsque on considère les droites qui relient les points
-extrêmes au dessus et en dessous de la série, on obtient deux droites
+**Q2.** Lorsqu'on considère les droites qui relient les points
+extrêmes au-dessus et en dessous de la série, on obtient deux droites
 à peu près parallèles. Le modèle additif semble donc adapté.
 
 **Q3.** La moyenne mobile se calcule sur deux périodes, ce qui correspond à
@@ -90,6 +86,7 @@ Plus généralement, on obtient la série `ma` et on calcule la série
 `detrend` en soustrayant de la série brute la série de moyenne mobile\ :
 
 ```{r echo = FALSE}
+options(knitr.kable.NA = '')
 Soles <- Soles %>% mutate(poidsm1 = lag(poids), poidsp1 = lead(poids),
                           ma = poids / 2 + (poidsm1 + poidsp1) / 4,
                           detrend = poids - ma)
@@ -150,13 +147,11 @@ popfr %>% select(1:2) %>%
     knitr::kable(booktabs = TRUE, escape = FALSE, digits = 2) %>%
     kableExtra::kable_styling(position = "center")
 ```
-**Q1.** Représentez la série de population.
-
-**Q2.** Déterminez la droite de régression de la population en
+1. Représentez la série de population.
+1. Déterminez la droite de régression de la population en
 fonction du temps. Interprétez les coefficients estimés.
-
-**Q3.** Déterminez la droite de régression du logarithme de la
-population en fonction du temps. Interprétez les coefficients estimés.
+1. Déterminez la droite de régression du logarithme de la population
+en fonction du temps. Interprétez les coefficients estimés.
 
 
 #### Corrigé
@@ -235,7 +230,7 @@ prédit une population de `r round(b, 1)` millions d'habitants.
 
 **Q3.** On représente le même tableau que précédemment, $y$ étant
 désormais le logarithme népérien de la population, dont la moyenne est 
-$\bar{y}=`r round(mean(log(pull(popfr, pop))), 3)`$%.
+$\bar{y}=`r round(mean(log(pull(popfr, pop))), 3)`$.
 
 
 ```{r echo = FALSE}
