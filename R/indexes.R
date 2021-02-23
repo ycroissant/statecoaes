@@ -14,8 +14,8 @@
 #' @param chaine si fixé à `TRUE`, un indice chaîné est calculé
 #' @return un tibble
 #' @export
-#' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows
-#'     lag rename left_join
+#' @importFrom dplyr group_by summarise mutate_if bind_cols bind_rows lag rename left_join `%>%` filter mutate select
+#' @importFrom rlang .data
 #' @importFrom tidyr pivot_wider pivot_longer separate
 #' @author Yves Croissant
 indexes <- function(data, an, bien, quant, prix, base, chaine = FALSE){

@@ -14,9 +14,6 @@
 #' \insertRef{BATE:MURR:00}{statecoaes}
 #' @keywords datasets
 #' @importFrom Rdpack reprompt
-#' @import dplyr
-#' @import descstat
-
 NULL
 
 
@@ -42,7 +39,6 @@ NULL
 #' \insertRef{CHIN:ERDE:KEAN:09}{statecoaes}
 #' @keywords datasets
 #' @importFrom Rdpack reprompt
-
 NULL
 
 
@@ -63,7 +59,6 @@ NULL
 #'
 #' @keywords datasets
 #' @importFrom Rdpack reprompt
-
 NULL
 
 
@@ -93,7 +88,6 @@ NULL
 #' \insertRef{APES:PALA:10}{statecoaes}
 #' @keywords datasets
 #' @importFrom Rdpack reprompt
-
 NULL
 
 
@@ -121,7 +115,6 @@ NULL
 #' \insertRef{NUNO:DEAL:NUNE:19}{statecoaes}
 #' @keywords datasets
 #' @importFrom Rdpack reprompt
-
 NULL
 
 #' Extraits de l'enquête emploi
@@ -129,7 +122,6 @@ NULL
 #' L'enquête emploi donne de nombreuses informations sur les
 #' caractéristiques des emplois occupés par un échantillon de personne
 #' (actif/non-actif, chômage, temps partiel, niveau de diplôme, etc.
-#'
 #' 
 #' @name Emploi
 #' @docType data
@@ -155,7 +147,6 @@ NULL
 #'
 #' @source Enquête emploi 2018, site de l'[INSEE](https://www.insee.fr/fr/statistiques/4191029)
 #'
-
 NULL
 
 
@@ -181,7 +172,6 @@ NULL
 #'
 #' @source Enquête DADS 2015, site de l'[INSEE](https://www.insee.fr/fr/statistiques/3536754)
 #'
-
 NULL
 
 #' Les décès en 2017
@@ -211,7 +201,6 @@ NULL
 #'
 #' @source Etat civil, site de l'[INSEE](www.insee.fr)
 #' 
-
 NULL
 
 
@@ -232,7 +221,6 @@ NULL
 #'
 #' @source Etat civil, site de l'[INSEE](www.insee.fr)
 #' 
-
 NULL
 
 
@@ -260,7 +248,6 @@ NULL
 #' [site de la revue Data in Brief](https://www.sciencedirect.com/science/article/pii/S2352340919310522#tbl5)
 #' @references
 #' \insertRef{SOLA:MARG:19}{statecoaes}
-
 NULL
 
 #' Consommation horaire de gaz
@@ -276,7 +263,6 @@ NULL
 #'
 #' @source
 #' [site data.gouv.fr](https://www.data.gouv.fr/fr/datasets/consommation-journaliere-et-horaire-de-gaz-des-clients-grd-et-eld-par-region-reseaux-grtgaz-terega-donnees-definitives-1/)
-
 NULL
 
 #' Pêche en France
@@ -294,7 +280,6 @@ NULL
 #' @source
 #' [site data.gouv.fr](https://www.data.gouv.fr/fr/datasets/serie-hebdomadaire-par-espece-produits-de-la-mer/)
 #'
-
 NULL
 
 #' Valeurs foncières à Padoue
@@ -320,7 +305,6 @@ NULL
 #' @references
 #' \insertRef{BONI:COPI:15}{statecoaes}
 #' 
-
 NULL
 
 #' Transport aérien en Europe
@@ -337,8 +321,6 @@ NULL
 #'
 #' @source
 #' [site d'Eurostat](https://ec.europa.eu/eurostat/fr/)
-
-
 NULL
 
 #' Consommation en France
@@ -372,7 +354,6 @@ NULL
 #' Consomation des ménages en 2019, comptes nationaux annuels - base 2014
 #' 
 #' [site de l'INSEE](https://www.insee.fr/fr/statistiques/4494154?sommaire=4494218)
-
 NULL
 
 #' Données de long terme pour la France
@@ -394,7 +375,6 @@ NULL
 #' @source
 #' Ministère de la transition écologique et solidaire
 #' [site de data.gouv.fr](https://www.data.gouv.fr/fr/datasets/valeurs-immobilieres-economiques-et-financieres-de-1800-a-2015/)
-
 NULL 
 
 #' Demandeurs d'emploi inscrits à Pôle emploi
@@ -412,7 +392,6 @@ NULL
 #' @source
 #' [site de Pôle emploi](https://statistiques.pole-emploi.org/stmt/static/methode_2018)
 #'
-
 NULL
 
 
@@ -432,7 +411,6 @@ NULL
 #' @source
 #' [Observatoire français des drogues et des toxicomanies](https://www.ofdt.fr/statistiques-et-infographie/tableau-de-bord-tabac/)
 #'
-
 NULL
 
 
@@ -496,7 +474,6 @@ NULL
 #' [site de la banque mondiale](https://www.https://databank.worldbank.org/home.aspx)
 #'
 NULL
-
 
 #' Ventes de voitures d'occasion
 #'
