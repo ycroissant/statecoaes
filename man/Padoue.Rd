@@ -20,7 +20,7 @@ vertueux à G pour les plus dispensieux)
 }
 }
 \source{
-\href{https://www.sciencedirect.com/science/article/pii/S2352340915003224}{site de la revue Data in Brief}
+Site de la revue \href{https://www.sciencedirect.com/science/article/pii/S2352340915003224}{Data in Brief}
 }
 \description{
 Valeurs des logements à Padoue

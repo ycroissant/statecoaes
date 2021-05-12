@@ -18,7 +18,7 @@ Un tibble contenant
 }
 }
 \source{
-\href{https://www.sciencedirect.com/science/article/pii/S2352340918315191#ec0006}{site de la revue Data in Brief}
+Site de la revue \href{https://www.sciencedirect.com/science/article/pii/S2352340918315191#ec0006}{Data in Brief}
 }
 \description{
 Mesure de la fille d'attente dans des banques au Nigéria, 38875

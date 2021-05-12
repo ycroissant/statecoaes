@@ -18,9 +18,12 @@ Un tibble de 179 observations contenant :
 }
 }
 \source{
-\href{https://www.https://databank.worldbank.org/home.aspx}{site de la banque mondiale}
+site de la \href{https://www.https://databank.worldbank.org/home.aspx}{Banque Mondiale}
 }
 \description{
 Données sur l'espérance de vie et le PIB par tête, qui permettent
 d'analyser la relation entre richesse et développement
+}
+\references{
+\insertRef{DEAT:16}{statecoaes}
 }

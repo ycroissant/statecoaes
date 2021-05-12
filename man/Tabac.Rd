@@ -14,7 +14,11 @@ Un tibble de 32 observations contenant :
 }
 }
 \source{
-\href{https://www.ofdt.fr/statistiques-et-infographie/tableau-de-bord-tabac/}{Observatoire français des drogues et des toxicomanies}
+Tableau de bord tabac
+
+Observatoire français des drogues et des toxicomanies
+
+site de l'\href{https://www.ofdt.fr/statistiques-et-infographie/tableau-de-bord-tabac/}{ofdt}
 }
 \description{
 Données annuelles concernant le prix unitaire et la quantité vendue

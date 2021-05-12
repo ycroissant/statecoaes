@@ -13,7 +13,9 @@ Un tibble contenant
 }
 }
 \source{
-\href{https://www.insee.fr/fr/statistiques/2521169}{site de l'INSEE}
+Base comparateur de territoires
+
+site de l'\href{https://www.insee.fr/fr/statistiques/2521169}{INSEE}
 }
 \description{
 Population et surface des 34989 communes françaises

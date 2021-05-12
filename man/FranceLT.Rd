@@ -18,8 +18,11 @@ Un tibble contenant :
 }
 }
 \source{
+Valeurs immobilières, économiques et financières de 1800 à 2015
+
 Ministère de la transition écologique et solidaire
-\href{https://www.data.gouv.fr/fr/datasets/valeurs-immobilieres-economiques-et-financieres-de-1800-a-2015/}{site de data.gouv.fr}
+
+site \href{https://www.data.gouv.fr/fr/datasets/valeurs-immobilieres-economiques-et-financieres-de-1800-a-2015/}{data.gouv.fr}
 }
 \description{
 Données macro-économiques annuelles pour la France de 1840 à 2015

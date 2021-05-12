@@ -14,8 +14,9 @@ Un tibble contenant :
 }
 }
 \source{
-\strong{Clap} (Connaissance locale de l'appareil productif), site de
-l'\href{https://www.insee.fr/fr/statistiques/2021289}{INSEE}
+\strong{Clap} (Connaissance locale de l'appareil productif)
+
+site de l'\href{https://www.insee.fr/fr/statistiques/2021289}{INSEE}
 }
 \description{
 Table de contingence indiquant le nombre d'entreprises par tranche

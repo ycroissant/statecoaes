@@ -9,7 +9,9 @@
 #' - taille: la taille du conscrits en centimètres
 #'
 #' @source
-#' [data hub: Height Universitat Tubingen](https://uni-tuebingen.de/fakultaeten/wirtschafts-und-sozialwissenschaftliche-fakultaet/faecher/fachbereich-wirtschaftswissenschaft/wirtschaftswissenschaft/lehrstuehle/volkswirtschaftslehre/wirtschaftsgeschichte/forschung/data-hub-height/)
+#' data hub: Height
+#' 
+#' [Universitat Tubingen](https://uni-tuebingen.de/fakultaeten/wirtschafts-und-sozialwissenschaftliche-fakultaet/faecher/fachbereich-wirtschaftswissenschaft/wirtschaftswissenschaft/lehrstuehle/volkswirtschaftslehre/wirtschaftsgeschichte/forschung/data-hub-height/)
 #' @references
 #' \insertRef{BATE:MURR:00}{statecoaes}
 #' @keywords datasets
@@ -34,7 +36,7 @@ NULL
 #'
 #'
 #' @source
-#' [Journal of Applied Econometrics data archive](https://qed.econ.queensu.ca/jae/)
+#' Journal of Applied Econometrics [data archive](https://qed.econ.queensu.ca/jae/)
 #' @references
 #' \insertRef{CHIN:ERDE:KEAN:09}{statecoaes}
 #' @keywords datasets
@@ -55,7 +57,9 @@ NULL
 #' - surface : la surface en kilomètres carré
 #'
 #' @source
-#' [site de l'INSEE](https://www.insee.fr/fr/statistiques/2521169)
+#' Base comparateur de territoires
+#'
+#' site de l'[INSEE](https://www.insee.fr/fr/statistiques/2521169)
 #'
 #' @keywords datasets
 #' @importFrom Rdpack reprompt
@@ -83,7 +87,7 @@ NULL
 #' - score : 1 en cas de réussite du tir au but, 0 autrement.
 #'
 #' @source
-#' [site de l'AEA](https://www.aeaweb.org/articles?id=10.1257/aer.100.5.2548)
+#' site de l'[American Economic Association](https://www.aeaweb.org/articles?id=10.1257/aer.100.5.2548)
 #' @references
 #' \insertRef{APES:PALA:10}{statecoaes}
 #' @keywords datasets
@@ -110,7 +114,7 @@ NULL
 #' - day : identifiant du jour de la semaine (monday, tuesday, ...)
 #'
 #' @source
-#' [site de la revue Data in Brief](https://www.sciencedirect.com/science/article/pii/S2352340918315191#ec0006)
+#' Site de la revue [Data in Brief](https://www.sciencedirect.com/science/article/pii/S2352340918315191#ec0006)
 #' @references
 #' \insertRef{NUNO:DEAL:NUNE:19}{statecoaes}
 #' @keywords datasets
@@ -145,7 +149,12 @@ NULL
 #' - horaires : nombre d'heures de travail hebdomadaire, en tranche d'heures,
 #' - statut : variable catégorielle intégrant les deux variables `activite` et `temps`, soit `inactif`, `chomeur`, `partiel`, `complet` et `inconnu`
 #'
-#' @source Enquête emploi 2018, site de l'[INSEE](https://www.insee.fr/fr/statistiques/4191029)
+#' @source
+#' Activité, emploi et chômage en 2018
+#'
+#' Enquête emploi en continu - Fichier détail
+#'
+#' site de l'[INSEE](https://www.insee.fr/fr/statistiques/4191029)
 #'
 NULL
 
@@ -170,7 +179,12 @@ NULL
 #' - salaire : tranches de salaire, en milliers d'euros par an,
 #' - taille : tranche d'effectif de l'entreprise
 #'
-#' @source Enquête DADS 2015, site de l'[INSEE](https://www.insee.fr/fr/statistiques/3536754)
+#' @source
+#' Description des emplois privés et publics et des salaires en 2015
+#'
+#' DADS grand format 2015 - Fichiers détail
+#'
+#' site de l'[INSEE](https://www.insee.fr/fr/statistiques/3536754)
 #'
 NULL
 
@@ -199,8 +213,12 @@ NULL
 #' `mretr` pour maison de retraite, `log` pour dominicile et `autre`
 #' pour autre
 #'
-#' @source Etat civil, site de l'[INSEE](www.insee.fr)
-#' 
+#' @source
+#' Naissances, décès et mariages en 2017
+#'
+#' Etat civil - Fichiers détail
+#'
+#' site de l'[INSEE](https://www.insee.fr/fr/statistiques/3596190?sommaire=3596198)
 NULL
 
 
@@ -219,8 +237,12 @@ NULL
 #' - tranche : tranche d'âge de la mère,
 #' - trimestre : trimestre de naissance
 #'
-#' @source Etat civil, site de l'[INSEE](www.insee.fr)
-#' 
+#' @source
+#' Naissances, décès et mariages en 2017,
+#'
+#' Etat civil - Fichiers détail
+#'
+#' site de l'[INSEE](https://www.insee.fr/fr/statistiques/3596190?sommaire=3596198)
 NULL
 
 
@@ -245,7 +267,7 @@ NULL
 #' semaine, `hs_we` pour haute saison - week end, `holy_week` pour la
 #' semaine sainte et `april_fair`
 #' @source
-#' [site de la revue Data in Brief](https://www.sciencedirect.com/science/article/pii/S2352340919310522#tbl5)
+#' Site de la revue [Data in Brief](https://www.sciencedirect.com/science/article/pii/S2352340919310522#tbl5)
 #' @references
 #' \insertRef{SOLA:MARG:19}{statecoaes}
 NULL
@@ -262,7 +284,11 @@ NULL
 #' - conso : la consommation
 #'
 #' @source
-#' [site data.gouv.fr](https://www.data.gouv.fr/fr/datasets/consommation-journaliere-et-horaire-de-gaz-des-clients-grd-et-eld-par-region-reseaux-grtgaz-terega-donnees-definitives-1/)
+#' Consommation régionale, journalière et définitive de gaz des distributions publiques à l'interface avec GRTgaz et Terega,
+#'
+#' Open Data Réseaux Energies
+#' 
+#' site [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/consommation-journaliere-et-horaire-de-gaz-des-clients-grd-et-eld-par-region-reseaux-grtgaz-terega-donnees-definitives-1/)
 NULL
 
 #' Pêche en France
@@ -278,7 +304,12 @@ NULL
 #' - valeur : valeur des ventes de merlan
 #'
 #' @source
-#' [site data.gouv.fr](https://www.data.gouv.fr/fr/datasets/serie-hebdomadaire-par-espece-produits-de-la-mer/)
+#'
+#' Série hebdomadaire par espèce (produits de la mer)
+#'
+#' FranceAgriMer
+#' 
+#' site [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/serie-hebdomadaire-par-espece-produits-de-la-mer/)
 #'
 NULL
 
@@ -301,7 +332,7 @@ NULL
 #' - price : prix du logement en milliers d'euros
 #'
 #' @source
-#' [site de la revue Data in Brief](https://www.sciencedirect.com/science/article/pii/S2352340915003224)
+#' Site de la revue [Data in Brief](https://www.sciencedirect.com/science/article/pii/S2352340915003224)
 #' @references
 #' \insertRef{BONI:COPI:15}{statecoaes}
 #' 
@@ -320,7 +351,10 @@ NULL
 #' - passagers : nombre de passagers transportés
 #'
 #' @source
-#' [site d'Eurostat](https://ec.europa.eu/eurostat/fr/)
+#'
+#' Transport aérien de passagers par pays déclarant (avia_paoc)
+#' 
+#' site d'[Eurostat](https://ec.europa.eu/eurostat/fr/)
 NULL
 
 #' Consommation en France
@@ -351,9 +385,11 @@ NULL
 #' - solde territorial
 #'
 #' @source
-#' Consomation des ménages en 2019, comptes nationaux annuels - base 2014
+#' Consomation des ménages en 2019
+#'
+#' Comptes nationaux annuels - base 2014
 #' 
-#' [site de l'INSEE](https://www.insee.fr/fr/statistiques/4494154?sommaire=4494218)
+#' site de l'[INSEE](https://www.insee.fr/fr/statistiques/4494154?sommaire=4494218)
 NULL
 
 #' Données de long terme pour la France
@@ -373,8 +409,11 @@ NULL
 #' - tilt : taux d'intérêt à long terme.
 #'
 #' @source
+#' Valeurs immobilières, économiques et financières de 1800 à 2015
+#'
 #' Ministère de la transition écologique et solidaire
-#' [site de data.gouv.fr](https://www.data.gouv.fr/fr/datasets/valeurs-immobilieres-economiques-et-financieres-de-1800-a-2015/)
+#' 
+#' site [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/valeurs-immobilieres-economiques-et-financieres-de-1800-a-2015/)
 NULL 
 
 #' Demandeurs d'emploi inscrits à Pôle emploi
@@ -390,7 +429,7 @@ NULL
 #' - age : la tranche d'âge, `< 25`, `25-49`, `>= 50` ou `total`
 #' 
 #' @source
-#' [site de Pôle emploi](https://statistiques.pole-emploi.org/stmt/static/methode_2018)
+#' site de [Pôle emploi](https://statistiques.pole-emploi.org/stmt/static/methode_2018)
 #'
 NULL
 
@@ -409,7 +448,12 @@ NULL
 #' - prix : prix du paquet en euros
 #' 
 #' @source
-#' [Observatoire français des drogues et des toxicomanies](https://www.ofdt.fr/statistiques-et-infographie/tableau-de-bord-tabac/)
+#'
+#' Tableau de bord tabac
+#'
+#' Observatoire français des drogues et des toxicomanies
+#'
+#' site de l'[ofdt](https://www.ofdt.fr/statistiques-et-infographie/tableau-de-bord-tabac/)
 #'
 NULL
 
@@ -428,7 +472,12 @@ NULL
 #' - nombre : le nombre d'enfants ayant reçu le prénom considéré pour l'année considérée
 #' 
 #' @source
-#' [site de l'INSEE](https://www.insee.fr/fr/statistiques/2540004?sommaire=4767262)
+#'
+#' Les prénoms en 2019
+#'
+#' Etat civil
+#' 
+#' site de l'[INSEE](https://www.insee.fr/fr/statistiques/2540004?sommaire=4767262)
 #'
 NULL
 
@@ -448,7 +497,12 @@ NULL
 #' - ER : le sexe du Rième enfant (de 1 à 11).
 #' 
 #' @source
-#' [site de l'INSEE](https://www.insee.fr/fr/statistiques/4507685?sommaire=4508161)
+#'
+#' Logements, individus, activité, mobilités scolaires et professionnelles, migrations résidentielles en 2017
+#'
+#' Recensement de la population - Fichier détail
+#'
+#' site de l'[INSEE](https://www.insee.fr/fr/statistiques/4507685?sommaire=4508161)
 #'
 NULL
 
@@ -471,8 +525,10 @@ NULL
 #' - subnom : un sous-ensemble de 17 noms de pays
 #' 
 #' @source
-#' [site de la banque mondiale](https://www.https://databank.worldbank.org/home.aspx)
+#' site de la [Banque Mondiale](https://www.https://databank.worldbank.org/home.aspx)
 #'
+#' @references
+#' \insertRef{DEAT:16}{statecoaes}
 NULL
 
 #' Ventes de voitures d'occasion
@@ -487,9 +543,9 @@ NULL
 #' - year : l'année de mise en service de la voiture
 #'
 #' @source
-#' [Journal of Applied Econometrics data archive](https://qed.econ.queensu.ca/jae/)
+#' Journal of Applied Econometrics [data archive](https://qed.econ.queensu.ca/jae/)
 #' @references
-#' LEWI:11
+#' \insertRef{LEWI:11}{statecoaes}
 NULL
 
 
@@ -506,8 +562,12 @@ NULL
 #' de pièces.
 #'
 #' @source
-#' Recensement de la population, disponible sur le Site de
-#' l'[INSEE](https://www.insee.fr/fr/statistiques/4515537?sommaire=4516107#consulter).
+#'
+#' Logements et résidences principales en 2017,
+#'
+#' Recensement de la population
+#'
+#' site de l'[INSEE](https://www.insee.fr/fr/statistiques/4515537?sommaire=4516107#consulter).
 NULL
 
 #' Nombre d'entreprises par secteur et par taille
@@ -525,7 +585,9 @@ NULL
 #' - salaries le nombre de salariés
 #' 
 #' @source
-#' **Clap** (Connaissance locale de l'appareil productif), site de
-#' l'[INSEE](https://www.insee.fr/fr/statistiques/2021289)
+#' 
+#' **Clap** (Connaissance locale de l'appareil productif)
+#' 
+#' site de l'[INSEE](https://www.insee.fr/fr/statistiques/2021289)
 NULL
 

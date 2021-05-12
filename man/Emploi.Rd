@@ -26,7 +26,11 @@ passer de l'enquête à la population,
 }
 }
 \source{
-Enquête emploi 2018, site de l'\href{https://www.insee.fr/fr/statistiques/4191029}{INSEE}
+Activité, emploi et chômage en 2018
+
+Enquête emploi en continu - Fichier détail
+
+site de l'\href{https://www.insee.fr/fr/statistiques/4191029}{INSEE}
 }
 \description{
 L'enquête emploi donne de nombreuses informations sur les

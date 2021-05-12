@@ -16,7 +16,7 @@ Un tibble contenant
 }
 }
 \source{
-\href{https://qed.econ.queensu.ca/jae/}{Journal of Applied Econometrics data archive}
+Journal of Applied Econometrics \href{https://qed.econ.queensu.ca/jae/}{data archive}
 }
 \description{
 Comportement hebdomadaire d'achat de Ketchup par 3088 ménages au cours des années 1986-88

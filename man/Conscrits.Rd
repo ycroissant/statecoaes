@@ -11,7 +11,9 @@ Un tibble contenant
 }
 }
 \source{
-\href{https://uni-tuebingen.de/fakultaeten/wirtschafts-und-sozialwissenschaftliche-fakultaet/faecher/fachbereich-wirtschaftswissenschaft/wirtschaftswissenschaft/lehrstuehle/volkswirtschaftslehre/wirtschaftsgeschichte/forschung/data-hub-height/}{data hub: Height Universitat Tubingen}
+data hub: Height
+
+\href{https://uni-tuebingen.de/fakultaeten/wirtschafts-und-sozialwissenschaftliche-fakultaet/faecher/fachbereich-wirtschaftswissenschaft/wirtschaftswissenschaft/lehrstuehle/volkswirtschaftslehre/wirtschaftsgeschichte/forschung/data-hub-height/}{Universitat Tubingen}
 }
 \description{
 Un échantillon de 21064 conscrits en bavarois au XIXeme siècle

@@ -22,7 +22,7 @@ semaine sainte et \code{april_fair}
 }
 }
 \source{
-\href{https://www.sciencedirect.com/science/article/pii/S2352340919310522#tbl5}{site de la revue Data in Brief}
+Site de la revue \href{https://www.sciencedirect.com/science/article/pii/S2352340919310522#tbl5}{Data in Brief}
 }
 \description{
 Prix et différentes caractéristiques de locations saisonnières dans

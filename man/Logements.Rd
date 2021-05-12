@@ -13,8 +13,11 @@ de pièces.
 }
 }
 \source{
-Recensement de la population, disponible sur le Site de
-l'\href{https://www.insee.fr/fr/statistiques/4515537?sommaire=4516107#consulter}{INSEE}.
+Logements et résidences principales en 2017,
+
+Recensement de la population
+
+site de l'\href{https://www.insee.fr/fr/statistiques/4515537?sommaire=4516107#consulter}{INSEE}.
 }
 \description{
 Table de fréquence indiquant le nombre de pièce par logements

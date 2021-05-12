@@ -14,7 +14,11 @@ Un tibble contenant :
 }
 }
 \source{
-\href{https://www.data.gouv.fr/fr/datasets/serie-hebdomadaire-par-espece-produits-de-la-mer/}{site data.gouv.fr}
+Série hebdomadaire par espèce (produits de la mer)
+
+FranceAgriMer
+
+site \href{https://www.data.gouv.fr/fr/datasets/serie-hebdomadaire-par-espece-produits-de-la-mer/}{data.gouv.fr}
 }
 \description{
 Données hebdomadaires sur la pêche en France pour différents types de poissons

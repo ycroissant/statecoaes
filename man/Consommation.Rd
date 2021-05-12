@@ -28,9 +28,11 @@ Les postes de consommation sont :
 }
 }
 \source{
-Consomation des ménages en 2019, comptes nationaux annuels - base 2014
+Consomation des ménages en 2019
 
-\href{https://www.insee.fr/fr/statistiques/4494154?sommaire=4494218}{site de l'INSEE}
+Comptes nationaux annuels - base 2014
+
+site de l'\href{https://www.insee.fr/fr/statistiques/4494154?sommaire=4494218}{INSEE}
 }
 \description{
 Données annuelles de la consommation des ménages en France,

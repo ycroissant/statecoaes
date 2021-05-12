@@ -13,11 +13,11 @@ Un tibble contenant :
 }
 }
 \source{
-\href{https://qed.econ.queensu.ca/jae/}{Journal of Applied Econometrics data archive}
+Journal of Applied Econometrics \href{https://qed.econ.queensu.ca/jae/}{data archive}
 }
 \description{
 Données sur des voitures d'occasion aux Etats-Unis vendues sur le site Ebay
 }
 \references{
-LEWI:11
+\insertRef{LEWI:11}{statecoaes}
 }

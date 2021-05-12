@@ -13,7 +13,7 @@ Un tibble de 2360 observations contenant :
 }
 }
 \source{
-\href{https://statistiques.pole-emploi.org/stmt/static/methode_2018}{site de Pôle emploi}
+site de \href{https://statistiques.pole-emploi.org/stmt/static/methode_2018}{Pôle emploi}
 }
 \description{
 Données mensuelles, par tranche d'âge et par sexe des demandeurs

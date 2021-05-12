@@ -19,7 +19,7 @@ l'autre équipe, 3 pour le second tir de l'équipe qui commence, etc.
 }
 }
 \source{
-\href{https://www.aeaweb.org/articles?id=10.1257/aer.100.5.2548}{site de l'AEA}
+site de l'\href{https://www.aeaweb.org/articles?id=10.1257/aer.100.5.2548}{American Economic Association}
 }
 \description{
 Résultat de chaque tir au but (réussite ou échec) dans le cadre de

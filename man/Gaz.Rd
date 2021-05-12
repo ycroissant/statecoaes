@@ -13,7 +13,11 @@ Un tibble contenant :
 }
 }
 \source{
-\href{https://www.data.gouv.fr/fr/datasets/consommation-journaliere-et-horaire-de-gaz-des-clients-grd-et-eld-par-region-reseaux-grtgaz-terega-donnees-definitives-1/}{site data.gouv.fr}
+Consommation régionale, journalière et définitive de gaz des distributions publiques à l'interface avec GRTgaz et Terega,
+
+Open Data Réseaux Energies
+
+site \href{https://www.data.gouv.fr/fr/datasets/consommation-journaliere-et-horaire-de-gaz-des-clients-grd-et-eld-par-region-reseaux-grtgaz-terega-donnees-definitives-1/}{data.gouv.fr}
 }
 \description{
 Consommation par heure de gaz pour les différentes régions française

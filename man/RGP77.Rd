@@ -16,7 +16,11 @@ mono-parentale (\code{monop}),
 }
 }
 \source{
-\href{https://www.insee.fr/fr/statistiques/4507685?sommaire=4508161}{site de l'INSEE}
+Logements, individus, activité, mobilités scolaires et professionnelles, migrations résidentielles en 2017
+
+Recensement de la population - Fichier détail
+
+site de l'\href{https://www.insee.fr/fr/statistiques/4507685?sommaire=4508161}{INSEE}
 }
 \description{
 Différentes informations concernant les familles en Seine et Marne,
