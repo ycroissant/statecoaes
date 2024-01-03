@@ -1,6 +1,6 @@
 Package: statecoaes
-Version: 0.1-2
-Date: 2021-05-12
+Version: 0.1-3
+Date: 2024-01-03
 Title: Statistiques et Probabilites pour L1-L2 Economie et AES
 Author: Yves Croissant <yves.croissant@univ-reunion.fr>
 Maintainer: Yves Croissant <yves.croissant@univ-reunion.fr>
@@ -10,7 +10,8 @@ Description: Ce package contient des donnees pour accompagner le livre d'introdu
 Encoding: UTF-8
 License: GPL (>=2)
 URL: http://www.r-project.org
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
+LazyDataCompression: xz
 RdMacros: Rdpack
 LazyData: true
